@@ -71,3 +71,44 @@ export async function getStats() {
     lastUpdatedAt: string | null;
   }>("/stats");
 }
+
+type GetCompetitionsParams = {
+  limit?: number;
+  page?: number;
+  sortBy?: string;
+  sortOrder?: string;
+  category?: string;
+  closing?: string;
+};
+
+function normalizeCompetitionsResponse(value: unknown) {
+  if (Array.isArray(value)) return value;
+  if (value && typeof value === "object") {
+    const data = value as {
+      items?: unknown;
+      data?: unknown;
+      competitions?: unknown;
+    };
+
+    if (Array.isArray(data.items)) return data.items;
+    if (Array.isArray(data.data)) return data.data;
+    if (Array.isArray(data.competitions)) return data.competitions;
+  }
+
+  return [];
+}
+
+export async function getCompetitions(params?: GetCompetitionsParams) {
+  const query = new URLSearchParams();
+
+  if (params?.limit) query.set("limit", String(params.limit));
+  if (params?.page) query.set("page", String(params.page));
+  if (params?.sortBy) query.set("sortBy", params.sortBy);
+  if (params?.sortOrder) query.set("sortOrder", params.sortOrder);
+  if (params?.category) query.set("category", params.category);
+  if (params?.closing) query.set("closing", params.closing);
+
+  const path = query.size > 0 ? `/competitions?${query.toString()}` : "/competitions";
+  const response = await apiFetch<unknown>(path);
+  return normalizeCompetitionsResponse(response);
+}

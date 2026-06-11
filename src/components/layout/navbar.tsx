@@ -42,7 +42,7 @@ export function Navbar() {
 
   return (
     <div className="relative">
-      <nav className="flex h-[52px] items-center gap-3 px-5 bg-rr-surface">
+      <nav className="mt-2 flex h-[52px] items-center gap-3 px-5 bg-rr-surface">
         <span className="font-medium tracking-[-0.3px] text-rr-primary">
           RAFFLE<span className="text-rr-green">RADAR</span>
         </span>
