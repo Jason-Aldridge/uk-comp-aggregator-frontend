@@ -122,7 +122,7 @@ export function FilterBar({
                     key={opt.value}
                     type="button"
                     className={cn(
-                      "inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium transition cursor-pointer",
+                      "inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1 text-sm font-medium transition cursor-pointer",
                       isActive
                         ? "bg-rr-green text-rr-on-accent border border-transparent"
                         : "bg-transparent border border-rr-border text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
@@ -141,7 +141,7 @@ export function FilterBar({
           >
             {showClosing ? (
               <div className="flex items-center gap-[5px] flex-wrap">
-                <span className="text-[11px] text-rr-muted">Closing:</span>
+                <span className="text-sm text-rr-muted">Closing:</span>
                 {closingOpts.map((opt) => {
                   const isActive = opt.value === closing;
 
@@ -150,7 +150,7 @@ export function FilterBar({
                       key={opt.value}
                       type="button"
                       className={cn(
-                        "inline-flex items-center justify-center whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-medium transition cursor-pointer",
+                        "inline-flex items-center justify-center whitespace-nowrap rounded-full px-2.5 py-1 text-sm font-medium transition cursor-pointer",
                         isActive
                           ? "bg-rr-green text-rr-on-accent border border-transparent"
                           : "bg-transparent border border-rr-border text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
@@ -172,7 +172,7 @@ export function FilterBar({
                 <button
                   type="button"
                   className={cn(
-                    "h-9 w-full md:w-[220px] rounded-[7px] px-2.5 bg-rr-elevated text-[11px] text-rr-secondary outline-none border border-transparent cursor-pointer",
+                    "h-9 w-full md:w-[220px] rounded-[7px] px-2.5 bg-rr-elevated text-sm text-rr-secondary outline-none border border-transparent cursor-pointer",
                     isSortOpen ? "border-rr-border" : "hover:border-rr-border",
                   )}
                   aria-label="Sort"
@@ -203,7 +203,7 @@ export function FilterBar({
                           role="option"
                           aria-selected={isActive}
                           className={cn(
-                            "w-full text-left rounded px-2.5 py-2 text-[11px] transition cursor-pointer",
+                            "w-full text-left rounded px-2.5 py-2 text-sm transition cursor-pointer",
                             isActive
                               ? "bg-rr-elevated text-rr-primary"
                               : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",

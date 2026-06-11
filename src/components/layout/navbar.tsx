@@ -53,7 +53,7 @@ export function Navbar() {
             <input
               type="text"
               placeholder="Search competitions..."
-              className="w-full bg-transparent text-[13px] text-rr-primary placeholder:text-rr-muted outline-none"
+              className="w-full bg-transparent text-sm text-rr-primary placeholder:text-rr-muted outline-none"
             />
           </div>
         </div>
@@ -61,19 +61,19 @@ export function Navbar() {
         <div className="hidden md:flex gap-1 ml-4 md:ml-8">
           <a
             href="#"
-            className="text-[13px] px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
+            className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
           >
             Competitions
           </a>
           <a
             href="#"
-            className="text-[13px] px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
+            className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
           >
             Operators
           </a>
           <a
             href="#"
-            className="text-[13px] px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
+            className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
           >
             How it works
           </a>
@@ -108,14 +108,14 @@ export function Navbar() {
               <div className="h-8 w-8 rounded-full bg-rr-green-bg border-2 border-rr-green text-rr-green flex items-center justify-center text-xs font-medium">
                 {initials}
               </div>
-              <span className="hidden sm:inline text-[13px] text-rr-secondary whitespace-nowrap">
+              <span className="hidden sm:inline text-sm text-rr-secondary whitespace-nowrap">
                 {user.displayName || user.email}
               </span>
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-2">
-              <Button variant="secondary" className="text-[13px]">Log in</Button>
-              <Button variant="primary" className="text-[13px]">Sign up</Button>
+              <Button variant="secondary" className="text-sm">Log in</Button>
+              <Button variant="primary" className="text-sm">Sign up</Button>
             </div>
           )}
         </div>
@@ -126,21 +126,21 @@ export function Navbar() {
           <div className="flex flex-col gap-1 px-5 py-3">
             <a
               href="#"
-              className="text-[13px] px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline"
+              className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline"
               onClick={() => setMenuOpen(false)}
             >
               Competitions
             </a>
             <a
               href="#"
-              className="text-[13px] px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline"
+              className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline"
               onClick={() => setMenuOpen(false)}
             >
               Operators
             </a>
             <a
               href="#"
-              className="text-[13px] px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline"
+              className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline"
               onClick={() => setMenuOpen(false)}
             >
               How it works
@@ -150,14 +150,14 @@ export function Navbar() {
               <div className="mt-2 grid gap-2">
                 <Button
                   variant="secondary"
-                  className="w-full justify-start text-[13px]"
+                  className="w-full justify-start text-sm"
                   onClick={() => setMenuOpen(false)}
                 >
                   Log in
                 </Button>
                 <Button
                   variant="primary"
-                  className="w-full justify-start text-[13px]"
+                  className="w-full justify-start text-sm"
                   onClick={() => setMenuOpen(false)}
                 >
                   Sign up

@@ -27,7 +27,7 @@ export async function Hero() {
   return (
     <section className="bg-gradient-to-b from-rr-surface to-rr-bg">
       <div className="container py-10 md:py-14 text-center">
-        <p className="text-[13px] font-medium text-rr-green">
+        <p className="text-sm font-medium text-rr-green">
           The UK&apos;s competition intelligence hub
         </p>
 
@@ -35,7 +35,7 @@ export async function Hero() {
           Find better draws. <span className="text-rr-green">Win smarter.</span>
         </h1>
 
-        <p className="mt-3 mx-auto max-w-[650px] text-[13px] md:text-sm text-rr-muted">
+        <p className="mt-3 mx-auto max-w-[650px] text-sm md:text-base text-rr-muted">
           Track undersold competitions, spot real value and enter at the right time.
         </p>
 
@@ -44,7 +44,7 @@ export async function Hero() {
             <p className="text-rr-green text-lg font-semibold leading-none">
               {liveDraws}
             </p>
-            <p className="mt-1 text-[12px] text-rr-muted">Live draws</p>
+            <p className="mt-1 text-sm text-rr-muted">Live draws</p>
           </div>
 
           <div className="h-8 w-px bg-rr-border" />
@@ -53,7 +53,7 @@ export async function Hero() {
             <p className="text-rr-green text-lg font-semibold leading-none">
               {operators}
             </p>
-            <p className="mt-1 text-[12px] text-rr-muted">Operators</p>
+            <p className="mt-1 text-sm text-rr-muted">Operators</p>
           </div>
 
           <div className="h-8 w-px bg-rr-border" />
@@ -62,7 +62,7 @@ export async function Hero() {
             <p className="text-rr-green text-lg font-semibold leading-none">
               {updated}
             </p>
-            <p className="mt-1 text-[12px] text-rr-muted">Last updated</p>
+            <p className="mt-1 text-sm text-rr-muted">Last updated</p>
           </div>
         </div>
       </div>

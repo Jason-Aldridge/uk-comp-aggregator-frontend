@@ -23,7 +23,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-xs font-medium transition cursor-pointer";
+    "inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition cursor-pointer";
 
   return (
     <button
