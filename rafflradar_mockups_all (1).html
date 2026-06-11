@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RaffleRadar — All Mockups</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#e5e7eb;padding:24px;display:flex;flex-direction:column;gap:32px}
+.section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#6b7280;margin-bottom:8px}
+.mockup{border-radius:12px;overflow:hidden;max-width:1100px}
+
+/* ===== DARK THEME VARS ===== */
+.dark{background:#0d1117;color:white}
+.dark .nav{background:#111827;border-bottom:0.5px solid #1f2937}
+.dark .filter-bar{background:#111827;border-bottom:0.5px solid #1f2937}
+.dark .hero{background:linear-gradient(180deg,#111827 0%,#0d1117 100%);border-bottom:0.5px solid #1f2937}
+.dark .card{background:#111827;border:0.5px solid #1f2937}
+.dark .card-featured{background:#111827;border:0.5px solid #166534}
+.dark .card-img{background:#1f2937}
+.dark .pill-active{background:#22c55e;color:#052e16;border:none}
+.dark .pill{background:transparent;border:0.5px solid #374151;color:#9ca3af}
+.dark .badge-op{background:#052e16;border:0.5px solid #22c55e;color:#22c55e}
+.dark .badge-red{background:#7f1d1d;color:#fca5a5}
+.dark .badge-amber{background:#422006;border:0.5px solid #f59e0b;color:#fbbf24}
+.dark .badge-green{background:#052e16;border:0.5px solid #22c55e;color:#22c55e}
+.dark .progress-bg{background:#1f2937}
+.dark .stat-box{background:#1f2937}
+.dark .section-box{background:#111827;border:0.5px solid #1f2937}
+.dark .input-box{background:#1f2937;border:0.5px solid #374151;color:#6b7280}
+.dark .meta-row{background:#1f2937}
+.dark .community-card{background:#1f2937}
+.dark .sidebar-nav{background:#111827;border:0.5px solid #1f2937}
+.dark .sidebar-nav-item-active{background:#22c55e1a;border-left:2px solid #22c55e;color:#22c55e}
+.dark .sidebar-nav-item{border-left:2px solid transparent;color:#9ca3af;border-top:0.5px solid #1f2937}
+.dark .stat-mini{background:#1f2937}
+.dark .select-dark{background:#1f2937;border:0.5px solid #374151;color:#d1d5db}
+.dark .wishlist-row{background:#111827;border:0.5px solid #1f2937}
+.dark .alert-row{background:#1f2937;border-radius:7px}
+.dark .divider{border-top:0.5px solid #1f2937}
+.dark .text-primary{color:white}
+.dark .text-secondary{color:#9ca3af}
+.dark .text-muted{color:#6b7280}
+.dark .text-accent{color:#22c55e}
+.dark .text-red{color:#fca5a5}
+.dark .text-amber{color:#fbbf24}
+.dark .btn-primary{background:#22c55e;color:#052e16;border:none}
+.dark .btn-secondary{background:transparent;border:0.5px solid #374151;color:#d1d5db}
+.dark .btn-icon{background:#1f2937;border:0.5px solid #374151;color:#9ca3af}
+.dark .progress-green{background:#22c55e}
+.dark .progress-amber{background:#f59e0b}
+.dark .progress-red{background:#ef4444}
+.dark .avatar{background:#052e16;border:2px solid #22c55e;color:#22c55e}
+.dark .chart-bar-empty{background:#1f2937}
+.dark .chart-bar-low{background:#22c55e33}
+.dark .chart-bar-mid{background:#22c55e77}
+.dark .chart-bar-full{background:#22c55e}
+
+/* ===== LIGHT THEME VARS ===== */
+.light{background:#f3f4f6;color:#111827}
+.light .nav{background:white;border-bottom:0.5px solid #e5e7eb}
+.light .filter-bar{background:white;border-bottom:0.5px solid #e5e7eb}
+.light .hero{background:linear-gradient(180deg,#f0fdf4 0%,#f3f4f6 100%);border-bottom:0.5px solid #e5e7eb}
+.light .card{background:white;border:0.5px solid #e5e7eb}
+.light .card-featured{background:white;border:0.5px solid #86efac}
+.light .card-img{background:#f3f4f6}
+.light .pill-active{background:#16a34a;color:white;border:none}
+.light .pill{background:transparent;border:0.5px solid #d1d5db;color:#6b7280}
+.light .badge-op{background:#f0fdf4;border:0.5px solid #86efac;color:#15803d}
+.light .badge-red{background:#fee2e2;color:#991b1b}
+.light .badge-amber{background:#fef3c7;border:0.5px solid #fcd34d;color:#92400e}
+.light .badge-green{background:#f0fdf4;border:0.5px solid #86efac;color:#15803d}
+.light .progress-bg{background:#f3f4f6}
+.light .stat-box{background:#f3f4f6}
+.light .section-box{background:white;border:0.5px solid #e5e7eb}
+.light .input-box{background:#f9fafb;border:0.5px solid #e5e7eb;color:#9ca3af}
+.light .meta-row{background:#f9fafb;border:0.5px solid #e5e7eb}
+.light .community-card{background:#f9fafb;border:0.5px solid #e5e7eb}
+.light .sidebar-nav{background:white;border:0.5px solid #e5e7eb}
+.light .sidebar-nav-item-active{background:#f0fdf4;border-left:2px solid #16a34a;color:#16a34a}
+.light .sidebar-nav-item{border-left:2px solid transparent;color:#6b7280;border-top:0.5px solid #e5e7eb}
+.light .stat-mini{background:#f3f4f6}
+.light .select-dark{background:white;border:0.5px solid #d1d5db;color:#374151}
+.light .wishlist-row{background:white;border:0.5px solid #e5e7eb}
+.light .alert-row{background:#f9fafb;border:0.5px solid #e5e7eb}
+.light .divider{border-top:0.5px solid #e5e7eb}
+.light .text-primary{color:#111827}
+.light .text-secondary{color:#374151}
+.light .text-muted{color:#6b7280}
+.light .text-accent{color:#16a34a}
+.light .text-red{color:#991b1b}
+.light .text-amber{color:#92400e}
+.light .btn-primary{background:#16a34a;color:white;border:none}
+.light .btn-secondary{background:transparent;border:0.5px solid #d1d5db;color:#374151}
+.light .btn-icon{background:white;border:0.5px solid #d1d5db;color:#6b7280}
+.light .progress-green{background:#16a34a}
+.light .progress-amber{background:#f59e0b}
+.light .progress-red{background:#ef4444}
+.light .avatar{background:#f0fdf4;border:2px solid #16a34a;color:#16a34a}
+.light .chart-bar-empty{background:#e5e7eb}
+.light .chart-bar-low{background:#bbf7d0}
+.light .chart-bar-mid{background:#4ade80}
+.light .chart-bar-full{background:#16a34a}
+
+/* ===== SHARED COMPONENTS ===== */
+.nav{padding:0 20px;height:52px;display:flex;align-items:center;gap:12px}
+.logo{font-size:17px;font-weight:500;letter-spacing:-0.3px;flex-shrink:0}
+.search-box{flex:1;max-width:380px;border-radius:8px;display:flex;align-items:center;gap:8px;padding:0 10px;height:34px}
+.nav-links{display:flex;gap:4px;margin-left:8px}
+.nav-link{font-size:12px;padding:4px 10px;border-radius:6px;text-decoration:none}
+.btn{padding:5px 12px;border-radius:7px;font-size:12px;cursor:pointer;font-weight:500}
+.filter-bar{padding:10px 20px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.hero{padding:24px 20px;text-align:center}
+.hero-tagline{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;margin:0 0 8px}
+.hero-title{font-size:22px;font-weight:500;margin:0 0 8px;line-height:1.3}
+.hero-sub{font-size:13px;margin:0 0 18px}
+.hero-stats{display:flex;justify-content:center;gap:20px}
+.hero-stat p:first-child{font-size:18px;font-weight:500;margin:0}
+.hero-stat p:last-child{font-size:11px;margin:0}
+.hero-divider{width:0.5px}
+.section{padding:16px 20px 0}
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:10px}
+.section-title{font-size:15px;font-weight:500;margin:0 0 2px}
+.section-sub{font-size:12px;margin:0}
+.view-all{font-size:12px;text-decoration:none;flex-shrink:0;margin-left:12px}
+.card-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.card-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.card-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{border-radius:10px;overflow:hidden;cursor:pointer}
+.card-img{height:110px;display:flex;align-items:center;justify-content:center;position:relative}
+.card-img-lg{height:260px;display:flex;align-items:center;justify-content:center;position:relative;border-radius:10px}
+.card-img-thumb{height:54px;width:54px;display:flex;align-items:center;justify-content:center;border-radius:6px}
+.card-body{padding:9px}
+.card-body-lg{padding:0}
+.card-name{font-size:11.5px;font-weight:500;margin:0 0 6px;line-height:1.35;height:32px;overflow:hidden}
+.card-name-lg{font-size:17px;font-weight:500;margin:0 0 14px;line-height:1.4}
+.card-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.card-price{font-size:13px;font-weight:500}
+.card-price-lg{font-size:20px;font-weight:500}
+.card-tickets{font-size:10px}
+.card-sold{font-size:10px}
+.progress-bar{border-radius:2px;height:3px;overflow:hidden}
+.progress-bar-lg{border-radius:3px;height:6px;overflow:hidden}
+.badge{padding:1px 6px;border-radius:3px;font-size:10px;position:absolute;top:6px}
+.badge-left{left:6px}
+.badge-right{right:6px}
+.community-section{padding:0 20px 20px}
+.community-box{border-radius:10px;padding:16px}
+.community-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.wishlist-row{border-radius:10px;padding:12px;display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.wishlist-thumb{border-radius:8px;width:64px;height:64px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.alert-row{padding:8px 10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;border-radius:7px}
+.sidebar{display:flex;gap:20px;padding:20px}
+.sidebar-left{width:220px;flex-shrink:0}
+.sidebar-right{flex:1}
+.sidebar-profile{border-radius:10px;padding:16px;text-align:center;margin-bottom:12px}
+.sidebar-nav{border-radius:10px;overflow:hidden}
+.sidebar-nav button{width:100%;background:transparent;border:none;padding:10px 14px;text-align:left;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px}
+.detail-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.stat-box{border-radius:8px;padding:10px}
+.section-box{border-radius:10px;padding:14px}
+.chart-bars{display:flex;align-items:flex-end;gap:4px;height:70px;margin-bottom:8px}
+.chart-bar{flex:1;border-radius:3px 3px 0 0}
+</style>
+</head>
+<body>
+
+<!-- ========================================
+     DARK THEME
+     ======================================== -->
+
+<div>
+  <p class="section-label">Dark theme — Homepage</p>
+  <div class="mockup dark">
+    <nav class="nav dark">
+      <span class="logo text-primary">RAFFLE<span class="text-accent">RADAR</span></span>
+      <div class="search-box input-box"><i class="ti ti-search text-muted" style="font-size:15px"></i><span class="text-muted" style="font-size:13px">Search competitions...</span></div>
+      <div class="nav-links">
+        <a href="#" class="nav-link text-secondary" style="text-decoration:none">Competitions</a>
+        <a href="#" class="nav-link text-secondary" style="text-decoration:none">Operators</a>
+        <a href="#" class="nav-link text-secondary" style="text-decoration:none">How it works</a>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn btn-secondary">Log in</button>
+        <button class="btn btn-primary">Sign up</button>
+      </div>
+    </nav>
+    <div class="filter-bar dark">
+      <div style="display:flex;gap:5px;flex-wrap:wrap;flex:1">
+        <button class="btn pill-active" style="padding:4px 12px;border-radius:999px;font-size:12px">All</button>
+        <button class="btn pill" style="padding:4px 12px;border-radius:999px;font-size:12px">Cars</button>
+        <button class="btn pill" style="padding:4px 12px;border-radius:999px;font-size:12px">Cash</button>
+        <button class="btn pill" style="padding:4px 12px;border-radius:999px;font-size:12px">Watches</button>
+        <button class="btn pill" style="padding:4px 12px;border-radius:999px;font-size:12px">Tech</button>
+        <button class="btn pill" style="padding:4px 12px;border-radius:999px;font-size:12px">Holidays</button>
+        <button class="btn pill" style="padding:4px 12px;border-radius:999px;font-size:12px">Bikes</button>
+      </div>
+      <div style="display:flex;gap:5px;align-items:center;flex-shrink:0">
+        <span class="text-muted" style="font-size:11px">Closing:</span>
+        <button class="btn pill" style="padding:4px 10px;border-radius:999px;font-size:11px">Today</button>
+        <button class="btn pill" style="padding:4px 10px;border-radius:999px;font-size:11px">3 days</button>
+        <button class="btn pill" style="padding:4px 10px;border-radius:999px;font-size:11px">5 days</button>
+        <select class="select-dark" style="padding:4px 8px;border-radius:7px;font-size:11px;margin-left:4px">
+          <option>Best value</option><option>Ending soon</option><option>Most tickets left</option>
+        </select>
+      </div>
+    </div>
+    <div class="hero dark">
+      <p class="hero-tagline text-accent">The UK's competition intelligence hub</p>
+      <h1 class="hero-title text-primary">Find better draws.<br>Win smarter.</h1>
+      <p class="hero-sub text-muted">Track undersold competitions, spot real value and enter at the right time.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><p class="text-accent">183</p><p class="text-muted">Live draws</p></div>
+        <div class="hero-divider dark" style="background:#1f2937"></div>
+        <div class="hero-stat"><p class="text-accent">11</p><p class="text-muted">Operators</p></div>
+        <div class="hero-divider dark" style="background:#1f2937"></div>
+        <div class="hero-stat"><p class="text-accent">2 min</p><p class="text-muted">Last updated</p></div>
+      </div>
+    </div>
+    <div class="section dark">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title text-primary">Most undersold <span class="text-accent">ending soon</span></h2>
+          <p class="section-sub text-muted">Low ticket sales, closing within 3 days — your best odds right now</p>
+        </div>
+        <a href="#" class="view-all text-accent">View all →</a>
+      </div>
+      <div class="card-grid-4">
+        <div class="card card-featured dark">
+          <div class="card-img dark"><i class="ti ti-watch" style="font-size:32px;color:#374151"></i><span class="badge badge-op badge-left dark">RevComps</span><span class="badge badge-red badge-right dark">Ends today</span></div>
+          <div class="card-body"><p class="card-name text-primary">New 2026 Rolex Oyster Perpetual 41</p><div class="card-meta"><span class="card-price text-accent">£2.49</span><span class="card-sold text-accent" style="font-weight:500">22% sold</span></div><div class="progress-bar progress-bg dark"><div class="progress-green dark" style="height:100%;width:22%"></div></div></div>
+        </div>
+        <div class="card dark">
+          <div class="card-img dark"><i class="ti ti-car" style="font-size:32px;color:#374151"></i><span class="badge badge-op badge-left dark">7Days</span><span class="badge badge-amber badge-right dark">2 days</span></div>
+          <div class="card-body"><p class="card-name text-primary">2023 BMW M3 Competition + £5,000</p><div class="card-meta"><span class="card-price text-accent">£4.99</span><span class="card-sold text-accent" style="font-weight:500">18% sold</span></div><div class="progress-bar progress-bg dark"><div class="progress-green dark" style="height:100%;width:18%"></div></div></div>
+        </div>
+        <div class="card dark">
+          <div class="card-img dark"><i class="ti ti-currency-pound" style="font-size:32px;color:#374151"></i><span class="badge badge-op badge-left dark">DreamCar</span><span class="badge badge-amber badge-right dark">3 days</span></div>
+          <div class="card-body"><p class="card-name text-primary">£10,000 Cash Prize Draw</p><div class="card-meta"><span class="card-price text-accent">£1.99</span><span class="card-sold text-accent" style="font-weight:500">15% sold</span></div><div class="progress-bar progress-bg dark"><div class="progress-green dark" style="height:100%;width:15%"></div></div></div>
+        </div>
+        <div class="card dark">
+          <div class="card-img dark"><i class="ti ti-motorbike" style="font-size:32px;color:#374151"></i><span class="badge badge-op badge-left dark">RevComps</span><span class="badge badge-red badge-right dark">Ends today</span></div>
+          <div class="card-body"><p class="card-name text-primary">2018 Ducati Panigale V4S + £1,000</p><div class="card-meta"><span class="card-price text-accent">£6.57</span><span class="card-sold text-accent" style="font-weight:500">19% sold</span></div><div class="progress-bar progress-bg dark"><div class="progress-green dark" style="height:100%;width:19%"></div></div></div>
+        </div>
+      </div>
+      <div class="section-header" style="margin-top:4px">
+        <div>
+          <h2 class="section-title text-primary">Best value <span class="text-accent">right now</span></h2>
+          <p class="section-sub text-muted">Highest prize-to-ticket-cost ratio across all operators</p>
+        </div>
+        <a href="#" class="view-all text-accent">View all →</a>
+      </div>
+      <div class="card-grid-4">
+        <div class="card card-featured dark">
+          <div class="card-img dark"><i class="ti ti-car" style="font-size:32px;color:#374151"></i><span class="badge badge-op badge-left dark">RevComps</span><span class="badge badge-green badge-right dark">Value 8.9</span></div>
+          <div class="card-body"><p class="card-name text-primary">2022 VW Transporter + £45,000</p><div class="card-meta"><span class="card-price text-accent">£8.97</span><span class="card-tickets text-muted">9,999 tickets</span></div><div class="progress-bar progress-bg dark"><div class="progress-green dark" style="height:100%;width:34%"></div></div></div>
+        </div>
+        <div class="card dark">
+          <div class="card-img dark"><i class="ti ti-home" style="font-size:32px;color:#374151"></i><span class="badge badge-op badge-left dark">DreamCar</span><span class="badge badge-green badge-right dark">Value 7.4</span></div>
+          <div class="card-body"><p class="card-name text-primary">£250,000 Dream Home or Cash</p><div class="card-meta"><span class="card-price text-accent">£5.99</span><span class="card-tickets text-muted">50,000 tickets</span></div><div class="progress-bar progress-bg dark"><div class="progress-green dark" style="height:100%;width:41%"></div></div></div>
+        </div>
+        <div class="card dark">
+          <div class="card-img dark"><i class="ti ti-car" style="font-size:32px;color:#374151"></i><span class="badge badge-op badge-left dark">7Days</span><span class="badge badge-green badge-right dark">Value 6.8</span></div>
+          <div class="card-body"><p class="card-name text-primary">Audi R8 V10 Performance + £30,000</p><div class="card-meta"><span class="card-price text-accent">£9.99</span><span class="card-tickets text-muted">15,000 tickets</span></div><div class="progress-bar progress-bg dark"><div class="progress-green dark" style="height:100%;width:28%"></div></div></div>
+        </div>
+        <div class="card dark">
+          <div class="card-img dark"><i class="ti ti-motorbike" style="font-size:32px;color:#374151"></i><span class="badge badge-op badge-left dark">RevComps</span><span class="badge badge-green badge-right dark">Value 6.1</span></div>
+          <div class="card-body"><p class="card-name text-primary">2018 Ducati Panigale V4S + £1,000</p><div class="card-meta"><span class="card-price text-accent">£6.57</span><span class="card-tickets text-muted">3,999 tickets</span></div><div class="progress-bar progress-bg dark"><div class="progress-green dark" style="height:100%;width:41%"></div></div></div>
+        </div>
+      </div>
+      <div class="section-header" style="margin-top:4px">
+        <div>
+          <h2 class="section-title text-primary">Ending <span style="color:#ef4444">today</span></h2>
+          <p class="section-sub text-muted">Last chance — these draws close tonight</p>
+        </div>
+        <a href="#" class="view-all text-accent">View all →</a>
+      </div>
+      <div class="card-grid-4">
+        <div class="card dark" style="border-color:#374151">
+          <div class="card-img dark"><i class="ti ti-car" style="font-size:32px;color:#374151"></i><span class="badge badge-op badge-left dark">RevComps</span><span class="badge badge-red badge-right dark">11PM tonight</span></div>
+          <div class="card-body"><p class="card-name text-primary">2022 VW Transporter Kombi DSG</p><div class="card-meta"><span class="card-price text-accent">£8.97</span><span class="card-sold" style="color:#f59e0b;font-size:10px">34% sold</span></div><div class="progress-bar progress-bg dark"><div class="progress-amber dark" style="height:100%;width:34%"></div></div></div>
+        </div>
+        <div class="card dark" style="border-color:#374151">
+          <div class="card-img dark"><i class="ti ti-gift" style="font-size:32px;color:#374151"></i><span class="badge badge-op badge-left dark">RevComps</span><span class="badge badge-red badge-right dark">11PM tonight</span></div>
+          <div class="card-body"><p class="card-name text-primary">FREE ENTRY – £1,000 TUI Holiday</p><div class="card-meta"><span class="card-price text-accent">FREE</span><span class="card-sold text-muted" style="font-size:10px">35% sold</span></div><div class="progress-bar progress-bg dark"><div class="progress-green dark" style="height:100%;width:35%"></div></div></div>
+        </div>
+        <div class="card dark" style="border-color:#374151">
+          <div class="card-img dark"><i class="ti ti-currency-pound" style="font-size:32px;color:#374151"></i><span class="badge badge-op badge-left dark">RevComps</span><span class="badge badge-red badge-right dark">11PM tonight</span></div>
+          <div class="card-body"><p class="card-name text-primary">£500 Currys eGiftcard</p><div class="card-meta"><span class="card-price text-accent">£1.49</span><span class="card-sold" style="color:#ef4444;font-size:10px;font-weight:500">78% sold</span></div><div class="progress-bar progress-bg dark"><div class="progress-red dark" style="height:100%;width:78%"></div></div></div>
+        </div>
+        <div class="card dark" style="border-color:#374151">
+          <div class="card-img dark"><i class="ti ti-device-laptop" style="font-size:32px;color:#374151"></i><span class="badge badge-op badge-left dark">RevComps</span><span class="badge badge-red badge-right dark">11PM tonight</span></div>
+          <div class="card-body"><p class="card-name text-primary">Apple MacBook Air 13.6" M3</p><div class="card-meta"><span class="card-price text-accent">£3.99</span><span class="card-sold text-muted" style="font-size:10px">55% sold</span></div><div class="progress-bar progress-bg dark"><div class="progress-green dark" style="height:100%;width:55%"></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-section dark" style="padding-top:4px">
+      <div class="community-box section-box dark">
+        <div class="community-header"><h2 class="section-title text-primary">Community <span class="text-accent">discussions</span></h2><a href="#" class="view-all text-accent">View forum →</a></div>
+        <div class="card-grid-3">
+          <div class="community-card dark" style="padding:10px;border-radius:8px"><p class="text-muted" style="font-size:10px;margin:0 0 4px">Discussion · 12 replies</p><p class="text-secondary" style="font-size:12px;margin:0 0 6px;line-height:1.4">Anyone entered the RevComps VW? Thoughts on the odds?</p><p class="text-muted" style="font-size:10px">by <span class="text-secondary">uk_comp_fan</span> · 2h ago</p></div>
+          <div class="community-card dark" style="padding:10px;border-radius:8px"><p class="text-muted" style="font-size:10px;margin:0 0 4px">Winner report · 4 replies</p><p class="text-secondary" style="font-size:12px;margin:0 0 6px;line-height:1.4">WON the Rolex last week from 7Days — proof in comments 🎉</p><p class="text-muted" style="font-size:10px">by <span class="text-secondary">lucky_dave_uk</span> · 5h ago</p></div>
+          <div class="community-card dark" style="padding:10px;border-radius:8px"><p class="text-muted" style="font-size:10px;margin:0 0 4px">Tip · 7 replies</p><p class="text-secondary" style="font-size:12px;margin:0 0 6px;line-height:1.4">Best time to enter for maximum value — a guide</p><p class="text-muted" style="font-size:10px">by <span class="text-secondary">comp_strategist</span> · 1d ago</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================
+     DARK — Competition Detail
+     ======================================== -->
+<div>
+  <p class="section-label">Dark theme — Competition detail</p>
+  <div class="mockup dark">
+    <nav class="nav dark">
+      <span class="logo text-primary">RAFFLE<span class="text-accent">RADAR</span></span>
+      <span class="text-muted" style="font-size:16px;margin:0 4px">›</span><span class="text-muted" style="font-size:13px">Cars</span>
+      <span class="text-muted" style="font-size:16px;margin:0 4px">›</span><span class="text-secondary" style="font-size:13px">VW Transporter</span>
+      <div style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-secondary">Log in</button><button class="btn btn-primary">Sign up</button></div>
+    </nav>
+    <div class="detail-grid dark">
+      <div>
+        <div class="card-img-lg card-img dark" style="margin-bottom:10px;border-radius:10px"><i class="ti ti-car" style="font-size:80px;color:#374151"></i></div>
+        <div style="display:flex;gap:8px">
+          <div class="card-img-thumb card-img dark" style="border:1.5px solid #22c55e"><i class="ti ti-car" style="font-size:22px;color:#374151"></i></div>
+          <div class="card-img-thumb card-img dark"><i class="ti ti-car" style="font-size:22px;color:#374151"></i></div>
+          <div class="card-img-thumb card-img dark"><i class="ti ti-car" style="font-size:22px;color:#374151"></i></div>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+          <span class="badge-op dark" style="padding:2px 8px;border-radius:4px;font-size:11px">RevComps</span>
+          <span class="text-muted" style="background:#1f2937;padding:2px 8px;border-radius:4px;font-size:11px">Cars</span>
+          <span class="badge-red dark" style="padding:2px 8px;border-radius:4px;font-size:11px">Ends today 11PM</span>
+        </div>
+        <h1 class="card-name-lg text-primary">2022 VW Transporter Kombi DSG Show Van + £1,000 or £45,000</h1>
+        <div class="detail-stats">
+          <div class="stat-box dark"><p class="text-muted" style="font-size:11px;margin:0 0 3px">Ticket price</p><p class="card-price-lg text-accent">£8.97</p></div>
+          <div class="stat-box dark"><p class="text-muted" style="font-size:11px;margin:0 0 3px">Prize value</p><p class="card-price-lg text-primary">£45,000</p></div>
+          <div class="stat-box dark"><p class="text-muted" style="font-size:11px;margin:0 0 3px">Total tickets</p><p class="card-price-lg text-primary">9,999</p></div>
+          <div class="stat-box dark"><p class="text-muted" style="font-size:11px;margin:0 0 3px">Max per person</p><p class="card-price-lg text-primary">50</p></div>
+        </div>
+        <div class="stat-box dark" style="margin-bottom:14px;border-radius:8px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-secondary" style="font-size:12px">3,400 sold</span><span class="text-secondary" style="font-size:12px">6,599 remaining</span></div>
+          <div class="progress-bar-lg progress-bg dark" style="margin-bottom:6px"><div class="progress-green dark" style="height:100%;width:34%"></div></div>
+          <div style="display:flex;justify-content:space-between"><span class="text-accent" style="font-size:12px;font-weight:500">34% sold</span><span class="text-muted" style="font-size:12px">Value ratio: <span class="text-accent">1.42</span></span></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <a href="#" class="btn btn-primary" style="flex:1;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;display:block">Enter on RevComps <i class="ti ti-external-link" style="font-size:13px"></i></a>
+          <button class="btn btn-icon dark" style="padding:10px 14px;border-radius:8px"><i class="ti ti-heart" style="font-size:16px"></i></button>
+          <button class="btn btn-icon dark" style="padding:10px 14px;border-radius:8px"><i class="ti ti-bell" style="font-size:16px"></i></button>
+        </div>
+        <div class="stat-box dark" style="border-radius:8px;display:flex;justify-content:space-between">
+          <div><p class="text-muted" style="font-size:11px;margin:0 0 2px">Cash alternative</p><p class="text-primary" style="font-size:14px;font-weight:500">£1,000</p></div>
+          <div style="text-align:right"><p class="text-muted" style="font-size:11px;margin:0 0 2px">Draw date</p><p class="text-primary" style="font-size:14px;font-weight:500">10 Jun 2026 11PM</p></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:0 20px 20px">
+      <div>
+        <p class="text-muted" style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 8px">Ticket sales history</p>
+        <div class="section-box dark">
+          <div class="chart-bars"><div class="chart-bar chart-bar-empty dark" style="height:20%"></div><div class="chart-bar chart-bar-empty dark" style="height:25%"></div><div class="chart-bar chart-bar-low dark" style="height:30%"></div><div class="chart-bar chart-bar-low dark" style="height:28%"></div><div class="chart-bar chart-bar-mid dark" style="height:32%"></div><div class="chart-bar chart-bar-mid dark" style="height:33%"></div><div class="chart-bar chart-bar-full dark" style="height:34%"></div></div>
+          <div style="display:flex;justify-content:space-between"><span class="text-muted" style="font-size:10px">7 days ago</span><span class="text-muted" style="font-size:10px">Now</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="text-muted" style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 8px">About this competition</p>
+        <div class="section-box dark">
+          <p class="text-secondary" style="font-size:12px;line-height:1.6;margin:0 0 10px">Win this stunning 2022 VW Transporter Kombi DSG Show Van in Metallic Indium Grey. Answer a simple skill question to enter.</p>
+          <div class="divider dark" style="padding-top:10px;margin-top:0;display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between"><span class="text-muted" style="font-size:11px">Winners</span><span class="text-secondary" style="font-size:11px">1</span></div>
+            <div style="display:flex;justify-content:space-between"><span class="text-muted" style="font-size:11px">Instant prize</span><span class="text-secondary" style="font-size:11px">No</span></div>
+            <div style="display:flex;justify-content:space-between"><span class="text-muted" style="font-size:11px">Make / model</span><span class="text-secondary" style="font-size:11px">VW / Transporter 2022</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 20px 20px">
+      <p class="text-muted" style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 8px">More from RevComps</p>
+      <div class="card-grid-4">
+        <div class="card dark"><div class="card-img dark" style="height:80px"><i class="ti ti-motorbike" style="font-size:28px;color:#374151"></i></div><div style="padding:8px"><p class="text-primary" style="font-size:11px;font-weight:500;margin:0 0 4px;line-height:1.3">2018 Ducati Panigale V4S</p><span class="text-accent" style="font-size:12px;font-weight:500">£6.57</span></div></div>
+        <div class="card dark"><div class="card-img dark" style="height:80px"><i class="ti ti-watch" style="font-size:28px;color:#374151"></i></div><div style="padding:8px"><p class="text-primary" style="font-size:11px;font-weight:500;margin:0 0 4px;line-height:1.3">New 2026 Rolex Oyster</p><span class="text-accent" style="font-size:12px;font-weight:500">£2.49</span></div></div>
+        <div class="card dark"><div class="card-img dark" style="height:80px"><i class="ti ti-device-laptop" style="font-size:28px;color:#374151"></i></div><div style="padding:8px"><p class="text-primary" style="font-size:11px;font-weight:500;margin:0 0 4px;line-height:1.3">MacBook Air M3</p><span class="text-accent" style="font-size:12px;font-weight:500">£3.99</span></div></div>
+        <div class="card dark"><div class="card-img dark" style="height:80px"><i class="ti ti-gift" style="font-size:28px;color:#374151"></i></div><div style="padding:8px"><p class="text-primary" style="font-size:11px;font-weight:500;margin:0 0 4px;line-height:1.3">£1,000 TUI Voucher</p><span class="text-accent" style="font-size:12px;font-weight:500">FREE</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================
+     DARK — Profile
+     ======================================== -->
+<div>
+  <p class="section-label">Dark theme — Profile</p>
+  <div class="mockup dark">
+    <nav class="nav dark">
+      <span class="logo text-primary">RAFFLE<span class="text-accent">RADAR</span></span>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <button class="btn btn-icon dark" style="padding:5px;border:none;background:transparent"><i class="ti ti-bell text-muted" style="font-size:18px"></i></button>
+        <div class="avatar" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500">SH</div>
+      </div>
+    </nav>
+    <div class="sidebar dark">
+      <div class="sidebar-left">
+        <div class="sidebar-profile section-box dark" style="margin-bottom:12px">
+          <div class="avatar" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;margin:0 auto 10px">SH</div>
+          <p class="text-primary" style="font-size:14px;font-weight:500;margin:0 0 2px">Svitlana H.</p>
+          <p class="text-muted" style="font-size:11px;margin:0 0 12px">Member since Jun 2026</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div class="stat-mini dark" style="border-radius:6px;padding:8px"><p class="text-accent" style="font-size:16px;font-weight:500;margin:0">12</p><p class="text-muted" style="font-size:10px;margin:0">Saved</p></div>
+            <div class="stat-mini dark" style="border-radius:6px;padding:8px"><p class="text-accent" style="font-size:16px;font-weight:500;margin:0">3</p><p class="text-muted" style="font-size:10px;margin:0">Alerts</p></div>
+          </div>
+        </div>
+        <div class="sidebar-nav dark">
+          <button class="sidebar-nav-item-active dark"><i class="ti ti-heart" style="font-size:15px"></i>Wishlist</button>
+          <button class="sidebar-nav-item dark"><i class="ti ti-bell" style="font-size:15px"></i>Alerts</button>
+          <button class="sidebar-nav-item dark"><i class="ti ti-search" style="font-size:15px"></i>Saved searches</button>
+          <button class="sidebar-nav-item dark"><i class="ti ti-user" style="font-size:15px"></i>Account settings</button>
+        </div>
+      </div>
+      <div class="sidebar-right">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <h2 class="text-primary" style="font-size:15px;font-weight:500;margin:0">Wishlist <span class="text-muted" style="font-size:13px;font-weight:400">12 competitions</span></h2>
+          <select class="select-dark" style="padding:4px 8px;border-radius:7px;font-size:12px"><option>All</option><option>Ending soon</option></select>
+        </div>
+        <div class="wishlist-row dark">
+          <div class="wishlist-thumb card-img dark"><i class="ti ti-car" style="font-size:28px;color:#374151"></i></div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;gap:5px;margin-bottom:4px"><span class="badge-op dark" style="padding:1px 6px;border-radius:3px;font-size:10px">RevComps</span><span class="badge-red dark" style="padding:1px 6px;border-radius:3px;font-size:10px">Ends today</span></div>
+            <p class="text-primary" style="font-size:13px;font-weight:500;margin:0 0 5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">2022 VW Transporter Kombi DSG + £1,000</p>
+            <div style="display:flex;gap:12px;align-items:center"><span class="text-accent" style="font-size:13px;font-weight:500">£8.97</span><div style="flex:1;border-radius:2px;height:3px;overflow:hidden" class="progress-bg dark"><div class="progress-green dark" style="height:100%;width:34%"></div></div><span class="text-muted" style="font-size:11px;flex-shrink:0">34% sold</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><a href="#" class="btn btn-primary" style="padding:6px 12px;border-radius:6px;font-size:11px;text-decoration:none;text-align:center">Enter</a><button class="btn btn-icon dark" style="padding:5px 12px;border-radius:6px;font-size:11px"><i class="ti ti-heart" style="font-size:12px;color:#ef4444"></i></button></div>
+        </div>
+        <div class="wishlist-row dark" style="border-color:#166534">
+          <div class="wishlist-thumb card-img dark"><i class="ti ti-watch" style="font-size:28px;color:#374151"></i></div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;gap:5px;margin-bottom:4px"><span class="badge-op dark" style="padding:1px 6px;border-radius:3px;font-size:10px">RevComps</span><span class="badge-green dark" style="padding:1px 6px;border-radius:3px;font-size:10px">Best value</span></div>
+            <p class="text-primary" style="font-size:13px;font-weight:500;margin:0 0 5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">New 2026 Rolex Oyster Perpetual 41</p>
+            <div style="display:flex;gap:12px;align-items:center"><span class="text-accent" style="font-size:13px;font-weight:500">£2.49</span><div style="flex:1;border-radius:2px;height:3px;overflow:hidden" class="progress-bg dark"><div class="progress-green dark" style="height:100%;width:22%"></div></div><span class="text-accent" style="font-size:11px;flex-shrink:0;font-weight:500">22% — undersold</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><a href="#" class="btn btn-primary" style="padding:6px 12px;border-radius:6px;font-size:11px;text-decoration:none;text-align:center">Enter</a><button class="btn btn-icon dark" style="padding:5px 12px;border-radius:6px;font-size:11px"><i class="ti ti-heart" style="font-size:12px;color:#ef4444"></i></button></div>
+        </div>
+        <div class="section-box dark" style="margin-top:8px">
+          <p class="text-muted" style="font-size:12px;font-weight:500;margin:0 0 8px">Active alerts</p>
+          <div class="alert-row dark"><span class="text-secondary" style="font-size:12px">Cars · under £10 · ending in 3 days</span><div style="display:flex;gap:6px;align-items:center"><span class="badge-green dark" style="padding:1px 6px;border-radius:3px;font-size:10px">3 matches</span><button style="background:transparent;border:none;cursor:pointer"><i class="ti ti-x text-muted" style="font-size:13px"></i></button></div></div>
+          <div class="alert-row dark" style="margin-bottom:0"><span class="text-secondary" style="font-size:12px">Watches · any price · value ratio &gt; 1.5</span><div style="display:flex;gap:6px;align-items:center"><span class="badge-green dark" style="padding:1px 6px;border-radius:3px;font-size:10px">1 match</span><button style="background:transparent;border:none;cursor:pointer"><i class="ti ti-x text-muted" style="font-size:13px"></i></button></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================
+     LIGHT THEME — All three pages
+     ======================================== -->
+
+<div>
+  <p class="section-label">Light theme — Homepage</p>
+  <div class="mockup light">
+    <nav class="nav light">
+      <span class="logo text-primary">RAFFLE<span class="text-accent">RADAR</span></span>
+      <div class="search-box input-box light"><i class="ti ti-search text-muted" style="font-size:15px"></i><span class="text-muted" style="font-size:13px">Search competitions...</span></div>
+      <div class="nav-links">
+        <a href="#" class="nav-link text-secondary" style="text-decoration:none">Competitions</a>
+        <a href="#" class="nav-link text-secondary" style="text-decoration:none">Operators</a>
+        <a href="#" class="nav-link text-secondary" style="text-decoration:none">How it works</a>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-secondary light">Log in</button><button class="btn btn-primary light">Sign up</button></div>
+    </nav>
+    <div class="filter-bar light">
+      <div style="display:flex;gap:5px;flex-wrap:wrap;flex:1">
+        <button class="btn pill-active light" style="padding:4px 12px;border-radius:999px;font-size:12px">All</button>
+        <button class="btn pill light" style="padding:4px 12px;border-radius:999px;font-size:12px">Cars</button>
+        <button class="btn pill light" style="padding:4px 12px;border-radius:999px;font-size:12px">Cash</button>
+        <button class="btn pill light" style="padding:4px 12px;border-radius:999px;font-size:12px">Watches</button>
+        <button class="btn pill light" style="padding:4px 12px;border-radius:999px;font-size:12px">Tech</button>
+        <button class="btn pill light" style="padding:4px 12px;border-radius:999px;font-size:12px">Holidays</button>
+        <button class="btn pill light" style="padding:4px 12px;border-radius:999px;font-size:12px">Bikes</button>
+      </div>
+      <div style="display:flex;gap:5px;align-items:center;flex-shrink:0">
+        <span class="text-muted" style="font-size:11px">Closing:</span>
+        <button class="btn pill light" style="padding:4px 10px;border-radius:999px;font-size:11px">Today</button>
+        <button class="btn pill light" style="padding:4px 10px;border-radius:999px;font-size:11px">3 days</button>
+        <button class="btn pill light" style="padding:4px 10px;border-radius:999px;font-size:11px">5 days</button>
+        <select class="select-dark light" style="padding:4px 8px;border-radius:7px;font-size:11px;margin-left:4px"><option>Best value</option><option>Ending soon</option></select>
+      </div>
+    </div>
+    <div class="hero light">
+      <p class="hero-tagline text-accent">The UK's competition intelligence hub</p>
+      <h1 class="hero-title text-primary">Find better draws.<br>Win smarter.</h1>
+      <p class="hero-sub text-muted">Track undersold competitions, spot real value and enter at the right time.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><p class="text-accent">183</p><p class="text-muted">Live draws</p></div>
+        <div style="width:0.5px;background:#d1d5db"></div>
+        <div class="hero-stat"><p class="text-accent">11</p><p class="text-muted">Operators</p></div>
+        <div style="width:0.5px;background:#d1d5db"></div>
+        <div class="hero-stat"><p class="text-accent">2 min</p><p class="text-muted">Last updated</p></div>
+      </div>
+    </div>
+    <div class="section light">
+      <div class="section-header"><div><h2 class="section-title text-primary">Most undersold <span class="text-accent">ending soon</span></h2><p class="section-sub text-muted">Low ticket sales, closing within 3 days</p></div><a href="#" class="view-all text-accent">View all →</a></div>
+      <div class="card-grid-4">
+        <div class="card card-featured light"><div class="card-img light"><i class="ti ti-watch" style="font-size:32px;color:#d1d5db"></i><span class="badge badge-op badge-left light">RevComps</span><span class="badge badge-red badge-right light">Ends today</span></div><div class="card-body"><p class="card-name text-primary">New 2026 Rolex Oyster Perpetual 41</p><div class="card-meta"><span class="card-price text-accent">£2.49</span><span class="card-sold text-accent" style="font-weight:500">22% sold</span></div><div class="progress-bar progress-bg light"><div class="progress-green light" style="height:100%;width:22%"></div></div></div></div>
+        <div class="card light"><div class="card-img light"><i class="ti ti-car" style="font-size:32px;color:#d1d5db"></i><span class="badge badge-op badge-left light">7Days</span><span class="badge badge-amber badge-right light">2 days</span></div><div class="card-body"><p class="card-name text-primary">2023 BMW M3 Competition + £5,000</p><div class="card-meta"><span class="card-price text-accent">£4.99</span><span class="card-sold text-accent" style="font-weight:500">18% sold</span></div><div class="progress-bar progress-bg light"><div class="progress-green light" style="height:100%;width:18%"></div></div></div></div>
+        <div class="card light"><div class="card-img light"><i class="ti ti-currency-pound" style="font-size:32px;color:#d1d5db"></i><span class="badge badge-op badge-left light">DreamCar</span><span class="badge badge-amber badge-right light">3 days</span></div><div class="card-body"><p class="card-name text-primary">£10,000 Cash Prize Draw</p><div class="card-meta"><span class="card-price text-accent">£1.99</span><span class="card-sold text-accent" style="font-weight:500">15% sold</span></div><div class="progress-bar progress-bg light"><div class="progress-green light" style="height:100%;width:15%"></div></div></div></div>
+        <div class="card light"><div class="card-img light"><i class="ti ti-motorbike" style="font-size:32px;color:#d1d5db"></i><span class="badge badge-op badge-left light">RevComps</span><span class="badge badge-red badge-right light">Ends today</span></div><div class="card-body"><p class="card-name text-primary">2018 Ducati Panigale V4S + £1,000</p><div class="card-meta"><span class="card-price text-accent">£6.57</span><span class="card-sold text-accent" style="font-weight:500">19% sold</span></div><div class="progress-bar progress-bg light"><div class="progress-green light" style="height:100%;width:19%"></div></div></div></div>
+      </div>
+      <div class="section-header" style="margin-top:4px"><div><h2 class="section-title text-primary">Best value <span class="text-accent">right now</span></h2><p class="section-sub text-muted">Highest prize-to-ticket-cost ratio</p></div><a href="#" class="view-all text-accent">View all →</a></div>
+      <div class="card-grid-4">
+        <div class="card card-featured light"><div class="card-img light"><i class="ti ti-car" style="font-size:32px;color:#d1d5db"></i><span class="badge badge-op badge-left light">RevComps</span><span class="badge badge-green badge-right light">Value 8.9</span></div><div class="card-body"><p class="card-name text-primary">2022 VW Transporter + £45,000</p><div class="card-meta"><span class="card-price text-accent">£8.97</span><span class="card-tickets text-muted">9,999 tickets</span></div><div class="progress-bar progress-bg light"><div class="progress-green light" style="height:100%;width:34%"></div></div></div></div>
+        <div class="card light"><div class="card-img light"><i class="ti ti-home" style="font-size:32px;color:#d1d5db"></i><span class="badge badge-op badge-left light">DreamCar</span><span class="badge badge-green badge-right light">Value 7.4</span></div><div class="card-body"><p class="card-name text-primary">£250,000 Dream Home or Cash</p><div class="card-meta"><span class="card-price text-accent">£5.99</span><span class="card-tickets text-muted">50,000 tickets</span></div><div class="progress-bar progress-bg light"><div class="progress-green light" style="height:100%;width:41%"></div></div></div></div>
+        <div class="card light"><div class="card-img light"><i class="ti ti-car" style="font-size:32px;color:#d1d5db"></i><span class="badge badge-op badge-left light">7Days</span><span class="badge badge-green badge-right light">Value 6.8</span></div><div class="card-body"><p class="card-name text-primary">Audi R8 V10 Performance + £30,000</p><div class="card-meta"><span class="card-price text-accent">£9.99</span><span class="card-tickets text-muted">15,000 tickets</span></div><div class="progress-bar progress-bg light"><div class="progress-green light" style="height:100%;width:28%"></div></div></div></div>
+        <div class="card light"><div class="card-img light"><i class="ti ti-motorbike" style="font-size:32px;color:#d1d5db"></i><span class="badge badge-op badge-left light">RevComps</span><span class="badge badge-green badge-right light">Value 6.1</span></div><div class="card-body"><p class="card-name text-primary">2018 Ducati Panigale V4S + £1,000</p><div class="card-meta"><span class="card-price text-accent">£6.57</span><span class="card-tickets text-muted">3,999 tickets</span></div><div class="progress-bar progress-bg light"><div class="progress-green light" style="height:100%;width:41%"></div></div></div></div>
+      </div>
+      <div class="section-header" style="margin-top:4px"><div><h2 class="section-title text-primary">Ending <span style="color:#ef4444">today</span></h2><p class="section-sub text-muted">Last chance — these draws close tonight</p></div><a href="#" class="view-all text-accent">View all →</a></div>
+      <div class="card-grid-4">
+        <div class="card light" style="border-color:#d1d5db"><div class="card-img light"><i class="ti ti-car" style="font-size:32px;color:#d1d5db"></i><span class="badge badge-op badge-left light">RevComps</span><span class="badge badge-red badge-right light">11PM</span></div><div class="card-body"><p class="card-name text-primary">2022 VW Transporter Kombi DSG</p><div class="card-meta"><span class="card-price text-accent">£8.97</span><span class="card-sold" style="color:#d97706;font-size:10px">34% sold</span></div><div class="progress-bar progress-bg light"><div class="progress-amber light" style="height:100%;width:34%"></div></div></div></div>
+        <div class="card light" style="border-color:#d1d5db"><div class="card-img light"><i class="ti ti-gift" style="font-size:32px;color:#d1d5db"></i><span class="badge badge-op badge-left light">RevComps</span><span class="badge badge-red badge-right light">11PM</span></div><div class="card-body"><p class="card-name text-primary">FREE ENTRY – £1,000 TUI Holiday</p><div class="card-meta"><span class="card-price text-accent">FREE</span><span class="card-sold text-muted" style="font-size:10px">35% sold</span></div><div class="progress-bar progress-bg light"><div class="progress-green light" style="height:100%;width:35%"></div></div></div></div>
+        <div class="card light" style="border-color:#d1d5db"><div class="card-img light"><i class="ti ti-currency-pound" style="font-size:32px;color:#d1d5db"></i><span class="badge badge-op badge-left light">RevComps</span><span class="badge badge-red badge-right light">11PM</span></div><div class="card-body"><p class="card-name text-primary">£500 Currys eGiftcard</p><div class="card-meta"><span class="card-price text-accent">£1.49</span><span class="card-sold" style="color:#ef4444;font-size:10px;font-weight:500">78% sold</span></div><div class="progress-bar progress-bg light"><div class="progress-red light" style="height:100%;width:78%"></div></div></div></div>
+        <div class="card light" style="border-color:#d1d5db"><div class="card-img light"><i class="ti ti-device-laptop" style="font-size:32px;color:#d1d5db"></i><span class="badge badge-op badge-left light">RevComps</span><span class="badge badge-red badge-right light">11PM</span></div><div class="card-body"><p class="card-name text-primary">Apple MacBook Air 13.6" M3</p><div class="card-meta"><span class="card-price text-accent">£3.99</span><span class="card-sold text-muted" style="font-size:10px">55% sold</span></div><div class="progress-bar progress-bg light"><div class="progress-green light" style="height:100%;width:55%"></div></div></div></div>
+      </div>
+    </div>
+    <div class="community-section light" style="padding-top:4px">
+      <div class="community-box section-box light">
+        <div class="community-header"><h2 class="section-title text-primary">Community <span class="text-accent">discussions</span></h2><a href="#" class="view-all text-accent">View forum →</a></div>
+        <div class="card-grid-3">
+          <div class="community-card light" style="padding:10px;border-radius:8px"><p class="text-muted" style="font-size:10px;margin:0 0 4px">Discussion · 12 replies</p><p class="text-secondary" style="font-size:12px;margin:0 0 6px;line-height:1.4">Anyone entered the RevComps VW? Thoughts on the odds?</p><p class="text-muted" style="font-size:10px">by <span class="text-secondary">uk_comp_fan</span> · 2h ago</p></div>
+          <div class="community-card light" style="padding:10px;border-radius:8px"><p class="text-muted" style="font-size:10px;margin:0 0 4px">Winner report · 4 replies</p><p class="text-secondary" style="font-size:12px;margin:0 0 6px;line-height:1.4">WON the Rolex last week from 7Days 🎉</p><p class="text-muted" style="font-size:10px">by <span class="text-secondary">lucky_dave_uk</span> · 5h ago</p></div>
+          <div class="community-card light" style="padding:10px;border-radius:8px"><p class="text-muted" style="font-size:10px;margin:0 0 4px">Tip · 7 replies</p><p class="text-secondary" style="font-size:12px;margin:0 0 6px;line-height:1.4">Best time to enter for maximum value</p><p class="text-muted" style="font-size:10px">by <span class="text-secondary">comp_strategist</span> · 1d ago</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <p class="section-label">Light theme — Competition detail</p>
+  <div class="mockup light">
+    <nav class="nav light">
+      <span class="logo text-primary">RAFFLE<span class="text-accent">RADAR</span></span>
+      <span class="text-muted" style="font-size:16px;margin:0 4px">›</span><span class="text-muted" style="font-size:13px">Cars</span>
+      <span class="text-muted" style="font-size:16px;margin:0 4px">›</span><span class="text-secondary" style="font-size:13px">VW Transporter</span>
+      <div style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-secondary light">Log in</button><button class="btn btn-primary light">Sign up</button></div>
+    </nav>
+    <div class="detail-grid light">
+      <div>
+        <div class="card-img-lg card-img light" style="margin-bottom:10px;border-radius:10px;border:0.5px solid #e5e7eb"><i class="ti ti-car" style="font-size:80px;color:#d1d5db"></i></div>
+        <div style="display:flex;gap:8px">
+          <div class="card-img-thumb card-img light" style="border:1.5px solid #16a34a;border-radius:6px"><i class="ti ti-car" style="font-size:22px;color:#d1d5db"></i></div>
+          <div class="card-img-thumb card-img light" style="border:0.5px solid #e5e7eb;border-radius:6px"><i class="ti ti-car" style="font-size:22px;color:#d1d5db"></i></div>
+          <div class="card-img-thumb card-img light" style="border:0.5px solid #e5e7eb;border-radius:6px"><i class="ti ti-car" style="font-size:22px;color:#d1d5db"></i></div>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+          <span class="badge-op light" style="padding:2px 8px;border-radius:4px;font-size:11px">RevComps</span>
+          <span class="text-muted" style="background:#f3f4f6;padding:2px 8px;border-radius:4px;font-size:11px">Cars</span>
+          <span class="badge-red light" style="padding:2px 8px;border-radius:4px;font-size:11px">Ends today 11PM</span>
+        </div>
+        <h1 class="card-name-lg text-primary">2022 VW Transporter Kombi DSG Show Van + £1,000 or £45,000</h1>
+        <div class="detail-stats">
+          <div class="stat-box light" style="border:0.5px solid #e5e7eb"><p class="text-muted" style="font-size:11px;margin:0 0 3px">Ticket price</p><p class="card-price-lg text-accent">£8.97</p></div>
+          <div class="stat-box light" style="border:0.5px solid #e5e7eb"><p class="text-muted" style="font-size:11px;margin:0 0 3px">Prize value</p><p class="card-price-lg text-primary">£45,000</p></div>
+          <div class="stat-box light" style="border:0.5px solid #e5e7eb"><p class="text-muted" style="font-size:11px;margin:0 0 3px">Total tickets</p><p class="card-price-lg text-primary">9,999</p></div>
+          <div class="stat-box light" style="border:0.5px solid #e5e7eb"><p class="text-muted" style="font-size:11px;margin:0 0 3px">Max per person</p><p class="card-price-lg text-primary">50</p></div>
+        </div>
+        <div class="stat-box light" style="margin-bottom:14px;border-radius:8px;border:0.5px solid #e5e7eb">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="text-secondary" style="font-size:12px">3,400 sold</span><span class="text-secondary" style="font-size:12px">6,599 remaining</span></div>
+          <div class="progress-bar-lg progress-bg light" style="margin-bottom:6px"><div class="progress-green light" style="height:100%;width:34%"></div></div>
+          <div style="display:flex;justify-content:space-between"><span class="text-accent" style="font-size:12px;font-weight:500">34% sold</span><span class="text-muted" style="font-size:12px">Value ratio: <span class="text-accent">1.42</span></span></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <a href="#" class="btn btn-primary light" style="flex:1;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;display:block">Enter on RevComps <i class="ti ti-external-link" style="font-size:13px"></i></a>
+          <button class="btn btn-icon light" style="padding:10px 14px;border-radius:8px"><i class="ti ti-heart" style="font-size:16px"></i></button>
+          <button class="btn btn-icon light" style="padding:10px 14px;border-radius:8px"><i class="ti ti-bell" style="font-size:16px"></i></button>
+        </div>
+        <div class="stat-box light" style="border-radius:8px;border:0.5px solid #e5e7eb;display:flex;justify-content:space-between">
+          <div><p class="text-muted" style="font-size:11px;margin:0 0 2px">Cash alternative</p><p class="text-primary" style="font-size:14px;font-weight:500">£1,000</p></div>
+          <div style="text-align:right"><p class="text-muted" style="font-size:11px;margin:0 0 2px">Draw date</p><p class="text-primary" style="font-size:14px;font-weight:500">10 Jun 2026 11PM</p></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:0 20px 20px">
+      <div>
+        <p class="text-muted" style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 8px">Ticket sales history</p>
+        <div class="section-box light">
+          <div class="chart-bars"><div class="chart-bar chart-bar-empty light" style="height:20%"></div><div class="chart-bar chart-bar-empty light" style="height:25%"></div><div class="chart-bar chart-bar-low light" style="height:30%"></div><div class="chart-bar chart-bar-low light" style="height:28%"></div><div class="chart-bar chart-bar-mid light" style="height:32%"></div><div class="chart-bar chart-bar-mid light" style="height:33%"></div><div class="chart-bar chart-bar-full light" style="height:34%"></div></div>
+          <div style="display:flex;justify-content:space-between"><span class="text-muted" style="font-size:10px">7 days ago</span><span class="text-muted" style="font-size:10px">Now</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="text-muted" style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 8px">About this competition</p>
+        <div class="section-box light">
+          <p class="text-secondary" style="font-size:12px;line-height:1.6;margin:0 0 10px">Win this stunning 2022 VW Transporter Kombi DSG Show Van. Answer a simple skill question to enter.</p>
+          <div style="border-top:0.5px solid #e5e7eb;padding-top:10px;display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between"><span class="text-muted" style="font-size:11px">Winners</span><span class="text-secondary" style="font-size:11px">1</span></div>
+            <div style="display:flex;justify-content:space-between"><span class="text-muted" style="font-size:11px">Instant prize</span><span class="text-secondary" style="font-size:11px">No</span></div>
+            <div style="display:flex;justify-content:space-between"><span class="text-muted" style="font-size:11px">Make / model</span><span class="text-secondary" style="font-size:11px">VW / Transporter 2022</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 20px 20px">
+      <p class="text-muted" style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 8px">More from RevComps</p>
+      <div class="card-grid-4">
+        <div class="card light"><div class="card-img light" style="height:80px"><i class="ti ti-motorbike" style="font-size:28px;color:#d1d5db"></i></div><div style="padding:8px"><p class="text-primary" style="font-size:11px;font-weight:500;margin:0 0 4px;line-height:1.3">2018 Ducati Panigale V4S</p><span class="text-accent" style="font-size:12px;font-weight:500">£6.57</span></div></div>
+        <div class="card light"><div class="card-img light" style="height:80px"><i class="ti ti-watch" style="font-size:28px;color:#d1d5db"></i></div><div style="padding:8px"><p class="text-primary" style="font-size:11px;font-weight:500;margin:0 0 4px;line-height:1.3">New 2026 Rolex Oyster</p><span class="text-accent" style="font-size:12px;font-weight:500">£2.49</span></div></div>
+        <div class="card light"><div class="card-img light" style="height:80px"><i class="ti ti-device-laptop" style="font-size:28px;color:#d1d5db"></i></div><div style="padding:8px"><p class="text-primary" style="font-size:11px;font-weight:500;margin:0 0 4px;line-height:1.3">MacBook Air M3</p><span class="text-accent" style="font-size:12px;font-weight:500">£3.99</span></div></div>
+        <div class="card light"><div class="card-img light" style="height:80px"><i class="ti ti-gift" style="font-size:28px;color:#d1d5db"></i></div><div style="padding:8px"><p class="text-primary" style="font-size:11px;font-weight:500;margin:0 0 4px;line-height:1.3">£1,000 TUI Voucher</p><span class="text-accent" style="font-size:12px;font-weight:500">FREE</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <p class="section-label">Light theme — Profile</p>
+  <div class="mockup light">
+    <nav class="nav light">
+      <span class="logo text-primary">RAFFLE<span class="text-accent">RADAR</span></span>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <button style="background:transparent;border:none;cursor:pointer"><i class="ti ti-bell text-muted" style="font-size:18px"></i></button>
+        <div class="avatar light" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500">SH</div>
+      </div>
+    </nav>
+    <div class="sidebar light">
+      <div class="sidebar-left">
+        <div class="sidebar-profile section-box light" style="text-align:center;margin-bottom:12px">
+          <div class="avatar light" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;margin:0 auto 10px">SH</div>
+          <p class="text-primary" style="font-size:14px;font-weight:500;margin:0 0 2px">Svitlana H.</p>
+          <p class="text-muted" style="font-size:11px;margin:0 0 12px">Member since Jun 2026</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div class="stat-mini light" style="border-radius:6px;padding:8px"><p class="text-accent" style="font-size:16px;font-weight:500;margin:0">12</p><p class="text-muted" style="font-size:10px;margin:0">Saved</p></div>
+            <div class="stat-mini light" style="border-radius:6px;padding:8px"><p class="text-accent" style="font-size:16px;font-weight:500;margin:0">3</p><p class="text-muted" style="font-size:10px;margin:0">Alerts</p></div>
+          </div>
+        </div>
+        <div class="sidebar-nav light">
+          <button class="sidebar-nav-item-active light"><i class="ti ti-heart" style="font-size:15px"></i>Wishlist</button>
+          <button class="sidebar-nav-item light"><i class="ti ti-bell" style="font-size:15px"></i>Alerts</button>
+          <button class="sidebar-nav-item light"><i class="ti ti-search" style="font-size:15px"></i>Saved searches</button>
+          <button class="sidebar-nav-item light"><i class="ti ti-user" style="font-size:15px"></i>Account settings</button>
+        </div>
+      </div>
+      <div class="sidebar-right">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <h2 class="text-primary" style="font-size:15px;font-weight:500;margin:0">Wishlist <span class="text-muted" style="font-size:13px;font-weight:400">12 competitions</span></h2>
+          <select class="select-dark light" style="padding:4px 8px;border-radius:7px;font-size:12px"><option>All</option><option>Ending soon</option></select>
+        </div>
+        <div class="wishlist-row light">
+          <div class="wishlist-thumb card-img light" style="border:0.5px solid #e5e7eb"><i class="ti ti-car" style="font-size:28px;color:#d1d5db"></i></div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;gap:5px;margin-bottom:4px"><span class="badge-op light" style="padding:1px 6px;border-radius:3px;font-size:10px">RevComps</span><span class="badge-red light" style="padding:1px 6px;border-radius:3px;font-size:10px">Ends today</span></div>
+            <p class="text-primary" style="font-size:13px;font-weight:500;margin:0 0 5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">2022 VW Transporter Kombi DSG + £1,000</p>
+            <div style="display:flex;gap:12px;align-items:center"><span class="text-accent" style="font-size:13px;font-weight:500">£8.97</span><div style="flex:1;border-radius:2px;height:3px;overflow:hidden" class="progress-bg light"><div class="progress-green light" style="height:100%;width:34%"></div></div><span class="text-muted" style="font-size:11px;flex-shrink:0">34% sold</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><a href="#" class="btn btn-primary light" style="padding:6px 12px;border-radius:6px;font-size:11px;text-decoration:none;text-align:center">Enter</a><button class="btn btn-icon light" style="padding:5px 12px;border-radius:6px;font-size:11px"><i class="ti ti-heart" style="font-size:12px;color:#ef4444"></i></button></div>
+        </div>
+        <div class="wishlist-row light" style="border-color:#86efac">
+          <div class="wishlist-thumb card-img light" style="border:0.5px solid #e5e7eb"><i class="ti ti-watch" style="font-size:28px;color:#d1d5db"></i></div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;gap:5px;margin-bottom:4px"><span class="badge-op light" style="padding:1px 6px;border-radius:3px;font-size:10px">RevComps</span><span class="badge-green light" style="padding:1px 6px;border-radius:3px;font-size:10px">Best value</span></div>
+            <p class="text-primary" style="font-size:13px;font-weight:500;margin:0 0 5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">New 2026 Rolex Oyster Perpetual 41</p>
+            <div style="display:flex;gap:12px;align-items:center"><span class="text-accent" style="font-size:13px;font-weight:500">£2.49</span><div style="flex:1;border-radius:2px;height:3px;overflow:hidden" class="progress-bg light"><div class="progress-green light" style="height:100%;width:22%"></div></div><span class="text-accent" style="font-size:11px;flex-shrink:0;font-weight:500">22% — undersold</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><a href="#" class="btn btn-primary light" style="padding:6px 12px;border-radius:6px;font-size:11px;text-decoration:none;text-align:center">Enter</a><button class="btn btn-icon light" style="padding:5px 12px;border-radius:6px;font-size:11px"><i class="ti ti-heart" style="font-size:12px;color:#ef4444"></i></button></div>
+        </div>
+        <div class="section-box light" style="margin-top:8px">
+          <p class="text-muted" style="font-size:12px;font-weight:500;margin:0 0 8px">Active alerts</p>
+          <div class="alert-row light" style="margin-bottom:6px"><span class="text-secondary" style="font-size:12px">Cars · under £10 · ending in 3 days</span><div style="display:flex;gap:6px;align-items:center"><span class="badge-green light" style="padding:1px 6px;border-radius:3px;font-size:10px">3 matches</span><button style="background:transparent;border:none;cursor:pointer"><i class="ti ti-x text-muted" style="font-size:13px"></i></button></div></div>
+          <div class="alert-row light"><span class="text-secondary" style="font-size:12px">Watches · any price · value ratio &gt; 1.5</span><div style="display:flex;gap:6px;align-items:center"><span class="badge-green light" style="padding:1px 6px;border-radius:3px;font-size:10px">1 match</span><button style="background:transparent;border:none;cursor:pointer"><i class="ti ti-x text-muted" style="font-size:13px"></i></button></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
