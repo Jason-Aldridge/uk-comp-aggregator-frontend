@@ -1,6 +1,8 @@
 import "@fontsource/inter/latin.css";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
+import { FilterBar } from "@/components/layout/filter-bar";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import { AuthProvider } from "@/contexts/auth-context";
 
 export default function RootLayout({
@@ -9,12 +11,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark font-sans">
+    <html lang="en" className="font-sans" suppressHydrationWarning>
       <body>
-        <AuthProvider>
-          <Navbar />
-          {children}
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <Navbar />
+            <FilterBar />
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
