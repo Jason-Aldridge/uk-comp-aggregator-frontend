@@ -4,6 +4,13 @@ const config: Config = {
   darkMode: "class",
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
+    container: {
+      center: true,
+      padding: "1.25rem",
+      screens: {
+        "2xl": "1200px",
+      },
+    },
     extend: {
       colors: {
         "rr-bg": "#0d1117",
