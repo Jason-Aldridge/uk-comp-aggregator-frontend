@@ -1,4 +1,5 @@
 import "@fontsource/inter/latin.css";
+import { Suspense } from "react";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { FilterBar } from "@/components/layout/filter-bar";
@@ -16,7 +17,9 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <Navbar />
-            <FilterBar />
+            <Suspense fallback={null}>
+              <FilterBar />
+            </Suspense>
             {children}
           </AuthProvider>
         </ThemeProvider>
