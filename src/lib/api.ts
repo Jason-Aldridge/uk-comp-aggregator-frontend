@@ -63,3 +63,11 @@ export async function apiFetch<T>(
 
   return res.json() as Promise<T>;
 }
+
+export async function getStats() {
+  return apiFetch<{
+    competitionsCount: number;
+    operatorsCount: number;
+    lastUpdatedAt: string | null;
+  }>("/stats");
+}

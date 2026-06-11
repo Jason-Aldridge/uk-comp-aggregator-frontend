@@ -1,38 +1,20 @@
-type CompetitionStatsResponse = {
-  competitionsCount: number;
-  operatorsCount: number;
-  lastScrapedAt: string | null;
-};
+import { formatDistanceToNow } from "date-fns";
+import { getStats } from "@/lib/api";
 
 function formatRelativeTime(value: string | null): string {
   if (!value) return "—";
-  const ts = new Date(value).getTime();
-  if (Number.isNaN(ts)) return "—";
 
-  const diffMs = Date.now() - ts;
-  const diffMin = Math.max(0, Math.floor(diffMs / 60000));
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
 
-  if (diffMin < 1) return "just now";
-  if (diffMin < 60) return `${diffMin} min`;
-
-  const diffHr = Math.floor(diffMin / 60);
-  if (diffHr < 24) return `${diffHr} hr`;
-
-  const diffDay = Math.floor(diffHr / 24);
-  return `${diffDay} d`;
-}
-
-async function getStats(): Promise<CompetitionStatsResponse | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!baseUrl) return null;
-
-  try {
-    const res = await fetch(`${baseUrl}/competitions/stats`, { cache: "no-store" });
-    if (!res.ok) return null;
-    return (await res.json()) as CompetitionStatsResponse;
-  } catch {
-    return null;
-  }
+  return formatDistanceToNow(date, { addSuffix: true })
+    .replace("less than a minute ago", "just now")
+    .replace(" minute ago", " min ago")
+    .replace(" minutes ago", " min ago")
+    .replace(" hour ago", " hr ago")
+    .replace(" hours ago", " hr ago")
+    .replace(" day ago", " d ago")
+    .replace(" days ago", " d ago");
 }
 
 export async function Hero() {
@@ -40,7 +22,7 @@ export async function Hero() {
 
   const liveDraws = stats?.competitionsCount ?? 0;
   const operators = stats?.operatorsCount ?? 0;
-  const updated = formatRelativeTime(stats?.lastScrapedAt ?? null);
+  const updated = formatRelativeTime(stats.lastUpdatedAt);
 
   return (
     <section className="bg-gradient-to-b from-rr-surface to-rr-bg">
