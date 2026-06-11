@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# design
+/rafflradar_mockups_all*.html
+
 # debug
 npm-debug.log*
 yarn-debug.log*
