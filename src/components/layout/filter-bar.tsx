@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { IconChevronDown } from "@tabler/icons-react";
 import { cn } from "@/lib/cn";
@@ -10,33 +10,40 @@ export type FilterOption = {
   label: string;
 };
 
+export type SortOption = {
+  label: string;
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+};
+
 const defaultCategoryOptions: FilterOption[] = [
   { value: "all", label: "All" },
   { value: "cars", label: "Cars" },
-  { value: "cash", label: "Cash" },
-  { value: "watches", label: "Watches" },
-  { value: "tech", label: "Tech" },
-  { value: "holidays", label: "Holidays" },
+  { value: "houses", label: "Houses" },
   { value: "bikes", label: "Bikes" },
+  { value: "watches", label: "Watches" },
+  { value: "cash", label: "Cash" },
+  { value: "tech", label: "Tech" },
+  { value: "other", label: "Other" },
 ];
 
 const defaultClosingOptions: FilterOption[] = [
   { value: "today", label: "Today" },
-  { value: "3d", label: "3 days" },
-  { value: "5d", label: "5 days" },
+  { value: "3days", label: "3 days" },
+  { value: "5days", label: "5 days" },
 ];
 
-const defaultSortOptions: FilterOption[] = [
-  { value: "best", label: "Best value" },
-  { value: "ending", label: "Ending soon" },
-  { value: "tickets", label: "Most tickets left" },
-  { value: "price", label: "Lowest price" },
+const defaultSortOptions: SortOption[] = [
+  { label: "Best value", sortBy: "valueRatio", sortOrder: "desc" },
+  { label: "Ending soon", sortBy: "endsAt", sortOrder: "asc" },
+  { label: "Most tickets left", sortBy: "ticketsLeft", sortOrder: "desc" },
+  { label: "Lowest price", sortBy: "ticketPrice", sortOrder: "asc" },
 ];
 
 type FilterBarProps = {
   categoryOptions?: FilterOption[];
   closingOptions?: FilterOption[];
-  sortOptions?: FilterOption[];
+  sortOptions?: SortOption[];
   className?: string;
 };
 
@@ -58,8 +65,10 @@ export function FilterBar({
   const sortOpts = sortOptions ?? defaultSortOptions;
 
   const category = searchParams.get("category") ?? "all";
-  const closing = searchParams.get("closing") ?? "";
-  const sort = searchParams.get("sort") ?? "best";
+  const currentClosing = searchParams.get("closing");
+  const closing = currentClosing ?? "";
+  const sortBy = searchParams.get("sortBy") ?? "valueRatio";
+  const sortOrder = (searchParams.get("sortOrder") ?? "desc") as "asc" | "desc";
 
   const showCategory = categoryOpts.length > 0;
   const showClosing = closingOpts.length > 0;
@@ -67,20 +76,60 @@ export function FilterBar({
 
   const isSortOpen = showSort && sortOpen;
 
-  const setParam = (key: string, value: string) => {
-    const next = new URLSearchParams(searchParams.toString());
+  const updateParam = useCallback(
+    (key: string, value: string | null) => {
+      const params = new URLSearchParams(searchParams.toString());
 
-    if (value) next.set(key, value);
-    else next.delete(key);
+      if (value === null) {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
 
-    const qs = next.toString();
-    router.push(qs ? `${pathname}?${qs}` : pathname);
-  };
+      params.delete("page");
 
-  const sortLabel = useMemo(() => {
-    const selected = sortOpts.find((opt) => opt.value === sort);
-    return selected?.label ?? "Best value";
-  }, [sort, sortOpts]);
+      const qs = params.toString();
+      router.push(qs ? `${pathname}?${qs}` : pathname);
+    },
+    [pathname, router, searchParams],
+  );
+
+  const updateParams = useCallback(
+    (updates: Record<string, string | null>) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === null) {
+          params.delete(key);
+        } else {
+          params.set(key, value);
+        }
+      });
+
+      params.delete("page");
+
+      const qs = params.toString();
+      router.push(qs ? `${pathname}?${qs}` : pathname);
+    },
+    [pathname, router, searchParams],
+  );
+
+  const handleClosingClick = useCallback(
+    (value: string) => {
+      updateParam("closing", currentClosing === value ? null : value);
+    },
+    [currentClosing, updateParam],
+  );
+
+  const activeSort = useMemo(() => {
+    return (
+      sortOpts.find(
+        (opt) => opt.sortBy === sortBy && opt.sortOrder === sortOrder,
+      ) ?? sortOpts[0]
+    );
+  }, [sortBy, sortOrder, sortOpts]);
+
+  const sortLabel = activeSort?.label ?? "Best value";
 
   useEffect(() => {
     if (!isSortOpen) return;
@@ -113,9 +162,8 @@ export function FilterBar({
           {showCategory ? (
             <div className="flex flex-wrap gap-[5px] flex-1">
               {categoryOpts.map((opt) => {
-                const isActive = opt.value === category;
-
-                const value = opt.value === "all" ? "" : opt.value;
+                const current = category === "all" ? "all" : category;
+                const isActive = opt.value === current;
 
                 return (
                   <button
@@ -128,7 +176,14 @@ export function FilterBar({
                         : "bg-transparent border border-rr-border text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
                     )}
                     aria-pressed={isActive}
-                    onClick={() => setParam("category", value)}
+                    onClick={() => {
+                      if (opt.value === "all") {
+                        updateParam("category", null);
+                        return;
+                      }
+
+                      updateParam("category", isActive ? null : opt.value);
+                    }}
                   >
                     {opt.label}
                   </button>
@@ -156,9 +211,7 @@ export function FilterBar({
                           : "bg-transparent border border-rr-border text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
                       )}
                       aria-pressed={isActive}
-                      onClick={() =>
-                        setParam("closing", isActive ? "" : opt.value)
-                      }
+                      onClick={() => handleClosingClick(opt.value)}
                     >
                       {opt.label}
                     </button>
@@ -193,12 +246,12 @@ export function FilterBar({
                     aria-label="Sort options"
                   >
                     {sortOpts.map((opt) => {
-                      const isActive = opt.value === sort;
-                      const value = opt.value === "best" ? "" : opt.value;
+                      const isActive =
+                        opt.sortBy === sortBy && opt.sortOrder === sortOrder;
 
                       return (
                         <button
-                          key={opt.value}
+                          key={`${opt.sortBy}:${opt.sortOrder}`}
                           type="button"
                           role="option"
                           aria-selected={isActive}
@@ -209,7 +262,10 @@ export function FilterBar({
                               : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
                           )}
                           onClick={() => {
-                            setParam("sort", value);
+                            updateParams({
+                              sortBy: opt.sortBy,
+                              sortOrder: opt.sortOrder,
+                            });
                             setSortOpen(false);
                           }}
                         >
