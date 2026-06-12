@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { CompetitionGrid } from "@/components/competitions/competition-grid";
 import { CompetitionSection } from "@/components/home/competition-section";
+import { CommunitySection } from "@/components/home/community-section";
 import { Hero, type HeroStats } from "@/components/home/hero";
 import { FilterBar } from "@/components/layout/filter-bar";
 import { getCompetitions, getStats } from "@/lib/api";
@@ -110,6 +111,7 @@ export default async function Page({
         competitions={endingToday}
         accentTone="red"
       />
+      <CommunitySection />
     </main>
   );
 }
