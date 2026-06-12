@@ -1,5 +1,6 @@
 import { CompetitionGridClient } from "@/components/competitions/competition-grid-client";
 import { getCompetitions } from "@/lib/api";
+import type { GetCompetitionsParams } from "@/lib/api";
 import type { Competition } from "@/types/competition";
 
 function getFeaturedIds(competitions: Competition[]) {
@@ -10,11 +11,18 @@ function getFeaturedIds(competitions: Competition[]) {
     .map((competition) => competition.id);
 }
 
-export async function CompetitionGrid() {
+export async function CompetitionGrid({
+  params,
+}: {
+  params?: GetCompetitionsParams;
+} = {}) {
   let competitions: Competition[] = [];
 
   try {
-    competitions = (await getCompetitions({ limit: 500 })) as Competition[];
+    competitions = (await getCompetitions({
+      limit: 500,
+      ...params,
+    })) as Competition[];
   } catch {
     competitions = [];
   }

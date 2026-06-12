@@ -1,5 +1,4 @@
 import { formatDistanceToNow } from "date-fns";
-import { getStats } from "@/lib/api";
 
 function formatRelativeTime(value: string | null): string {
   if (!value) return "—";
@@ -17,11 +16,15 @@ function formatRelativeTime(value: string | null): string {
     .replace(" days ago", " d ago");
 }
 
-export async function Hero() {
-  const stats = await getStats();
+export type HeroStats = {
+  competitionsCount: number;
+  operatorsCount: number;
+  lastUpdatedAt: string | null;
+};
 
-  const liveDraws = stats?.competitionsCount ?? 0;
-  const operators = stats?.operatorsCount ?? 0;
+export function Hero({ stats }: { stats: HeroStats }) {
+  const liveDraws = stats.competitionsCount ?? 0;
+  const operators = stats.operatorsCount ?? 0;
   const updated = formatRelativeTime(stats.lastUpdatedAt);
 
   return (

@@ -72,7 +72,7 @@ export async function getStats() {
   }>("/stats");
 }
 
-type GetCompetitionsParams = {
+export type GetCompetitionsParams = {
   limit?: number;
   page?: number;
   sortBy?: string;

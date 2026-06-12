@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { CompetitionGrid } from "@/components/competitions/competition-grid";
-import { CompetitionGridClient } from "@/components/competitions/competition-grid-client";
-import { Hero } from "@/components/home/hero";
+import { CompetitionSection } from "@/components/home/competition-section";
+import { Hero, type HeroStats } from "@/components/home/hero";
 import { FilterBar } from "@/components/layout/filter-bar";
-import { getCompetitions } from "@/lib/api";
+import { getCompetitions, getStats } from "@/lib/api";
 import type { Competition } from "@/types/competition";
 
 type HomePageSearchParams = {
@@ -13,74 +13,73 @@ type HomePageSearchParams = {
   sortOrder?: string;
 };
 
-function getFeaturedIds(competitions: Competition[]) {
-  return competitions
-    .filter(
-      (competition) =>
-        competition.valueRatio !== null && competition.valueRatio !== undefined,
-    )
-    .sort((a, b) => Number(b.valueRatio ?? 0) - Number(a.valueRatio ?? 0))
-    .slice(0, 3)
-    .map((competition) => competition.id);
-}
-
-function HomeSections() {
-  return (
-    <>
-      <Hero />
-      <CompetitionGrid />
-    </>
-  );
-}
-
-function FilteredGrid({ competitions }: { competitions: Competition[] }) {
-  const featuredIds = getFeaturedIds(competitions);
-
-  return (
-    <CompetitionGridClient
-      competitions={competitions}
-      featuredIds={featuredIds}
-      pageSize={20}
-    />
-  );
-}
-
 export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<HomePageSearchParams>;
 }) {
   const params = await searchParams;
-  const hasFilters = !!(
-    params.category ||
-    params.closing ||
-    params.sortBy ||
-    params.sortOrder
-  );
+  const hasFilters = !!(params.category || params.closing || params.sortBy);
 
   if (hasFilters) {
-    let competitions: Competition[] = [];
-
-    try {
-      competitions = (await getCompetitions({
-        category: params.category,
-        closing: params.closing,
-        sortBy: params.sortBy,
-        sortOrder: params.sortOrder,
-        limit: 500,
-      })) as Competition[];
-    } catch {
-      competitions = [];
-    }
-
     return (
       <main>
         <Suspense fallback={null}>
           <FilterBar />
         </Suspense>
-        <FilteredGrid competitions={competitions} />
+        <CompetitionGrid
+          params={{
+            category: params.category,
+            closing: params.closing,
+            sortBy: params.sortBy,
+            sortOrder: params.sortOrder,
+            limit: 500,
+          }}
+        />
       </main>
     );
+  }
+
+  let undersold: Competition[] = [];
+  let bestValue: Competition[] = [];
+  let endingToday: Competition[] = [];
+  let stats: HeroStats = {
+    competitionsCount: 0,
+    operatorsCount: 0,
+    lastUpdatedAt: null,
+  };
+
+  try {
+    const [undersoldResult, bestValueResult, endingTodayResult, statsResult] =
+      await Promise.all([
+        getCompetitions({
+          sortBy: "percentSold",
+          sortOrder: "asc",
+          closing: "3days",
+          limit: 4,
+        }),
+        getCompetitions({
+          sortBy: "valueRatio",
+          sortOrder: "desc",
+          limit: 4,
+        }),
+        getCompetitions({
+          sortBy: "endsAt",
+          sortOrder: "asc",
+          closing: "today",
+          limit: 4,
+        }),
+        getStats(),
+      ]);
+
+    undersold = undersoldResult as Competition[];
+    bestValue = bestValueResult as Competition[];
+    endingToday = endingTodayResult as Competition[];
+    stats = statsResult;
+  } catch {
+    undersold = [];
+    bestValue = [];
+    endingToday = [];
   }
 
   return (
@@ -88,7 +87,29 @@ export default async function Page({
       <Suspense fallback={null}>
         <FilterBar />
       </Suspense>
-      <HomeSections />
+      <Hero stats={stats} />
+      <CompetitionSection
+        titleStart="Most undersold"
+        titleAccent="ending soon"
+        subtitle="Low ticket sales, closing within 3 days — your best odds right now"
+        viewAllHref="/competitions?sortBy=percentSold&sortOrder=asc&closing=3days"
+        competitions={undersold}
+      />
+      <CompetitionSection
+        titleStart="Best value"
+        titleAccent="right now"
+        subtitle="Highest prize-to-ticket-cost ratio across all operators"
+        viewAllHref="/competitions?sortBy=valueRatio&sortOrder=desc"
+        competitions={bestValue}
+      />
+      <CompetitionSection
+        titleStart="Ending"
+        titleAccent="today"
+        subtitle="Last chance — these draws close tonight"
+        viewAllHref="/competitions?sortBy=endsAt&sortOrder=asc&closing=today"
+        competitions={endingToday}
+        accentTone="red"
+      />
     </main>
   );
 }
