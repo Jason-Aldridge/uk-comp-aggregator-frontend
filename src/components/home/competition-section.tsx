@@ -36,13 +36,16 @@ export function CompetitionSection({
           accentTone={accentTone}
         />
 
-        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-3 flex overflow-x-auto snap-x snap-mandatory -mx-4 px-4 md:grid md:grid-cols-2 xl:grid-cols-4 md:gap-4 md:mx-0 md:px-0 md:overflow-visible md:snap-none scrollbar-hide">
           {competitions.map((competition) => (
-            <CompetitionCard
-              key={competition.id}
-              competition={competition}
-              featured={featuredSet.has(competition.id)}
-            />
+            <div key={competition.id} className="flex-none snap-start w-[280px] mr-3 last:mr-0 md:w-auto md:mr-0 md:last:mr-0">
+              <div className="w-full">
+                <CompetitionCard
+                  competition={competition}
+                  featured={featuredSet.has(competition.id)}
+                />
+              </div>
+            </div>
           ))}
         </div>
       </div>

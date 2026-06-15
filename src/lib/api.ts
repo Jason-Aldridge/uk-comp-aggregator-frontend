@@ -79,6 +79,7 @@ export type GetCompetitionsParams = {
   sortOrder?: string;
   category?: string;
   closing?: string;
+  minPrizeValue?: number;
 };
 
 function normalizeCompetitionsResponse(value: unknown) {
@@ -107,6 +108,7 @@ export async function getCompetitions(params?: GetCompetitionsParams) {
   if (params?.sortOrder) query.set("sortOrder", params.sortOrder);
   if (params?.category) query.set("category", params.category);
   if (params?.closing) query.set("closing", params.closing);
+  if (params?.minPrizeValue) query.set("minPrizeValue", String(params.minPrizeValue));
 
   const path = query.size > 0 ? `/competitions?${query.toString()}` : "/competitions";
   const response = await apiFetch<unknown>(path);

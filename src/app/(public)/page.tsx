@@ -41,6 +41,7 @@ export default async function Page({
     );
   }
 
+  let topPrizes: Competition[] = [];
   let undersold: Competition[] = [];
   let bestValue: Competition[] = [];
   let endingToday: Competition[] = [];
@@ -51,8 +52,15 @@ export default async function Page({
   };
 
   try {
-    const [undersoldResult, bestValueResult, endingTodayResult, statsResult] =
+    const [topPrizesResult, undersoldResult, bestValueResult, endingTodayResult, statsResult] =
       await Promise.all([
+        getCompetitions({
+          minPrizeValue: 5000,
+          category: "cars,houses,bikes",
+          sortBy: "prizeValue",
+          sortOrder: "desc",
+          limit: 8,
+        }),
         getCompetitions({
           sortBy: "percentSold",
           sortOrder: "asc",
@@ -73,11 +81,13 @@ export default async function Page({
         getStats(),
       ]);
 
+    topPrizes = topPrizesResult as Competition[];
     undersold = undersoldResult as Competition[];
     bestValue = bestValueResult as Competition[];
     endingToday = endingTodayResult as Competition[];
     stats = statsResult;
   } catch {
+    topPrizes = [];
     undersold = [];
     bestValue = [];
     endingToday = [];
@@ -89,6 +99,13 @@ export default async function Page({
         <FilterBar />
       </Suspense>
       <Hero stats={stats} />
+      <CompetitionSection
+        titleStart="Top Prizes"
+        titleAccent="right now"
+        subtitle="The biggest draws right now — cars, homes and bikes worth winning"
+        viewAllHref="/competitions?minPrizeValue=5000&category=cars,houses,bikes&sortBy=prizeValue&sortOrder=desc"
+        competitions={topPrizes}
+      />
       <CompetitionSection
         titleStart="Most undersold"
         titleAccent="ending soon"

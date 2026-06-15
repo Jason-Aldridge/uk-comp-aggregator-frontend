@@ -7,6 +7,7 @@ type CompetitionsPageSearchParams = {
   closing?: string;
   sortBy?: string;
   sortOrder?: string;
+  minPrizeValue?: string;
 };
 
 export default async function CompetitionsPage({
@@ -57,6 +58,7 @@ export default async function CompetitionsPage({
           closing: params.closing,
           sortBy,
           sortOrder,
+          minPrizeValue: params.minPrizeValue ? Number(params.minPrizeValue) : undefined,
           limit: 500,
         }}
       />
