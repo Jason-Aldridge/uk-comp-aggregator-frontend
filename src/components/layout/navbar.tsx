@@ -135,7 +135,7 @@ export function Navbar() {
       </nav>
 
       {menuOpen ? (
-        <div className="absolute left-0 right-0 top-full bg-rr-surface md:hidden">
+        <div className="absolute left-0 right-0 top-full bg-rr-surface md:hidden z-50 shadow-lg border-t border-rr-border">
           <div className="flex flex-col gap-1 px-5 py-3">
             <Link
               href="/competitions"
