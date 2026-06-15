@@ -50,9 +50,9 @@ export function Navbar() {
   return (
     <div className="relative">
       <nav className="mt-2 flex h-[52px] items-center gap-3 px-5 bg-rr-surface">
-        <span className="font-medium tracking-[-0.3px] text-rr-primary">
+        <Link href="/" className="font-medium tracking-[-0.3px] text-rr-primary no-underline">
           RAFFLE<span className="text-rr-green">RADAR</span>
-        </span>
+        </Link>
 
         <div className="flex-1 max-w-[420px] md:max-w-[520px] min-w-0">
           <div className="flex h-9 items-center gap-2 rounded-md px-3 bg-rr-elevated">

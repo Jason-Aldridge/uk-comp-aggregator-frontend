@@ -126,7 +126,7 @@ export function CompetitionCard({ competition, featured }: Props) {
         featured ? "border-rr-green-border" : "",
       ].join(" ")}
     >
-      <div className="relative h-[110px] bg-rr-elevated flex items-center justify-center">
+      <div className="relative h-[150px] bg-rr-elevated flex items-center justify-center">
         {imageUrl ? (
           <Image src={imageUrl} alt={prize} fill className="object-cover" />
         ) : (
