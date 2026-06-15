@@ -8,6 +8,7 @@ export type Competition = {
   imageUrl: string | null;
   ticketPrice: number | string | null;
   ticketsTotal: number | null;
+  ticketsLeft?: number | null;
   percentSold: number | string | null;
   endsAt: string | null;
   category: string | null;

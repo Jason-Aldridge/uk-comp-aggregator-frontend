@@ -80,6 +80,21 @@ function getStatusBadge(
   return null;
 }
 
+function getEndsLabel(endsAt: string | null) {
+  if (!endsAt) return null;
+  const endDate = new Date(endsAt);
+  if (Number.isNaN(endDate.getTime())) return null;
+
+  const now = new Date();
+  const daysLeft = Math.ceil(
+    (getUtcDateValue(endDate) - getUtcDateValue(now)) / 86400000,
+  );
+
+  if (daysLeft <= 0) return "Ends today";
+  if (daysLeft === 1) return "Ends tomorrow";
+  return `Ends in ${daysLeft} days`;
+}
+
 export function CompetitionCard({ competition, featured }: Props) {
   const {
     id,
@@ -87,6 +102,7 @@ export function CompetitionCard({ competition, featured }: Props) {
     imageUrl,
     ticketPrice,
     ticketsTotal,
+    ticketsLeft,
     percentSold,
     endsAt,
     category,
@@ -97,6 +113,9 @@ export function CompetitionCard({ competition, featured }: Props) {
   const percent = percentSold ? Number(percentSold) : 0;
   const price = ticketPrice ? Number(ticketPrice) : null;
   const statusBadge = getStatusBadge(endsAt, featured, valueRatio);
+  const endsLabel = getEndsLabel(endsAt);
+  const badgeShowsTime =
+    statusBadge?.variant === "red" || statusBadge?.variant === "amber";
 
   return (
     <Link
@@ -133,15 +152,18 @@ export function CompetitionCard({ competition, featured }: Props) {
             {price === 0 ? "FREE" : price ? `£${price.toFixed(2)}` : "—"}
           </span>
           <span className="text-[10px] text-rr-muted">
-            {typeof ticketsTotal === "number"
-              ? `${ticketCountFormatter.format(ticketsTotal)} tickets`
-              : "— tickets"}
+            {typeof ticketsLeft === "number"
+              ? `${ticketCountFormatter.format(ticketsLeft)} left`
+              : typeof ticketsTotal === "number"
+                ? `${ticketCountFormatter.format(ticketsTotal)} tickets`
+                : "— tickets"}
           </span>
         </div>
         <ProgressBar value={percent} />
         <div className="flex justify-between mt-1">
           <span className="text-[10px] text-rr-muted">
             {percent.toFixed(0)}% sold
+            {endsLabel && !badgeShowsTime ? ` · ${endsLabel}` : ""}
           </span>
           {instantPrizes && (
             <span className="text-[10px] text-rr-green font-medium">

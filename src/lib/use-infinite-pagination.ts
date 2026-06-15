@@ -13,17 +13,21 @@ export function useInfinitePagination<T>({
   pageSize = 20,
   rootMargin = "600px 0px",
 }: UseInfinitePaginationOptions<T>) {
-  const resetKey = `${items.length}:${pageSize}`;
   const [visibleCount, setVisibleCount] = useState(pageSize);
-  const previousResetKeyRef = useRef(resetKey);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-  if (previousResetKeyRef.current !== resetKey) {
-    previousResetKeyRef.current = resetKey;
-    if (visibleCount !== pageSize) {
-      setVisibleCount(pageSize);
-    }
-  }
+  useEffect(() => {
+    let cancelled = false;
+
+    queueMicrotask(() => {
+      if (cancelled) return;
+      setVisibleCount((current) => (current === pageSize ? current : pageSize));
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [items.length, pageSize]);
 
   useEffect(() => {
     const node = loadMoreRef.current;
