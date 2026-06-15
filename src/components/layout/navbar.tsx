@@ -1,8 +1,11 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { IconMenu2, IconMoon, IconSearch, IconSun, IconX } from "@tabler/icons-react";
+import { cn } from "@/lib/cn";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 
@@ -23,7 +26,11 @@ function getInitials(value: string): string {
 export function Navbar() {
   const { user } = useAuth();
   const { setTheme } = useTheme();
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const isCompetitionsActive =
+    pathname === "/competitions" || pathname.startsWith("/competitions/");
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 768px)");
@@ -59,12 +66,18 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:flex gap-1 ml-4 md:ml-8">
-          <a
-            href="#"
-            className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
+          <Link
+            href="/competitions"
+            aria-current={isCompetitionsActive ? "page" : undefined}
+            className={cn(
+              "text-sm px-3 py-2 rounded-md no-underline whitespace-nowrap",
+              isCompetitionsActive
+                ? "bg-rr-green text-rr-on-accent"
+                : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
+            )}
           >
             Competitions
-          </a>
+          </Link>
           <a
             href="#"
             className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
@@ -124,13 +137,19 @@ export function Navbar() {
       {menuOpen ? (
         <div className="absolute left-0 right-0 top-full bg-rr-surface md:hidden">
           <div className="flex flex-col gap-1 px-5 py-3">
-            <a
-              href="#"
-              className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline"
+            <Link
+              href="/competitions"
+              aria-current={isCompetitionsActive ? "page" : undefined}
+              className={cn(
+                "text-sm px-3 py-2 rounded-md no-underline",
+                isCompetitionsActive
+                  ? "bg-rr-green text-rr-on-accent"
+                  : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
+              )}
               onClick={() => setMenuOpen(false)}
             >
               Competitions
-            </a>
+            </Link>
             <a
               href="#"
               className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline"
