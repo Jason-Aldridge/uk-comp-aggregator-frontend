@@ -13,7 +13,7 @@ const variants: Record<ButtonVariant, string> = {
     "bg-rr-green text-rr-on-accent border border-transparent hover:opacity-90",
   secondary:
     "bg-transparent border border-rr-border text-rr-secondary hover:bg-rr-elevated",
-  icon: "bg-rr-elevated border border-rr-border text-rr-secondary hover:opacity-90 h-9 w-9 p-0 inline-flex items-center justify-center rounded-md",
+  icon: "bg-rr-elevated border border-rr-border text-rr-secondary hover:opacity-90 h-9 w-9 p-0 inline-flex items-center justify-center rounded-md disabled:opacity-50 disabled:cursor-not-allowed",
 };
 
 export function Button({

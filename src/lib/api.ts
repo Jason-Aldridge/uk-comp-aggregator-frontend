@@ -80,6 +80,7 @@ export type GetCompetitionsParams = {
   category?: string;
   closing?: string;
   minPrizeValue?: number;
+  website?: string;
 };
 
 function normalizeCompetitionsResponse(value: unknown) {
@@ -109,8 +110,21 @@ export async function getCompetitions(params?: GetCompetitionsParams) {
   if (params?.category) query.set("category", params.category);
   if (params?.closing) query.set("closing", params.closing);
   if (params?.minPrizeValue) query.set("minPrizeValue", String(params.minPrizeValue));
+  if (params?.website) query.set("website", params.website);
 
   const path = query.size > 0 ? `/competitions?${query.toString()}` : "/competitions";
   const response = await apiFetch<unknown>(path);
   return normalizeCompetitionsResponse(response);
+}
+
+export async function getCompetition(id: string) {
+  return apiFetch<unknown>(`/competitions/${id}`);
+}
+
+export async function getCompetitionHistory(id: string) {
+  return apiFetch<unknown>(`/competitions/${id}/history`);
+}
+
+export async function trackCompetitionClick(id: string) {
+  return apiFetch<unknown>(`/competitions/${id}/click`, { method: "POST" });
 }

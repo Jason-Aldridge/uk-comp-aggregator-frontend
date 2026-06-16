@@ -1,5 +1,6 @@
 export type CompetitionOperator = {
   name: string;
+  baseUrl?: string;
 };
 
 export type Competition = {
@@ -15,4 +16,12 @@ export type Competition = {
   instantPrizes: boolean | null;
   valueRatio: number | string | null;
   operator?: CompetitionOperator | null;
+  prizeValue: number | string | null;
+  cashAlternative: number | string | null;
+  maxPerPerson: number | null;
+  numWinners: number | null;
+  prizeMake: string | null;
+  prizeModel: string | null;
+  description: string | null;
+  sourceUrl: string | null;
 };

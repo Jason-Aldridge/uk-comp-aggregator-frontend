@@ -10,6 +10,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import type { Competition } from "@/types/competition";
+import {
+  getStatusBadge,
+  getEndsLabel,
+} from "@/lib/competition-display";
 
 function PlaceholderIcon({ category }: { category: string | null }) {
   const cls = "text-rr-border";
@@ -36,64 +40,7 @@ interface Props {
 
 const ticketCountFormatter = new Intl.NumberFormat("en-GB");
 
-function getUtcDateValue(date: Date) {
-  return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-}
 
-function getStatusBadge(
-  endsAt: string | null,
-  featured: boolean | undefined,
-  valueRatio: number | string | null,
-) {
-  if (endsAt) {
-    const endDate = new Date(endsAt);
-    if (!Number.isNaN(endDate.getTime())) {
-      const now = new Date();
-      const daysLeft = Math.ceil(
-        (getUtcDateValue(endDate) - getUtcDateValue(now)) / 86400000,
-      );
-
-      if (daysLeft === 0) {
-        return { variant: "red" as const, label: "Ends today" };
-      }
-
-      if (daysLeft > 0 && daysLeft <= 7) {
-        return {
-          variant: "amber" as const,
-          label: `${daysLeft} day${daysLeft === 1 ? "" : "s"} left`,
-        };
-      }
-    }
-  }
-
-  if (featured) {
-    return { variant: "green" as const, label: "Best value" };
-  }
-
-  if (valueRatio) {
-    return {
-      variant: "green" as const,
-      label: `Value ${Number(valueRatio).toFixed(1)}`,
-    };
-  }
-
-  return null;
-}
-
-function getEndsLabel(endsAt: string | null) {
-  if (!endsAt) return null;
-  const endDate = new Date(endsAt);
-  if (Number.isNaN(endDate.getTime())) return null;
-
-  const now = new Date();
-  const daysLeft = Math.ceil(
-    (getUtcDateValue(endDate) - getUtcDateValue(now)) / 86400000,
-  );
-
-  if (daysLeft <= 0) return "Ends today";
-  if (daysLeft === 1) return "Ends tomorrow";
-  return `Ends in ${daysLeft} days`;
-}
 
 export function CompetitionCard({ competition, featured }: Props) {
   const {
@@ -128,7 +75,7 @@ export function CompetitionCard({ competition, featured }: Props) {
     >
       <div className="relative h-[150px] bg-rr-elevated flex items-center justify-center">
         {imageUrl ? (
-          <Image src={imageUrl} alt={prize} fill className="object-cover" />
+          <Image src={imageUrl} alt={prize} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
         ) : (
           <PlaceholderIcon category={category} />
         )}
