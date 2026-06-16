@@ -48,6 +48,11 @@ export function TicketSalesChart({ history }: TicketSalesChartProps) {
   const data = [...history].sort(
     (a, b) => new Date(a.scrapedAt).getTime() - new Date(b.scrapedAt).getTime(),
   );
+  const maxSold = Math.max(...data.map((item) => item.percentSold));
+  const yMax = Math.min(100, Math.ceil((maxSold * 1.2) / 5) * 5);
+  const step = yMax <= 5 ? 1 : yMax <= 20 ? 5 : yMax <= 50 ? 10 : 20;
+  const yTicks: number[] = [];
+  for (let v = 0; v <= yMax; v += step) yTicks.push(v);
 
   return (
     <div className="h-64">
@@ -67,7 +72,8 @@ export function TicketSalesChart({ history }: TicketSalesChartProps) {
             tickLine={false}
             axisLine={false}
             tickFormatter={(value) => `${value}%`}
-            domain={[0, 100]}
+            domain={[0, yMax]}
+            ticks={yTicks}
           />
           <Tooltip
             contentStyle={{
