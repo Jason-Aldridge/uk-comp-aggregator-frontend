@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { CompetitionGrid } from "@/components/competitions/competition-grid";
 import { FilterBar } from "@/components/layout/filter-bar";
 
@@ -25,11 +26,25 @@ export default async function CompetitionsPage({
     percentSold: "asc",
   };
 
-  const sortBy = params.sortBy ?? "valueRatio";
+  const closing = params.closing ?? "3days";
+  const sortBy = params.sortBy ?? "percentSold";
   const sortOrder =
     (params.sortOrder as "asc" | "desc" | undefined) ??
     defaultSortOrderBySortBy[sortBy] ??
-    "desc";
+    "asc";
+
+  if (!params.closing || !params.sortBy || !params.sortOrder) {
+    const nextParams = new URLSearchParams();
+
+    if (params.category) nextParams.set("category", params.category);
+    if (params.minPrizeValue) nextParams.set("minPrizeValue", params.minPrizeValue);
+
+    nextParams.set("closing", closing);
+    nextParams.set("sortBy", sortBy);
+    nextParams.set("sortOrder", sortOrder);
+
+    redirect(`/competitions?${nextParams.toString()}`);
+  }
 
   const heading =
     sortBy === "valueRatio" && sortOrder === "desc"
@@ -55,7 +70,7 @@ export default async function CompetitionsPage({
       <CompetitionGrid
         params={{
           category: params.category,
-          closing: params.closing,
+          closing,
           sortBy,
           sortOrder,
           minPrizeValue: params.minPrizeValue ? Number(params.minPrizeValue) : undefined,

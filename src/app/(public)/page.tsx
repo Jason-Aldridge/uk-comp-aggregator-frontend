@@ -4,7 +4,7 @@ import { CompetitionSection } from "@/components/home/competition-section";
 import { CommunitySection } from "@/components/home/community-section";
 import { Hero, type HeroStats } from "@/components/home/hero";
 import { FilterBar } from "@/components/layout/filter-bar";
-import { getCompetitions, getStats } from "@/lib/api";
+import { getCompetitions, getStats, getTopOpportunities } from "@/lib/api";
 import type { Competition } from "@/types/competition";
 
 type HomePageSearchParams = {
@@ -41,6 +41,7 @@ export default async function Page({
     );
   }
 
+  let topOpportunities: Competition[] = [];
   let topPrizes: Competition[] = [];
   let undersold: Competition[] = [];
   let bestValue: Competition[] = [];
@@ -52,41 +53,50 @@ export default async function Page({
   };
 
   try {
-    const [topPrizesResult, undersoldResult, bestValueResult, endingTodayResult, statsResult] =
-      await Promise.all([
-        getCompetitions({
-          minPrizeValue: 5000,
-          category: "cars,houses,bikes",
-          sortBy: "prizeValue",
-          sortOrder: "desc",
-          limit: 8,
-        }),
-        getCompetitions({
-          sortBy: "percentSold",
-          sortOrder: "asc",
-          closing: "3days",
-          limit: 4,
-        }),
-        getCompetitions({
-          sortBy: "valueRatio",
-          sortOrder: "desc",
-          limit: 4,
-        }),
-        getCompetitions({
-          sortBy: "endsAt",
-          sortOrder: "asc",
-          closing: "today",
-          limit: 4,
-        }),
-        getStats(),
-      ]);
+    const [
+      topOpportunitiesResult,
+      topPrizesResult,
+      undersoldResult,
+      bestValueResult,
+      endingTodayResult,
+      statsResult,
+    ] = await Promise.all([
+      getTopOpportunities({ limit: 8 }),
+      getCompetitions({
+        minPrizeValue: 5000,
+        category: "cars,houses,bikes",
+        sortBy: "prizeValue",
+        sortOrder: "desc",
+        limit: 8,
+      }),
+      getCompetitions({
+        sortBy: "percentSold",
+        sortOrder: "asc",
+        closing: "3days",
+        limit: 4,
+      }),
+      getCompetitions({
+        sortBy: "valueRatio",
+        sortOrder: "desc",
+        limit: 4,
+      }),
+      getCompetitions({
+        sortBy: "endsAt",
+        sortOrder: "asc",
+        closing: "today",
+        limit: 4,
+      }),
+      getStats(),
+    ]);
 
+    topOpportunities = topOpportunitiesResult as Competition[];
     topPrizes = topPrizesResult as Competition[];
     undersold = undersoldResult as Competition[];
     bestValue = bestValueResult as Competition[];
     endingToday = endingTodayResult as Competition[];
     stats = statsResult;
   } catch {
+    topOpportunities = [];
     topPrizes = [];
     undersold = [];
     bestValue = [];
@@ -100,10 +110,17 @@ export default async function Page({
       </Suspense>
       <Hero stats={stats} />
       <CompetitionSection
+        titleStart="Top"
+        titleAccent="Opportunities"
+        subtitle="Best chances to win right now"
+        viewAllHref="/competitions?sortBy=percentSold&sortOrder=asc&closing=3days"
+        competitions={topOpportunities}
+      />
+      <CompetitionSection
         titleStart="Top Prizes"
         titleAccent="right now"
         subtitle="The biggest draws right now — cars, homes and bikes worth winning"
-        viewAllHref="/competitions?minPrizeValue=5000&category=cars,houses,bikes&sortBy=prizeValue&sortOrder=desc"
+        viewAllHref="/competitions?sortBy=percentSold&sortOrder=asc&closing=3days"
         competitions={topPrizes}
       />
       <CompetitionSection
@@ -117,14 +134,14 @@ export default async function Page({
         titleStart="Best value"
         titleAccent="right now"
         subtitle="Highest prize-to-ticket-cost ratio across all operators"
-        viewAllHref="/competitions?sortBy=valueRatio&sortOrder=desc"
+        viewAllHref="/competitions?sortBy=percentSold&sortOrder=asc&closing=3days"
         competitions={bestValue}
       />
       <CompetitionSection
         titleStart="Ending"
         titleAccent="today"
         subtitle="Last chance — these draws close tonight"
-        viewAllHref="/competitions?sortBy=endsAt&sortOrder=asc&closing=today"
+        viewAllHref="/competitions?sortBy=percentSold&sortOrder=asc&closing=3days"
         competitions={endingToday}
         accentTone="red"
       />

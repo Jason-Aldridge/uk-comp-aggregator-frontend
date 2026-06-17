@@ -11,6 +11,7 @@ import {
 } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { EnterButton } from "@/components/competitions/enter-button";
 import { SaveActions } from "@/components/competitions/save-actions";
 import { TicketSalesChart } from "@/components/competitions/ticket-sales-chart";
@@ -18,6 +19,7 @@ import { CompetitionCard } from "@/components/competitions/competition-card";
 import { getCompetition, getCompetitionHistory, getCompetitions } from "@/lib/api";
 import type { Competition } from "@/types/competition";
 import { formatDateInLondon, getEndsTimeLabel } from "@/lib/competition-display";
+import { formatValueRatio, valueRatioColor } from "@/lib/value-ratio";
 
 type CompetitionHistory = {
   scrapedAt: string;
@@ -136,6 +138,10 @@ async function fetchCompetitionData(id: string) {
     const totalTicketsValue = ticketsTotal ?? 0;
     const remainingTickets = ticketsLeft ?? totalTicketsValue;
     const soldTickets = totalTicketsValue - remainingTickets;
+    const ticketsSoldForOdds =
+      typeof ticketsTotal === "number" && typeof ticketsLeft === "number"
+        ? Math.max(0, ticketsTotal - ticketsLeft)
+        : null;
     const percentValue = percentSold ? Number(percentSold) : 0;
     const priceValue = ticketPrice ? Number(ticketPrice) : null;
 
@@ -169,6 +175,7 @@ async function fetchCompetitionData(id: string) {
       totalTicketsValue,
       remainingTickets,
       soldTickets,
+      ticketsSoldForOdds,
       percentValue,
       priceValue,
       history,
@@ -203,6 +210,7 @@ export default async function Page({
     totalTicketsValue,
     remainingTickets,
     soldTickets,
+    ticketsSoldForOdds,
     percentValue,
     valueRatio,
     instantPrizes,
@@ -331,16 +339,36 @@ export default async function Page({
                 </span>
               </div>
               <ProgressBar value={percentValue} className="mb-2" />
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-sm font-medium text-rr-green">
                   {percentValue.toFixed(0)}% sold
                 </span>
-                <span className="text-sm text-rr-muted">
-                  Value ratio:{" "}
-                  <span className="text-rr-green font-medium">
-                    {valueRatio ? Number(valueRatio).toFixed(2) : "—"}
+                <span className="flex items-center gap-1 text-sm">
+                  <span className="text-rr-muted">
+                    Value ratio:
+                    <InfoTooltip text="How much prize you get for your money — prize value divided by the cost of the tickets still available. Higher is better; above 1 means the prize is worth more than the remaining tickets cost. Very high numbers usually mean it's nearly sold out, so check the percentage sold." />
+                  </span>
+                  <span className={`font-semibold ${valueRatioColor(valueRatio)}`}>
+                    {formatValueRatio(valueRatio)}
                   </span>
                 </span>
+              </div>
+
+              <div className="mt-3">
+                <p className="flex items-center gap-1 text-xs text-rr-muted">
+                  <span className="text-rr-muted">
+                    Live odds
+                    <InfoTooltip text="Your chance per ticket based on how many have sold so far. This shortens as more tickets sell before the draw." />
+                  </span>
+                </p>
+                <p className="text-sm font-medium text-rr-primary">
+                  {ticketsSoldForOdds && ticketsSoldForOdds > 0
+                    ? `1 in ${ticketsSoldForOdds.toLocaleString("en-GB")}`
+                    : "No tickets sold yet"}
+                </p>
+                <p className="text-xs text-rr-muted">
+                  based on tickets sold so far
+                </p>
               </div>
             </div>
 

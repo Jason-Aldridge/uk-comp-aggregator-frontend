@@ -117,6 +117,23 @@ export async function getCompetitions(params?: GetCompetitionsParams) {
   return normalizeCompetitionsResponse(response);
 }
 
+type GetTopOpportunitiesParams = {
+  limit?: number;
+};
+
+export async function getTopOpportunities(params?: GetTopOpportunitiesParams) {
+  const query = new URLSearchParams();
+  if (params?.limit) query.set("limit", String(params.limit));
+
+  const path =
+    query.size > 0
+      ? `/competitions/top-opportunities?${query.toString()}`
+      : "/competitions/top-opportunities";
+
+  const response = await apiFetch<unknown>(path);
+  return normalizeCompetitionsResponse(response);
+}
+
 export async function getCompetition(id: string) {
   return apiFetch<unknown>(`/competitions/${id}`);
 }
