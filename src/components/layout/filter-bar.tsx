@@ -34,7 +34,7 @@ const defaultClosingOptions: FilterOption[] = [
 ];
 
 const defaultSortOptions: SortOption[] = [
-  { label: "Best value", sortBy: "valueRatio", sortOrder: "desc" },
+  { label: "Best value", sortBy: "bestValue", sortOrder: "desc" },
   { label: "Ending soon", sortBy: "endsAt", sortOrder: "asc" },
   { label: "Most tickets left", sortBy: "ticketsLeft", sortOrder: "desc" },
   { label: "Lowest price", sortBy: "ticketPrice", sortOrder: "asc" },
@@ -67,7 +67,7 @@ export function FilterBar({
   const category = searchParams.get("category") ?? "all";
   const currentClosing = searchParams.get("closing");
   const closing = currentClosing ?? "";
-  const sortBy = searchParams.get("sortBy") ?? "valueRatio";
+  const sortBy = searchParams.get("sortBy") ?? "bestValue";
   const sortOrder = (searchParams.get("sortOrder") ?? "desc") as "asc" | "desc";
 
   const showCategory = categoryOpts.length > 0;

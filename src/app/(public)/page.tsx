@@ -131,9 +131,9 @@ export default async function Page({
         competitions={undersold}
       />
       <CompetitionSection
-        titleStart="Best value"
-        titleAccent="right now"
-        subtitle="Highest prize-to-ticket-cost ratio across all operators"
+        titleStart="Selling"
+        titleAccent="fast"
+        subtitle="These competitions are almost gone — very few tickets left, so act fast"
         viewAllHref="/competitions?sortBy=percentSold&sortOrder=asc&closing=3days"
         competitions={bestValue}
       />

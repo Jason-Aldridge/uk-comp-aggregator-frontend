@@ -1,3 +1,5 @@
+import { formatValueRatio, valueRatioColor } from "@/lib/value-ratio";
+
 export function getUtcDateValue(date: Date): number {
   return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 }
@@ -44,10 +46,18 @@ export function getStatusBadge(
     return { variant: "green", label: "Best value" };
   }
 
-  if (valueRatio) {
+  if (valueRatio !== null && valueRatio !== undefined) {
+    const colorClass = valueRatioColor(valueRatio);
+    const variant =
+      colorClass === "text-red-500"
+        ? "red"
+        : colorClass === "text-amber-500"
+          ? "amber"
+          : "green";
+
     return {
-      variant: "green",
-      label: `Value ${Number(valueRatio).toFixed(1)}`,
+      variant,
+      label: `Value ${formatValueRatio(valueRatio)}`,
     };
   }
 

@@ -19,6 +19,7 @@ export default async function CompetitionsPage({
   const params = await searchParams;
 
   const defaultSortOrderBySortBy: Record<string, "asc" | "desc"> = {
+    bestValue: "desc",
     valueRatio: "desc",
     endsAt: "asc",
     ticketsLeft: "desc",
@@ -47,7 +48,7 @@ export default async function CompetitionsPage({
   }
 
   const heading =
-    sortBy === "valueRatio" && sortOrder === "desc"
+    ((sortBy === "bestValue" || sortBy === "valueRatio") && sortOrder === "desc")
       ? { titleStart: "Best value", titleAccent: "right now" }
       : sortBy === "endsAt" && sortOrder === "asc"
         ? { titleStart: "Ending", titleAccent: "soon" }
