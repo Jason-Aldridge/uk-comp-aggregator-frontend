@@ -343,33 +343,48 @@ export default async function Page({
                 <span className="text-sm font-medium text-rr-green">
                   {percentValue.toFixed(0)}% sold
                 </span>
-                <span className="flex items-center gap-1 text-sm">
-                  <span className="text-rr-muted">
-                    Value ratio:
-                    <InfoTooltip text="How much prize you get for your money — prize value divided by the cost of the tickets still available. Higher is better; above 1 means the prize is worth more than the remaining tickets cost. Very high numbers usually mean it's nearly sold out, so check the percentage sold." />
+                {!instantPrizes && (
+                  <span className="flex items-center gap-1 text-sm">
+                    <span className="text-rr-muted">
+                      Value ratio:
+                      <InfoTooltip text="How much prize you get for your money — prize value divided by the cost of the tickets still available. Higher is better; above 1 means the prize is worth more than the remaining tickets cost. Very high numbers usually mean it's nearly sold out, so check the percentage sold." />
+                    </span>
+                    <span className={`font-semibold ${valueRatioColor(valueRatio)}`}>
+                      {formatValueRatio(valueRatio)}
+                    </span>
                   </span>
-                  <span className={`font-semibold ${valueRatioColor(valueRatio)}`}>
-                    {formatValueRatio(valueRatio)}
-                  </span>
-                </span>
+                )}
               </div>
 
-              <div className="mt-3">
-                <p className="flex items-center gap-1 text-xs text-rr-muted">
-                  <span className="text-rr-muted">
-                    Live odds
-                    <InfoTooltip text="Your chance per ticket based on how many have sold so far. This shortens as more tickets sell before the draw." />
-                  </span>
-                </p>
-                <p className="text-sm font-medium text-rr-primary">
-                  {ticketsSoldForOdds && ticketsSoldForOdds > 0
-                    ? `1 in ${ticketsSoldForOdds.toLocaleString("en-GB")}`
-                    : "No tickets sold yet"}
-                </p>
-                <p className="text-xs text-rr-muted">
-                  based on tickets sold so far
-                </p>
-              </div>
+              {!instantPrizes && (
+                <div className="mt-3">
+                  <p className="flex items-center gap-1 text-xs text-rr-muted">
+                    <span className="text-rr-muted">
+                      Live odds
+                      <InfoTooltip text="Your chance per ticket based on how many have sold so far. This shortens as more tickets sell before the draw." />
+                    </span>
+                  </p>
+                  <p className="text-sm font-medium text-rr-primary">
+                    {(() => {
+                      const winners =
+                        typeof numWinners === "number" && numWinners > 0
+                          ? numWinners
+                          : 1;
+                      const odds =
+                        ticketsSoldForOdds && ticketsSoldForOdds > 0
+                          ? Math.max(1, Math.round(ticketsSoldForOdds / winners))
+                          : null;
+
+                      return odds
+                        ? `1 in ${odds.toLocaleString("en-GB")}`
+                        : "No tickets sold yet";
+                    })()}
+                  </p>
+                  <p className="text-xs text-rr-muted">
+                    based on tickets sold so far
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3 mb-6">
