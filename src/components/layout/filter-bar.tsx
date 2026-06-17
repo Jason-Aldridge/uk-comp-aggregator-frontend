@@ -35,6 +35,9 @@ const defaultClosingOptions: FilterOption[] = [
 
 const defaultSortOptions: SortOption[] = [
   { label: "Best value", sortBy: "bestValue", sortOrder: "desc" },
+  { label: "Best odds", sortBy: "percentSold", sortOrder: "asc" },
+  { label: "Selling fast", sortBy: "percentSold", sortOrder: "desc" },
+  { label: "Top prizes", sortBy: "prizeValue", sortOrder: "desc" },
   { label: "Ending soon", sortBy: "endsAt", sortOrder: "asc" },
   { label: "Most tickets left", sortBy: "ticketsLeft", sortOrder: "desc" },
   { label: "Lowest price", sortBy: "ticketPrice", sortOrder: "asc" },
