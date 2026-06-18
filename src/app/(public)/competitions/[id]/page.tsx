@@ -16,16 +16,22 @@ import { EnterButton } from "@/components/competitions/enter-button";
 import { SaveActions } from "@/components/competitions/save-actions";
 import { TicketSalesChart } from "@/components/competitions/ticket-sales-chart";
 import { CompetitionCard } from "@/components/competitions/competition-card";
-import { getCompetition, getCompetitionHistory, getCompetitions } from "@/lib/api";
+import {
+  getCompetition,
+  getCompetitionHistory,
+  getCompetitions,
+  type CompetitionDetail,
+} from "@/lib/api";
 import type { Competition } from "@/types/competition";
 import { formatDateInLondon, getEndsTimeLabel } from "@/lib/competition-display";
-import { formatValueRatio, valueRatioColor } from "@/lib/value-ratio";
 
 type CompetitionHistory = {
   scrapedAt: string;
   ticketsSold: number;
   percentSold: number;
 };
+
+const MIN_VR_SAMPLE = 5;
 
 function PlaceholderIcon({ category }: { category: string | null }) {
   const cls = "text-rr-border";
@@ -62,7 +68,7 @@ export async function generateMetadata({
       };
     }
 
-    const comp = competition as Competition;
+    const comp = competition as CompetitionDetail;
     const { prize } = comp;
     const metaDescription = `Win ${prize} in this UK prize draw competition.`;
 
@@ -212,7 +218,6 @@ export default async function Page({
     soldTickets,
     ticketsSoldForOdds,
     percentValue,
-    valueRatio,
     instantPrizes,
     prizeValue,
     cashAlternative,
@@ -229,6 +234,25 @@ export default async function Page({
   const prizeValueNum = prizeValue ? Number(prizeValue) : null;
   const cashAltNum = cashAlternative ? Number(cashAlternative) : null;
   const makeModel = [prizeMake, prizeModel].filter(Boolean).join(" / ");
+  const winnersForOdds =
+    typeof numWinners === "number" && numWinners > 0 ? numWinners : 1;
+  const liveOdds =
+    ticketsSoldForOdds && ticketsSoldForOdds > 0
+      ? Math.max(1, Math.round(ticketsSoldForOdds / winnersForOdds))
+      : null;
+  const maxTicketsOdds =
+    maxPerPerson !== null && maxPerPerson > 0 && totalTicketsValue > 0
+      ? Math.max(1, Math.round(totalTicketsValue / (maxPerPerson * winnersForOdds)))
+      : null;
+  const operatorVrText =
+    operator &&
+    operator.avgVr !== null &&
+    operator.vrSampleSize !== null &&
+    operator.vrSampleSize >= MIN_VR_SAMPLE
+      ? `${operator.name} VR: ${Number(operator.avgVr).toFixed(1)}`
+      : operator
+        ? `${operator.name} VR: Not enough data yet`
+        : null;
 
   return (
     <main>
@@ -278,8 +302,14 @@ export default async function Page({
           </div>
 
           <div className="order-2 mt-8 md:mt-0">
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap items-center gap-2 mb-4">
               {operator && <Badge variant="operator">{operator.name}</Badge>}
+              {operatorVrText && (
+                <span className="inline-flex items-center gap-1 text-xs text-rr-muted">
+                  <span>{operatorVrText}</span>
+                  <InfoTooltip text="Typical tickets-value vs prize across this operator's competitions. Lower = more player-friendly." />
+                </span>
+              )}
               {category && (
                 <Badge variant="neutral" className="text-rr-muted bg-rr-elevated">
                   {category}
@@ -339,50 +369,42 @@ export default async function Page({
                 </span>
               </div>
               <ProgressBar value={percentValue} className="mb-2" />
-              <div className="flex justify-between gap-4">
+              <div>
                 <span className="text-sm font-medium text-rr-green">
                   {percentValue.toFixed(0)}% sold
                 </span>
-                {!instantPrizes && (
-                  <span className="flex items-center gap-1 text-sm">
-                    <span className="text-rr-muted">
-                      Value ratio:
-                      <InfoTooltip text="How much prize you get for your money — prize value divided by the cost of the tickets still available. Higher is better; above 1 means the prize is worth more than the remaining tickets cost. Very high numbers usually mean it's nearly sold out, so check the percentage sold." />
-                    </span>
-                    <span className={`font-semibold ${valueRatioColor(valueRatio)}`}>
-                      {formatValueRatio(valueRatio)}
-                    </span>
-                  </span>
-                )}
               </div>
 
               {!instantPrizes && (
-                <div className="mt-3">
-                  <p className="flex items-center gap-1 text-xs text-rr-muted">
-                    <span className="text-rr-muted">
-                      Live odds
-                      <InfoTooltip text="Your chance per ticket based on how many have sold so far. This shortens as more tickets sell before the draw." />
-                    </span>
-                  </p>
-                  <p className="text-sm font-medium text-rr-primary">
-                    {(() => {
-                      const winners =
-                        typeof numWinners === "number" && numWinners > 0
-                          ? numWinners
-                          : 1;
-                      const odds =
-                        ticketsSoldForOdds && ticketsSoldForOdds > 0
-                          ? Math.max(1, Math.round(ticketsSoldForOdds / winners))
-                          : null;
-
-                      return odds
-                        ? `1 in ${odds.toLocaleString("en-GB")}`
-                        : "No tickets sold yet";
-                    })()}
-                  </p>
-                  <p className="text-xs text-rr-muted">
-                    based on tickets sold so far
-                  </p>
+                <div className="mt-3 space-y-2">
+                  <div>
+                    <p className="flex items-center gap-1 text-xs text-rr-muted">
+                      <span className="text-rr-muted">
+                        Live odds
+                        <InfoTooltip text="Your chance per ticket based on how many have sold so far. This shortens as more tickets sell before the draw." />
+                      </span>
+                    </p>
+                    <p className="text-sm font-medium text-rr-primary">
+                      {liveOdds
+                        ? `1 in ${liveOdds.toLocaleString("en-GB")}`
+                        : "No tickets sold yet"}
+                    </p>
+                    <p className="text-xs text-rr-muted">
+                      based on tickets sold so far
+                    </p>
+                  </div>
+                  {maxPerPerson !== null && (
+                    <div>
+                      <p className="text-sm font-medium text-rr-primary">
+                        {maxTicketsOdds
+                          ? `1 in ${maxTicketsOdds.toLocaleString("en-GB")}`
+                          : "No tickets sold yet"}
+                      </p>
+                      <p className="text-xs text-rr-muted">
+                        with max {maxPerPerson} tickets
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

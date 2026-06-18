@@ -83,6 +83,34 @@ export type GetCompetitionsParams = {
   website?: string;
 };
 
+export type CompetitionDetail = {
+  id: string;
+  prize: string;
+  imageUrl: string | null;
+  ticketPrice: number | string | null;
+  ticketsTotal: number | null;
+  ticketsLeft?: number | null;
+  percentSold: number | string | null;
+  endsAt: string | null;
+  category: string | null;
+  instantPrizes: boolean | null;
+  valueRatio: number | string | null;
+  operator: {
+    name: string;
+    baseUrl: string;
+    avgVr: number | null;
+    vrSampleSize: number | null;
+  } | null;
+  prizeValue: number | string | null;
+  cashAlternative: number | string | null;
+  maxPerPerson: number | null;
+  numWinners: number | null;
+  prizeMake: string | null;
+  prizeModel: string | null;
+  description: string | null;
+  sourceUrl: string | null;
+};
+
 function normalizeCompetitionsResponse(value: unknown) {
   if (Array.isArray(value)) return value;
   if (value && typeof value === "object") {
@@ -135,7 +163,7 @@ export async function getTopOpportunities(params?: GetTopOpportunitiesParams) {
 }
 
 export async function getCompetition(id: string) {
-  return apiFetch<unknown>(`/competitions/${id}`);
+  return apiFetch<CompetitionDetail>(`/competitions/${id}`);
 }
 
 export async function getCompetitionHistory(id: string) {

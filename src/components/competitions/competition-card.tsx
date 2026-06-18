@@ -54,12 +54,11 @@ export function CompetitionCard({ competition, featured }: Props) {
     endsAt,
     category,
     instantPrizes,
-    valueRatio,
   } = competition;
 
   const percent = percentSold ? Number(percentSold) : 0;
   const price = ticketPrice ? Number(ticketPrice) : null;
-  const statusBadge = getStatusBadge(endsAt, featured, valueRatio);
+  const statusBadge = getStatusBadge(endsAt, featured, null);
   const endsLabel = getEndsLabel(endsAt);
   const badgeShowsTime =
     statusBadge?.variant === "red" || statusBadge?.variant === "amber";

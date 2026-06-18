@@ -1,6 +1,8 @@
 export type CompetitionOperator = {
   name: string;
   baseUrl?: string;
+  avgVr: number | null;
+  vrSampleSize: number | null;
 };
 
 export type Competition = {
