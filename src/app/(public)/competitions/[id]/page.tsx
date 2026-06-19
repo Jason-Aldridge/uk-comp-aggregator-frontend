@@ -33,6 +33,8 @@ type CompetitionHistory = {
 };
 
 const MIN_VR_SAMPLE = 5;
+const FAIR_VR = 3;
+const GREEDY_VR = 8;
 
 function PlaceholderIcon({ category }: { category: string | null }) {
   const cls = "text-rr-border";
@@ -241,15 +243,26 @@ export default async function Page({
     ticketsSoldForOdds && ticketsSoldForOdds > 0
       ? Math.max(1, Math.round(ticketsSoldForOdds / winnersForOdds))
       : null;
-  const operatorVrText =
+  const operatorVrValue =
     operator &&
     operator.avgVr !== null &&
     operator.vrSampleSize !== null &&
     operator.vrSampleSize >= MIN_VR_SAMPLE
-      ? `${operator.name} VR: ${Number(operator.avgVr).toFixed(1)}`
-      : operator
-        ? `${operator.name} VR: Not enough data yet`
-        : null;
+      ? Number(operator.avgVr)
+      : null;
+  const operatorVrLabel = operator
+    ? operatorVrValue !== null
+      ? `VR ${operatorVrValue.toFixed(1)}`
+      : "Not enough data"
+    : null;
+  const operatorVrBadgeClass =
+    operatorVrValue === null
+      ? "border-[var(--border)] bg-[var(--elevated)] text-[var(--text-secondary)]"
+      : operatorVrValue <= FAIR_VR
+        ? "border-[var(--vr-good-border)] bg-[var(--vr-good-bg)] text-[var(--vr-good-text)]"
+        : operatorVrValue < GREEDY_VR
+          ? "border-[var(--vr-warn-border)] bg-[var(--vr-warn-bg)] text-[var(--vr-warn-text)]"
+          : "border-[var(--vr-danger-border)] bg-[var(--vr-danger-bg)] text-[var(--vr-danger-text)]";
 
   return (
     <main>
@@ -299,13 +312,19 @@ export default async function Page({
           </div>
 
           <div className="order-2 mt-8 md:mt-0">
-            <div className="flex flex-wrap items-center gap-2 mb-4">
-              {operator && <Badge variant="operator">{operator.name}</Badge>}
-              {operatorVrText && (
-                <span className="inline-flex items-center gap-1 text-xs text-rr-muted">
-                  <span>{operatorVrText}</span>
-                  <InfoTooltip text="Typical tickets-value vs prize across this operator's competitions. Lower = more player-friendly." />
-                </span>
+            <div className="flex flex-wrap items-start gap-2 mb-4">
+              {operator && (
+                <div className="flex items-center gap-2">
+                  <Badge variant="operator">{operator.name}</Badge>
+                  {operatorVrLabel && (
+                    <span
+                      className={`inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] font-medium ${operatorVrBadgeClass}`}
+                    >
+                      <span>{operatorVrLabel}</span>
+                      <InfoTooltip text="Typical tickets-value vs prize across this operator's competitions. Lower = more player-friendly." />
+                    </span>
+                  )}
+                </div>
               )}
               {category && (
                 <Badge variant="neutral" className="text-rr-muted bg-rr-elevated">
