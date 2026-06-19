@@ -14,6 +14,7 @@ import { ProgressBar } from "@/components/ui/progress-bar";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { EnterButton } from "@/components/competitions/enter-button";
 import { SaveActions } from "@/components/competitions/save-actions";
+import { TicketCalculator } from "@/components/competitions/ticket-calculator";
 import { TicketSalesChart } from "@/components/competitions/ticket-sales-chart";
 import { CompetitionCard } from "@/components/competitions/competition-card";
 import {
@@ -240,10 +241,6 @@ export default async function Page({
     ticketsSoldForOdds && ticketsSoldForOdds > 0
       ? Math.max(1, Math.round(ticketsSoldForOdds / winnersForOdds))
       : null;
-  const maxTicketsOdds =
-    maxPerPerson !== null && maxPerPerson > 0 && totalTicketsValue > 0
-      ? Math.max(1, Math.round(totalTicketsValue / (maxPerPerson * winnersForOdds)))
-      : null;
   const operatorVrText =
     operator &&
     operator.avgVr !== null &&
@@ -376,38 +373,33 @@ export default async function Page({
               </div>
 
               {!instantPrizes && (
-                <div className="mt-3 space-y-2">
-                  <div>
-                    <p className="flex items-center gap-1 text-xs text-rr-muted">
-                      <span className="text-rr-muted">
-                        Live odds
-                        <InfoTooltip text="Your chance per ticket based on how many have sold so far. This shortens as more tickets sell before the draw." />
-                      </span>
-                    </p>
-                    <p className="text-sm font-medium text-rr-primary">
-                      {liveOdds
-                        ? `1 in ${liveOdds.toLocaleString("en-GB")}`
-                        : "No tickets sold yet"}
-                    </p>
-                    <p className="text-xs text-rr-muted">
-                      based on tickets sold so far
-                    </p>
-                  </div>
-                  {maxPerPerson !== null && (
-                    <div>
-                      <p className="text-sm font-medium text-rr-primary">
-                        {maxTicketsOdds
-                          ? `1 in ${maxTicketsOdds.toLocaleString("en-GB")}`
-                          : "No tickets sold yet"}
-                      </p>
-                      <p className="text-xs text-rr-muted">
-                        with max {maxPerPerson} tickets
-                      </p>
-                    </div>
-                  )}
+                <div className="mt-3">
+                  <p className="flex items-center gap-1 text-xs text-rr-muted">
+                    <span className="text-rr-muted">
+                      Odds per ticket
+                      <InfoTooltip text="Your chance per ticket based on how many have sold so far. This shortens as more tickets sell before the draw." />
+                    </span>
+                  </p>
+                  <p className="text-sm font-medium text-rr-primary">
+                    {liveOdds
+                      ? `1 in ${liveOdds.toLocaleString("en-GB")}`
+                      : "No tickets sold yet"}
+                  </p>
+                  <p className="text-xs text-rr-muted">
+                    based on tickets sold so far
+                  </p>
                 </div>
               )}
             </div>
+
+            {!instantPrizes && (
+              <TicketCalculator
+                ticketsSold={soldTickets}
+                ticketsTotal={totalTicketsValue}
+                ticketPrice={priceValue}
+                maxPerPerson={maxPerPerson}
+              />
+            )}
 
             <div className="flex gap-3 mb-6">
               <EnterButton
