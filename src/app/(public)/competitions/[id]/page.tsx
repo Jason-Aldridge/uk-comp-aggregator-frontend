@@ -15,6 +15,7 @@ import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { EnterButton } from "@/components/competitions/enter-button";
 import { SaveActions } from "@/components/competitions/save-actions";
 import { TicketCalculator } from "@/components/competitions/ticket-calculator";
+import { DrawCountdown } from "@/components/competitions/draw-countdown";
 import { TicketSalesChart } from "@/components/competitions/ticket-sales-chart";
 import { CompetitionCard } from "@/components/competitions/competition-card";
 import {
@@ -24,7 +25,7 @@ import {
   type CompetitionDetail,
 } from "@/lib/api";
 import type { Competition } from "@/types/competition";
-import { formatDateInLondon, getEndsTimeLabel } from "@/lib/competition-display";
+import { getEndsTimeLabel } from "@/lib/competition-display";
 
 type CompetitionHistory = {
   scrapedAt: string;
@@ -264,6 +265,127 @@ export default async function Page({
           ? "border-[var(--vr-warn-border)] bg-[var(--vr-warn-bg)] text-[var(--vr-warn-text)]"
           : "border-[var(--vr-danger-border)] bg-[var(--vr-danger-bg)] text-[var(--vr-danger-text)]";
 
+  const canShowSalesVsPrize =
+    !instantPrizes &&
+    prizeValueNum !== null &&
+    prizeValueNum > 0 &&
+    priceValue !== null &&
+    priceValue > 0;
+
+  const salesRevenue = canShowSalesVsPrize ? soldTickets * priceValue : 0;
+  const salesCoverage = canShowSalesVsPrize ? salesRevenue / prizeValueNum : 0;
+  const salesCoveragePercent = canShowSalesVsPrize
+    ? Math.round(salesCoverage * 100)
+    : 0;
+  const salesDifference = canShowSalesVsPrize ? salesRevenue - prizeValueNum : 0;
+
+  const salesBadgeClass =
+    salesCoverage >= 1
+      ? "border-[var(--accent-border)] bg-[var(--accent-bg)] text-[var(--accent)]"
+      : salesCoverage >= 0.5
+        ? "border-[var(--vr-warn-border)] bg-[var(--vr-warn-bg)] text-[var(--vr-warn-text)]"
+        : "border-[var(--vr-danger-border)] bg-[var(--vr-danger-bg)] text-[var(--vr-danger-text)]";
+
+  const salesFillColor =
+    salesCoverage >= 1
+      ? "var(--accent)"
+      : salesCoverage >= 0.5
+        ? "var(--vr-warn-text)"
+        : "var(--vr-danger-text)";
+
+  const salesVsPrizeBlock = canShowSalesVsPrize ? (
+    <div className="rounded-lg border border-rr-border bg-rr-elevated p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs text-rr-muted mb-1">Sales vs prize value</p>
+          <p className="text-sm font-medium text-rr-primary">
+            Sales so far: £
+            {salesRevenue.toLocaleString("en-GB", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{" "}
+            — {salesCoveragePercent}% of prize value covered
+          </p>
+        </div>
+        <span
+          className={`shrink-0 inline-flex items-center rounded border px-2 py-1 text-[10px] font-medium ${salesBadgeClass}`}
+        >
+          {salesCoveragePercent}%
+        </span>
+      </div>
+
+      <div className="mt-3 space-y-2">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-rr-muted">Ticket sales</span>
+          <span className="font-medium text-rr-primary">
+            £
+            {salesRevenue.toLocaleString("en-GB", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </span>
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-rr-muted">Prize value</span>
+          <span className="font-medium text-rr-primary">
+            £{prizeValueNum.toLocaleString("en-GB")}
+          </span>
+        </div>
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-rr-muted">
+            {salesDifference >= 0 ? "Above prize value" : "Below prize value"}
+          </span>
+          <span className="text-rr-secondary">
+            £{Math.abs(salesDifference).toLocaleString("en-GB")}
+          </span>
+        </div>
+
+        <div className="h-2 w-full rounded-full bg-rr-border overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all"
+            style={{
+              width: `${Math.min(100, Math.max(0, salesCoverage * 100))}%`,
+              backgroundColor: salesFillColor,
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  ) : null;
+
+  const aboutBlock = (
+    <div>
+      <h2 className="text-lg font-semibold text-rr-primary mb-4">
+        About this competition
+      </h2>
+      <div className="rounded-lg border border-rr-border bg-rr-elevated p-4">
+        {description && (
+          <p className="text-sm text-rr-secondary mb-4 leading-relaxed">
+            {description}
+          </p>
+        )}
+        <div className="space-y-3">
+          <div className="flex justify-between">
+            <span className="text-xs text-rr-muted">Winners</span>
+            <span className="text-xs text-rr-secondary">{numWinners ?? 1}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-xs text-rr-muted">Instant prize</span>
+            <span className="text-xs text-rr-secondary">
+              {instantPrizes ? "Yes" : "No"}
+            </span>
+          </div>
+          {makeModel && (
+            <div className="flex justify-between">
+              <span className="text-xs text-rr-muted">Make / model</span>
+              <span className="text-xs text-rr-secondary">{makeModel}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <main>
       <div className="container py-6 md:py-8">
@@ -285,7 +407,7 @@ export default async function Page({
         </div>
 
         <div className="flex flex-col md:grid md:grid-cols-2 md:gap-8 md:items-start">
-          <div className="order-1 flex flex-col gap-8">
+          <div className="order-2 md:order-1 mt-8 md:mt-0 flex flex-col gap-8">
             <div className="relative rounded-[10px] overflow-hidden border border-rr-border bg-rr-elevated h-[300px] md:h-[350px] flex items-center justify-center">
               {imageUrl ? (
                 <Image
@@ -301,7 +423,7 @@ export default async function Page({
               )}
             </div>
 
-            <div className="hidden md:block">
+            <div>
               <h2 className="text-lg font-semibold text-rr-primary mb-4">
                 Ticket sales history
               </h2>
@@ -309,9 +431,13 @@ export default async function Page({
                 <TicketSalesChart history={history} />
               </div>
             </div>
+
+            {salesVsPrizeBlock}
+
+            {aboutBlock}
           </div>
 
-          <div className="order-2 mt-8 md:mt-0">
+          <div className="order-1 md:order-2">
             <div className="flex flex-wrap items-start gap-2 mb-4">
               {operator && (
                 <div className="flex items-center gap-2">
@@ -420,7 +546,7 @@ export default async function Page({
               />
             )}
 
-            <div className="flex gap-3 mb-6">
+            <div className="flex gap-3 mt-6 mb-6">
               <EnterButton
                 competitionId={id}
                 sourceUrl={sourceUrl}
@@ -447,62 +573,12 @@ export default async function Page({
                   <div className="text-right">
                     <p className="text-xs text-rr-muted mb-1">Draw date</p>
                     <p className="text-lg font-semibold text-rr-primary">
-                      {endsAt ? (
-                        formatDateInLondon(endsAt)
-                      ) : (
-                        <span className="text-rr-muted text-sm font-normal">
-                          TBC
-                        </span>
-                      )}
+                      <DrawCountdown endsAt={endsAt} />
                     </p>
                   </div>
                 </div>
               </div>
             )}
-
-            <div>
-              <h2 className="text-lg font-semibold text-rr-primary mb-4">
-                About this competition
-              </h2>
-              <div className="rounded-lg border border-rr-border bg-rr-elevated p-4">
-                {description && (
-                  <p className="text-sm text-rr-secondary mb-4 leading-relaxed">
-                    {description}
-                  </p>
-                )}
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-xs text-rr-muted">Winners</span>
-                    <span className="text-xs text-rr-secondary">
-                      {numWinners ?? 1}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-xs text-rr-muted">Instant prize</span>
-                    <span className="text-xs text-rr-secondary">
-                      {instantPrizes ? "Yes" : "No"}
-                    </span>
-                  </div>
-                  {makeModel && (
-                    <div className="flex justify-between">
-                      <span className="text-xs text-rr-muted">Make / model</span>
-                      <span className="text-xs text-rr-secondary">
-                        {makeModel}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="order-3 mt-8 md:hidden">
-            <h2 className="text-lg font-semibold text-rr-primary mb-4">
-              Ticket sales history
-            </h2>
-            <div className="rounded-lg border border-rr-border bg-rr-elevated p-4">
-              <TicketSalesChart history={history} />
-            </div>
           </div>
         </div>
 

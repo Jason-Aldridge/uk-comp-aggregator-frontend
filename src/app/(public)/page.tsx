@@ -4,7 +4,7 @@ import { CompetitionSection } from "@/components/home/competition-section";
 import { CommunitySection } from "@/components/home/community-section";
 import { Hero, type HeroStats } from "@/components/home/hero";
 import { FilterBar } from "@/components/layout/filter-bar";
-import { getCompetitions, getStats, getTopOpportunities } from "@/lib/api";
+import { getCompetitions, getStats } from "@/lib/api";
 import type { Competition } from "@/types/competition";
 
 type HomePageSearchParams = {
@@ -61,7 +61,12 @@ export default async function Page({
       endingTodayResult,
       statsResult,
     ] = await Promise.all([
-      getTopOpportunities({ limit: 8 }),
+      getCompetitions({
+        sortBy: "bestValue",
+        sortOrder: "desc",
+        closing: "today",
+        limit: 8,
+      }),
       getCompetitions({
         minPrizeValue: 5000,
         category: "cars,houses,bikes",
@@ -72,11 +77,11 @@ export default async function Page({
       getCompetitions({
         sortBy: "percentSold",
         sortOrder: "asc",
-        closing: "3days",
+        closing: "today",
         limit: 4,
       }),
       getCompetitions({
-        sortBy: "valueRatio",
+        sortBy: "percentSold",
         sortOrder: "desc",
         limit: 4,
       }),
@@ -113,7 +118,7 @@ export default async function Page({
         titleStart="Top"
         titleAccent="Opportunities"
         subtitle="Best chances to win right now"
-        viewAllHref="/competitions?sortBy=bestValue&sortOrder=desc&closing=3days"
+        viewAllHref="/competitions?sortBy=bestValue&sortOrder=desc&closing=today"
         competitions={topOpportunities}
       />
       <CompetitionSection
@@ -127,7 +132,7 @@ export default async function Page({
         titleStart="Most undersold"
         titleAccent="ending soon"
         subtitle="Low ticket sales, closing within 3 days — your best odds right now"
-        viewAllHref="/competitions?sortBy=percentSold&sortOrder=asc&closing=3days"
+        viewAllHref="/competitions?sortBy=percentSold&sortOrder=asc&closing=today"
         competitions={undersold}
       />
       <CompetitionSection
