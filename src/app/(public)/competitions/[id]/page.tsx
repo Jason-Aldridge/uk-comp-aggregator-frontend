@@ -122,7 +122,7 @@ async function fetchCompetitionData(id: string) {
       notFound();
     }
 
-    const comp = competition as Competition;
+    const comp = competition as CompetitionDetail;
     const {
       prize,
       imageUrl,
@@ -136,6 +136,7 @@ async function fetchCompetitionData(id: string) {
       valueRatio,
       operator,
       prizeValue,
+      prizeValueEstimated,
       cashAlternative,
       maxPerPerson,
       numWinners,
@@ -175,6 +176,7 @@ async function fetchCompetitionData(id: string) {
       valueRatio,
       operator,
       prizeValue,
+      prizeValueEstimated,
       cashAlternative,
       maxPerPerson,
       numWinners,
@@ -224,6 +226,7 @@ export default async function Page({
     percentValue,
     instantPrizes,
     prizeValue,
+    prizeValueEstimated,
     cashAlternative,
     maxPerPerson,
     numWinners,
@@ -479,10 +482,15 @@ export default async function Page({
               </div>
               <div className="rounded-lg border border-rr-border bg-rr-elevated p-4">
                 <p className="text-xs text-rr-muted mb-1">Prize value</p>
-                <p className="text-xl font-semibold text-rr-primary">
-                  {prizeValueNum
-                    ? `£${prizeValueNum.toLocaleString("en-GB")}`
-                    : "—"}
+                <p className="flex items-center gap-1 text-xl font-semibold text-rr-primary">
+                  <span>
+                    {prizeValueNum
+                      ? `£${prizeValueNum.toLocaleString("en-GB")}`
+                      : "—"}
+                  </span>
+                  {prizeValueNum && prizeValueEstimated === true && (
+                    <InfoTooltip text="Estimated value — we don't have a confirmed price for this prize, so this is an approximate upper limit." />
+                  )}
                 </p>
               </div>
               <div className="rounded-lg border border-rr-border bg-rr-elevated p-4">

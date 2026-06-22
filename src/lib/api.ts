@@ -102,6 +102,7 @@ export type CompetitionDetail = {
     vrSampleSize: number | null;
   } | null;
   prizeValue: number | string | null;
+  prizeValueEstimated: boolean | null;
   cashAlternative: number | string | null;
   maxPerPerson: number | null;
   numWinners: number | null;
