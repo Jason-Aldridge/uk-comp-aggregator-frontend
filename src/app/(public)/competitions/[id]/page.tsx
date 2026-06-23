@@ -411,7 +411,7 @@ export default async function Page({
 
         <div className="flex flex-col md:grid md:grid-cols-2 md:gap-8 md:items-start">
           <div className="order-2 md:order-1 mt-8 md:mt-0 flex flex-col gap-8">
-            <div className="relative rounded-[10px] overflow-hidden border border-rr-border bg-rr-elevated h-[300px] md:h-[350px] flex items-center justify-center">
+            <div className="relative hidden rounded-[10px] overflow-hidden border border-rr-border bg-rr-elevated h-[300px] md:flex md:h-[350px] items-center justify-center">
               {imageUrl ? (
                 <Image
                   src={imageUrl}
@@ -468,6 +468,21 @@ export default async function Page({
             <h1 className="text-2xl md:text-3xl font-semibold text-rr-primary mb-6">
               {prize}
             </h1>
+
+            <div className="relative mb-6 rounded-[10px] overflow-hidden border border-rr-border bg-rr-elevated h-[300px] flex items-center justify-center md:hidden">
+              {imageUrl ? (
+                <Image
+                  src={imageUrl}
+                  alt={prize}
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover"
+                />
+              ) : (
+                <PlaceholderIcon category={category} />
+              )}
+            </div>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="rounded-lg border border-rr-border bg-rr-elevated p-4">
