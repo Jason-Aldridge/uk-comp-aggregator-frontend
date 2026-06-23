@@ -91,6 +91,8 @@ export function FilterBar({
         params.set(key, value);
       }
 
+      params.delete("excludeInstant");
+      params.delete("excludeFree");
       params.delete("page");
 
       const qs = params.toString();
@@ -111,6 +113,8 @@ export function FilterBar({
         }
       });
 
+      params.delete("excludeInstant");
+      params.delete("excludeFree");
       params.delete("page");
 
       const qs = params.toString();
@@ -191,6 +195,8 @@ export function FilterBar({
                         updateParams({
                           category: null,
                           freeOnly: isActive ? null : "true",
+                          excludeInstant: null,
+                          excludeFree: null,
                         });
                         return;
                       }
