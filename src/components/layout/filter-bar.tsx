@@ -25,6 +25,7 @@ const defaultCategoryOptions: FilterOption[] = [
   { value: "cash", label: "Cash" },
   { value: "tech", label: "Tech" },
   { value: "other", label: "Other" },
+  { value: "free", label: "Free" },
 ];
 
 const defaultClosingOptions: FilterOption[] = [
@@ -67,7 +68,8 @@ export function FilterBar({
   const closingOpts = closingOptions ?? defaultClosingOptions;
   const sortOpts = sortOptions ?? defaultSortOptions;
 
-  const category = searchParams.get("category") ?? "all";
+  const freeOnly = searchParams.get("freeOnly") === "true";
+  const category = freeOnly ? "free" : (searchParams.get("category") ?? "all");
   const currentClosing = searchParams.get("closing");
   const closing = currentClosing ?? "";
   const sortBy = searchParams.get("sortBy") ?? "bestValue";
@@ -181,11 +183,22 @@ export function FilterBar({
                     aria-pressed={isActive}
                     onClick={() => {
                       if (opt.value === "all") {
-                        updateParam("category", null);
+                        updateParams({ category: null, freeOnly: null });
                         return;
                       }
 
-                      updateParam("category", isActive ? null : opt.value);
+                      if (opt.value === "free") {
+                        updateParams({
+                          category: null,
+                          freeOnly: isActive ? null : "true",
+                        });
+                        return;
+                      }
+
+                      updateParams({
+                        category: isActive ? null : opt.value,
+                        freeOnly: null,
+                      });
                     }}
                   >
                     {opt.label}

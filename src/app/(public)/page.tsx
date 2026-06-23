@@ -12,6 +12,7 @@ type HomePageSearchParams = {
   closing?: string;
   sortBy?: string;
   sortOrder?: string;
+  freeOnly?: string;
 };
 
 export default async function Page({
@@ -20,7 +21,7 @@ export default async function Page({
   searchParams: Promise<HomePageSearchParams>;
 }) {
   const params = await searchParams;
-  const hasFilters = !!(params.category || params.closing || params.sortBy);
+  const hasFilters = !!(params.category || params.closing || params.sortBy || params.freeOnly);
 
   if (hasFilters) {
     return (
@@ -34,6 +35,7 @@ export default async function Page({
             closing: params.closing,
             sortBy: params.sortBy,
             sortOrder: params.sortOrder,
+            freeOnly: params.freeOnly === "true",
             limit: 500,
           }}
         />
@@ -65,6 +67,8 @@ export default async function Page({
         sortBy: "bestValue",
         sortOrder: "desc",
         closing: "today",
+        excludeInstant: true,
+        excludeFree: true,
         limit: 8,
       }),
       getCompetitions({
@@ -78,17 +82,23 @@ export default async function Page({
         sortBy: "percentSold",
         sortOrder: "asc",
         closing: "today",
+        excludeInstant: true,
+        excludeFree: true,
         limit: 4,
       }),
       getCompetitions({
         sortBy: "percentSold",
         sortOrder: "desc",
+        excludeInstant: true,
+        excludeFree: true,
         limit: 4,
       }),
       getCompetitions({
         sortBy: "endsAt",
         sortOrder: "asc",
         closing: "today",
+        excludeInstant: true,
+        excludeFree: true,
         limit: 4,
       }),
       getStats(),
@@ -118,7 +128,7 @@ export default async function Page({
         titleStart="Top"
         titleAccent="Opportunities"
         subtitle="Best chances to win right now"
-        viewAllHref="/competitions?sortBy=bestValue&sortOrder=desc&closing=today"
+        viewAllHref="/competitions?sortBy=bestValue&sortOrder=desc&closing=today&excludeInstant=true&excludeFree=true"
         competitions={topOpportunities}
       />
       <CompetitionSection
@@ -132,21 +142,21 @@ export default async function Page({
         titleStart="Most undersold"
         titleAccent="ending soon"
         subtitle="Low ticket sales, closing within 3 days — your best odds right now"
-        viewAllHref="/competitions?sortBy=percentSold&sortOrder=asc&closing=today"
+        viewAllHref="/competitions?sortBy=percentSold&sortOrder=asc&closing=today&excludeInstant=true&excludeFree=true"
         competitions={undersold}
       />
       <CompetitionSection
         titleStart="Selling"
         titleAccent="fast"
         subtitle="These competitions are almost gone — very few tickets left, so act fast"
-        viewAllHref="/competitions?sortBy=percentSold&sortOrder=desc"
+        viewAllHref="/competitions?sortBy=percentSold&sortOrder=desc&excludeInstant=true&excludeFree=true"
         competitions={bestValue}
       />
       <CompetitionSection
         titleStart="Ending"
         titleAccent="today"
         subtitle="Last chance — these draws close tonight"
-        viewAllHref="/competitions?sortBy=endsAt&sortOrder=asc&closing=today"
+        viewAllHref="/competitions?sortBy=endsAt&sortOrder=asc&closing=today&excludeInstant=true&excludeFree=true"
         competitions={endingToday}
         accentTone="red"
       />

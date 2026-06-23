@@ -81,6 +81,9 @@ export type GetCompetitionsParams = {
   closing?: string;
   minPrizeValue?: number;
   website?: string;
+  freeOnly?: boolean;
+  excludeInstant?: boolean;
+  excludeFree?: boolean;
 };
 
 export type CompetitionDetail = {
@@ -140,6 +143,9 @@ export async function getCompetitions(params?: GetCompetitionsParams) {
   if (params?.closing) query.set("closing", params.closing);
   if (params?.minPrizeValue) query.set("minPrizeValue", String(params.minPrizeValue));
   if (params?.website) query.set("website", params.website);
+  if (params?.freeOnly) query.set("freeOnly", "true");
+  if (params?.excludeInstant) query.set("excludeInstant", "true");
+  if (params?.excludeFree) query.set("excludeFree", "true");
 
   const path = query.size > 0 ? `/competitions?${query.toString()}` : "/competitions";
   const response = await apiFetch<unknown>(path);

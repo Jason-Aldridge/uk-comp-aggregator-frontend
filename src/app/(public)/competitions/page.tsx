@@ -11,6 +11,9 @@ type CompetitionsPageSearchParams = {
   sortBy?: string;
   sortOrder?: string;
   minPrizeValue?: string;
+  freeOnly?: string;
+  excludeInstant?: string;
+  excludeFree?: string;
 };
 
 export default async function CompetitionsPage({
@@ -42,6 +45,9 @@ export default async function CompetitionsPage({
 
     if (params.category) nextParams.set("category", params.category);
     if (params.minPrizeValue) nextParams.set("minPrizeValue", params.minPrizeValue);
+    if (params.freeOnly) nextParams.set("freeOnly", params.freeOnly);
+    if (params.excludeInstant) nextParams.set("excludeInstant", params.excludeInstant);
+    if (params.excludeFree) nextParams.set("excludeFree", params.excludeFree);
 
     nextParams.set("closing", params.closing ?? "3days");
     nextParams.set("sortBy", sortBy);
@@ -61,19 +67,42 @@ export default async function CompetitionsPage({
       return { titleStart: "Top Prizes", titleAccent: "right now", tone: "green" as const };
     }
 
-    if (sortBy === "bestValue" && sortOrder === "desc" && closing === "3days") {
+    if (
+      sortBy === "bestValue" &&
+      sortOrder === "desc" &&
+      closing === "today" &&
+      params.excludeInstant === "true" &&
+      params.excludeFree === "true"
+    ) {
       return { titleStart: "Top", titleAccent: "Opportunities", tone: "green" as const };
     }
 
-    if (sortBy === "percentSold" && sortOrder === "asc" && closing === "3days") {
+    if (
+      sortBy === "percentSold" &&
+      sortOrder === "asc" &&
+      closing === "today" &&
+      params.excludeInstant === "true" &&
+      params.excludeFree === "true"
+    ) {
       return { titleStart: "Most undersold", titleAccent: "ending soon", tone: "green" as const };
     }
 
-    if (sortBy === "percentSold" && sortOrder === "desc") {
+    if (
+      sortBy === "percentSold" &&
+      sortOrder === "desc" &&
+      params.excludeInstant === "true" &&
+      params.excludeFree === "true"
+    ) {
       return { titleStart: "Selling", titleAccent: "fast", tone: "green" as const };
     }
 
-    if (sortBy === "endsAt" && sortOrder === "asc" && closing === "today") {
+    if (
+      sortBy === "endsAt" &&
+      sortOrder === "asc" &&
+      closing === "today" &&
+      params.excludeInstant === "true" &&
+      params.excludeFree === "true"
+    ) {
       return { titleStart: "Ending", titleAccent: "today", tone: "red" as const };
     }
 
@@ -131,6 +160,9 @@ export default async function CompetitionsPage({
           sortBy,
           sortOrder,
           minPrizeValue: params.minPrizeValue ? Number(params.minPrizeValue) : undefined,
+          freeOnly: params.freeOnly === "true",
+          excludeInstant: params.excludeInstant === "true",
+          excludeFree: params.excludeFree === "true",
           limit: 500,
         }}
       />
