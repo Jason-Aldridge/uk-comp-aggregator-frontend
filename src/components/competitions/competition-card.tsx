@@ -78,16 +78,18 @@ export function CompetitionCard({ competition, featured }: Props) {
         ) : (
           <PlaceholderIcon category={category} />
         )}
-        <span className="absolute top-1.5 left-1.5">
-          <Badge variant="operator">
-            {competition.operator?.name ?? "Unknown"}
-          </Badge>
-        </span>
-        {statusBadge && (
-          <span className="absolute top-1.5 right-1.5">
-            <Badge variant={statusBadge.variant}>{statusBadge.label}</Badge>
+        <div className="absolute inset-x-1.5 top-1.5 flex flex-col items-start gap-1 md:inset-x-auto md:left-1.5 md:right-1.5 md:flex-row md:items-start md:justify-between">
+          <span className="max-w-full md:max-w-[calc(100%-90px)]">
+            <Badge variant="operator">
+              {competition.operator?.name ?? "Unknown"}
+            </Badge>
           </span>
-        )}
+          {statusBadge && (
+            <span className="self-end md:self-auto">
+              <Badge variant={statusBadge.variant}>{statusBadge.label}</Badge>
+            </span>
+          )}
+        </div>
       </div>
       <div className="p-[9px]">
         <p className="text-[11.5px] font-medium text-rr-text-primary leading-[1.35] h-8 overflow-hidden mb-1.5">
