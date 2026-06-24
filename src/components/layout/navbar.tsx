@@ -52,11 +52,11 @@ export function Navbar() {
     <div className="relative">
       <div className="mt-2 bg-rr-surface">
         <nav className="flex h-[52px] items-center gap-3 px-5">
-          <Link href="/" className="font-medium tracking-[-0.3px] text-rr-primary no-underline">
+          <Link href="/" className="shrink-0 font-medium tracking-[-0.3px] text-rr-primary no-underline">
             RAFFLE<span className="text-rr-green">RADAR</span>
           </Link>
 
-          <div className="hidden sm:block flex-1 max-w-[420px] md:max-w-[520px] min-w-0">
+          <div className="hidden min-w-0 sm:block sm:flex-1 max-w-[420px] md:max-w-[520px]">
             <CompetitionSearch />
           </div>
 
@@ -87,10 +87,10 @@ export function Navbar() {
           </a>
         </div>
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto shrink-0 flex items-center gap-2">
           <Button
             variant="icon"
-            className="cursor-pointer"
+            className="shrink-0 cursor-pointer"
             aria-label="Toggle theme"
             onClick={() => {
               const isDark = document.documentElement.classList.contains("dark");
@@ -103,7 +103,7 @@ export function Navbar() {
 
           <Button
             variant="icon"
-            className="md:hidden"
+            className="shrink-0 md:hidden"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
