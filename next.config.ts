@@ -43,6 +43,16 @@ const nextConfig: NextConfig = {
         hostname: "www.mckinneycompetitions.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "thegiveawayguys.co.uk",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.thegiveawayguys.co.uk",
+        pathname: "/**",
+      },
     ],
   },
 };
