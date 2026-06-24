@@ -129,7 +129,7 @@ export function Navbar() {
           </div>
         </nav>
 
-        <div className="px-5 pb-3 sm:hidden">
+        <div className="w-full min-w-0 max-w-full px-4 pb-3 sm:hidden">
           <CompetitionSearch />
         </div>
       </div>

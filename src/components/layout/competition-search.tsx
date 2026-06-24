@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { IconLoader2, IconSearch } from "@tabler/icons-react";
+import { IconLoader2, IconSearch, IconX } from "@tabler/icons-react";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 import { getCompetitionSearch, type CompetitionSearchResult } from "@/lib/api";
 
@@ -26,6 +26,7 @@ function formatTicketPrice(value: number | string | null | undefined) {
 export function CompetitionSearch() {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const requestIdRef = useRef(0);
 
   const [query, setQuery] = useState("");
@@ -100,6 +101,13 @@ export function CompetitionSearch() {
     router.push(`/competitions/${item.id}`);
   }
 
+  function handleClear() {
+    setQuery("");
+    resetSearchState();
+    requestIdRef.current += 1;
+    inputRef.current?.focus();
+  }
+
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Escape") {
       setOpen(false);
@@ -137,10 +145,11 @@ export function CompetitionSearch() {
   }
 
   return (
-    <div ref={containerRef} className="relative w-full">
-      <div className="flex h-9 w-full items-center gap-2 rounded-md bg-rr-elevated px-3">
+    <div ref={containerRef} className="relative w-full min-w-0 max-w-full">
+      <div className="flex h-9 w-full min-w-0 max-w-full items-center gap-2 rounded-md bg-rr-elevated px-3">
         <IconSearch size={16} className="text-rr-muted" />
         <input
+          ref={inputRef}
           type="text"
           role="combobox"
           value={query}
@@ -156,7 +165,7 @@ export function CompetitionSearch() {
               ? `competition-search-option-${results[activeIndex].id}`
               : undefined
           }
-          className="w-full bg-transparent text-sm text-rr-primary placeholder:text-rr-muted outline-none"
+          className="min-w-0 flex-1 bg-transparent text-sm text-rr-primary placeholder:text-rr-muted outline-none"
           onChange={(event) => {
             const nextQuery = event.target.value;
             const nextTrimmedQuery = nextQuery.trim();
@@ -182,6 +191,16 @@ export function CompetitionSearch() {
           }}
           onKeyDown={handleKeyDown}
         />
+        {query ? (
+          <button
+            type="button"
+            aria-label="Clear search"
+            className="shrink-0 rounded-sm p-0.5 text-rr-muted transition-colors hover:text-rr-primary"
+            onClick={handleClear}
+          >
+            <IconX size={14} />
+          </button>
+        ) : null}
       </div>
 
       {open && trimmedQuery.length >= 2 ? (
