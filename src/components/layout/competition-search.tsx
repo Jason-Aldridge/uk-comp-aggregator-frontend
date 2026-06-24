@@ -204,7 +204,7 @@ export function CompetitionSearch() {
       </div>
 
       {open && trimmedQuery.length >= 2 ? (
-        <div className="absolute left-0 right-0 top-full z-[60] mt-2 w-full overflow-hidden rounded-md border border-rr-border bg-rr-surface shadow-lg">
+        <div className="absolute left-1/2 top-full z-[60] mt-2 w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] -translate-x-1/2 overflow-hidden rounded-md border border-rr-border bg-rr-surface shadow-lg sm:left-0 sm:right-0 sm:w-full sm:max-w-full sm:translate-x-0">
           {loading ? (
             <div className="flex items-center gap-2 px-3 py-3 text-sm text-rr-muted">
               <IconLoader2 size={16} className="animate-spin" />
@@ -228,7 +228,7 @@ export function CompetitionSearch() {
                     role="option"
                     aria-selected={index === activeIndex}
                     className={[
-                      "flex w-full min-w-0 items-center gap-3 px-3 py-2.5 text-left transition-colors",
+                      "flex w-full min-w-0 items-center gap-2.5 px-2.5 py-2.5 text-left transition-colors sm:gap-3 sm:px-3",
                       index === activeIndex
                         ? "bg-rr-elevated"
                         : "hover:bg-rr-elevated",
@@ -261,7 +261,7 @@ export function CompetitionSearch() {
                       </div>
                     </div>
 
-                    <div className="w-[72px] shrink-0 text-right text-xs font-medium text-rr-green sm:w-[88px]">
+                    <div className="w-[64px] shrink-0 text-right text-xs font-medium text-rr-green sm:w-[88px]">
                       {formatTicketPrice(item.ticketPrice)}
                     </div>
                   </button>
