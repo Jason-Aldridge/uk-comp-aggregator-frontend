@@ -1,0 +1,244 @@
+"use client";
+
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { IconLoader2, IconSearch } from "@tabler/icons-react";
+import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import { getCompetitionSearch, type CompetitionSearchResult } from "@/lib/api";
+
+const priceFormatter = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+function formatTicketPrice(value: number | string | null | undefined) {
+  if (value === null || value === undefined || value === "") return "—";
+
+  const amount = Number(value);
+
+  if (!Number.isFinite(amount)) return "—";
+
+  return priceFormatter.format(amount);
+}
+
+export function CompetitionSearch() {
+  const router = useRouter();
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const requestIdRef = useRef(0);
+
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<CompetitionSearchResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const trimmedQuery = query.trim();
+
+  useEffect(() => {
+    function handlePointerDown(event: PointerEvent) {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+        setActiveIndex(-1);
+      }
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    requestIdRef.current += 1;
+    const currentRequestId = requestIdRef.current;
+
+    if (trimmedQuery.length < 2) {
+      setResults([]);
+      setLoading(false);
+      setOpen(false);
+      setHasFetched(false);
+      setActiveIndex(-1);
+      return;
+    }
+
+    setOpen(true);
+    setLoading(true);
+    setHasFetched(false);
+    setResults([]);
+    setActiveIndex(-1);
+
+    const timer = window.setTimeout(async () => {
+      try {
+        const nextResults = await getCompetitionSearch(trimmedQuery, 8);
+
+        if (requestIdRef.current !== currentRequestId) return;
+
+        setResults(nextResults);
+        setActiveIndex(nextResults.length > 0 ? 0 : -1);
+      } catch {
+        if (requestIdRef.current !== currentRequestId) return;
+
+        setResults([]);
+        setActiveIndex(-1);
+      } finally {
+        if (requestIdRef.current !== currentRequestId) return;
+
+        setLoading(false);
+        setHasFetched(true);
+      }
+    }, 250);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [trimmedQuery]);
+
+  function handleSelect(item: CompetitionSearchResult) {
+    setQuery(item.prize);
+    setOpen(false);
+    setResults([]);
+    setActiveIndex(-1);
+    router.push(`/competitions/${item.id}`);
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Escape") {
+      setOpen(false);
+      setActiveIndex(-1);
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      if (!results.length) return;
+
+      event.preventDefault();
+      setOpen(true);
+      setActiveIndex((prev) => (prev < results.length - 1 ? prev + 1 : 0));
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      if (!results.length) return;
+
+      event.preventDefault();
+      setOpen(true);
+      setActiveIndex((prev) => (prev > 0 ? prev - 1 : results.length - 1));
+      return;
+    }
+
+    if (
+      event.key === "Enter" &&
+      open &&
+      activeIndex >= 0 &&
+      results[activeIndex]
+    ) {
+      event.preventDefault();
+      handleSelect(results[activeIndex]);
+    }
+  }
+
+  return (
+    <div ref={containerRef} className="relative">
+      <div className="flex h-9 items-center gap-2 rounded-md bg-rr-elevated px-3">
+        <IconSearch size={16} className="text-rr-muted" />
+        <input
+          type="text"
+          value={query}
+          placeholder="Search competitions..."
+          autoComplete="off"
+          spellCheck={false}
+          aria-label="Search competitions"
+          aria-autocomplete="list"
+          aria-expanded={open}
+          aria-controls="competition-search-listbox"
+          aria-activedescendant={
+            activeIndex >= 0 && results[activeIndex]
+              ? `competition-search-option-${results[activeIndex].id}`
+              : undefined
+          }
+          className="w-full bg-transparent text-sm text-rr-primary placeholder:text-rr-muted outline-none"
+          onChange={(event) => setQuery(event.target.value)}
+          onFocus={() => {
+            if (trimmedQuery.length >= 2 && (loading || hasFetched)) {
+              setOpen(true);
+            }
+          }}
+          onKeyDown={handleKeyDown}
+        />
+      </div>
+
+      {open && trimmedQuery.length >= 2 ? (
+        <div className="absolute left-0 right-0 top-full z-[60] mt-2 overflow-hidden rounded-md border border-rr-border bg-rr-surface shadow-lg">
+          {loading ? (
+            <div className="flex items-center gap-2 px-3 py-3 text-sm text-rr-muted">
+              <IconLoader2 size={16} className="animate-spin" />
+              <span>Searching...</span>
+            </div>
+          ) : null}
+
+          {!loading && hasFetched && results.length === 0 ? (
+            <div className="px-3 py-3 text-sm text-rr-muted">
+              No competitions found
+            </div>
+          ) : null}
+
+          {!loading && results.length > 0 ? (
+            <ul id="competition-search-listbox" role="listbox" className="py-1">
+              {results.map((item, index) => (
+                <li key={item.id}>
+                  <button
+                    id={`competition-search-option-${item.id}`}
+                    type="button"
+                    role="option"
+                    aria-selected={index === activeIndex}
+                    className={[
+                      "flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors",
+                      index === activeIndex
+                        ? "bg-rr-elevated"
+                        : "hover:bg-rr-elevated",
+                    ].join(" ")}
+                    onMouseEnter={() => setActiveIndex(index)}
+                    onClick={() => handleSelect(item)}
+                  >
+                    <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-rr-elevated">
+                      {item.imageUrl ? (
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.prize}
+                          fill
+                          sizes="40px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-xs font-medium text-rr-muted">
+                          {item.prize.slice(0, 1).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-medium text-rr-primary">
+                        {item.prize}
+                      </div>
+                      <div className="truncate text-xs text-rr-muted">
+                        {item.operator?.name ?? "Unknown operator"}
+                      </div>
+                    </div>
+
+                    <div className="shrink-0 text-xs font-medium text-rr-green">
+                      {formatTicketPrice(item.ticketPrice)}
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}

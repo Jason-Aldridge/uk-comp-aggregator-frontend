@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
-import { IconMenu2, IconMoon, IconSearch, IconSun, IconX } from "@tabler/icons-react";
+import { IconMenu2, IconMoon, IconSun, IconX } from "@tabler/icons-react";
 import { cn } from "@/lib/cn";
 import { useAuth } from "@/contexts/auth-context";
+import { CompetitionSearch } from "@/components/layout/competition-search";
 import { Button } from "@/components/ui/button";
 
 function getInitials(value: string): string {
@@ -55,14 +56,7 @@ export function Navbar() {
         </Link>
 
         <div className="flex-1 max-w-[420px] md:max-w-[520px] min-w-0">
-          <div className="flex h-9 items-center gap-2 rounded-md px-3 bg-rr-elevated">
-            <IconSearch size={16} className="text-rr-muted" />
-            <input
-              type="text"
-              placeholder="Search competitions..."
-              className="w-full bg-transparent text-sm text-rr-primary placeholder:text-rr-muted outline-none"
-            />
-          </div>
+          <CompetitionSearch />
         </div>
 
         <div className="hidden md:flex gap-1 ml-4 md:ml-8">

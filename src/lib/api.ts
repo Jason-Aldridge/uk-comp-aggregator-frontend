@@ -115,6 +115,16 @@ export type CompetitionDetail = {
   sourceUrl: string | null;
 };
 
+export type CompetitionSearchResult = {
+  id: string;
+  prize: string;
+  imageUrl: string | null;
+  ticketPrice: number | string | null;
+  operator: {
+    name: string;
+  } | null;
+};
+
 function normalizeCompetitionsResponse(value: unknown) {
   if (Array.isArray(value)) return value;
   if (value && typeof value === "object") {
@@ -130,6 +140,32 @@ function normalizeCompetitionsResponse(value: unknown) {
   }
 
   return [];
+}
+
+function normalizeCompetitionSearchResponse(value: unknown): CompetitionSearchResult[] {
+  return normalizeCompetitionsResponse(value).flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+
+    const data = item as {
+      id?: string | number;
+      prize?: string;
+      imageUrl?: string | null;
+      image_url?: string | null;
+      ticketPrice?: number | string | null;
+      ticket_price?: number | string | null;
+      operator?: { name?: string } | null;
+    };
+
+    if (data.id === undefined || typeof data.prize !== "string") return [];
+
+    return [{
+      id: String(data.id),
+      prize: data.prize,
+      imageUrl: data.imageUrl ?? data.image_url ?? null,
+      ticketPrice: data.ticketPrice ?? data.ticket_price ?? null,
+      operator: data.operator && typeof data.operator.name === "string" ? { name: data.operator.name } : null,
+    }];
+  });
 }
 
 export async function getCompetitions(params?: GetCompetitionsParams) {
@@ -150,6 +186,16 @@ export async function getCompetitions(params?: GetCompetitionsParams) {
   const path = query.size > 0 ? `/competitions?${query.toString()}` : "/competitions";
   const response = await apiFetch<unknown>(path);
   return normalizeCompetitionsResponse(response);
+}
+
+export async function getCompetitionSearch(q: string, limit = 8) {
+  const query = new URLSearchParams({
+    q,
+    limit: String(limit),
+  });
+
+  const response = await apiFetch<unknown>(`/competitions/search?${query.toString()}`);
+  return normalizeCompetitionSearchResponse(response);
 }
 
 type GetTopOpportunitiesParams = {
