@@ -3,7 +3,14 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { IconLoader2, IconSearch, IconX } from "@tabler/icons-react";
-import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import {
+  type KeyboardEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { getCompetitionSearch, type CompetitionSearchResult } from "@/lib/api";
 
 const priceFormatter = new Intl.NumberFormat("en-GB", {
@@ -23,6 +30,13 @@ function formatTicketPrice(value: number | string | null | undefined) {
   return priceFormatter.format(amount);
 }
 
+type DropdownCoords = {
+  top: number;
+  left: number;
+  width: number;
+  maxHeight: number;
+};
+
 export function CompetitionSearch() {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -35,6 +49,7 @@ export function CompetitionSearch() {
   const [open, setOpen] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [coords, setCoords] = useState<DropdownCoords | null>(null);
 
   const trimmedQuery = query.trim();
 
@@ -45,6 +60,38 @@ export function CompetitionSearch() {
     setHasFetched(false);
     setActiveIndex(-1);
   }
+
+  const recalcPosition = useCallback(() => {
+    const el = containerRef.current;
+
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const margin = 16;
+    const gap = 8;
+    const top = rect.bottom + gap;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    const isMobile = viewportWidth < 640;
+    const maxHeight = Math.max(160, viewportHeight - top - margin);
+
+    if (isMobile) {
+      setCoords({
+        top,
+        left: margin,
+        width: viewportWidth - margin * 2,
+        maxHeight,
+      });
+      return;
+    }
+
+    setCoords({
+      top,
+      left: rect.left,
+      width: rect.width,
+      maxHeight,
+    });
+  }, []);
 
   useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
@@ -60,6 +107,32 @@ export function CompetitionSearch() {
       document.removeEventListener("pointerdown", handlePointerDown);
     };
   }, []);
+
+  useLayoutEffect(() => {
+    if (!open || trimmedQuery.length < 2) return;
+
+    recalcPosition();
+  }, [open, trimmedQuery, results, loading, hasFetched, recalcPosition]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    function handleViewportChange() {
+      recalcPosition();
+    }
+
+    window.addEventListener("resize", handleViewportChange);
+    window.addEventListener("scroll", handleViewportChange, true);
+    window.visualViewport?.addEventListener("resize", handleViewportChange);
+    window.visualViewport?.addEventListener("scroll", handleViewportChange);
+
+    return () => {
+      window.removeEventListener("resize", handleViewportChange);
+      window.removeEventListener("scroll", handleViewportChange, true);
+      window.visualViewport?.removeEventListener("resize", handleViewportChange);
+      window.visualViewport?.removeEventListener("scroll", handleViewportChange);
+    };
+  }, [open, recalcPosition]);
 
   useEffect(() => {
     if (trimmedQuery.length < 2) return;
@@ -203,72 +276,89 @@ export function CompetitionSearch() {
         ) : null}
       </div>
 
-      {open && trimmedQuery.length >= 2 ? (
-        <div className="absolute left-1/2 top-full z-[60] mt-2 w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] -translate-x-1/2 overflow-hidden rounded-md border border-rr-border bg-rr-surface shadow-lg sm:left-0 sm:right-0 sm:w-full sm:max-w-full sm:translate-x-0">
-          {loading ? (
-            <div className="flex items-center gap-2 px-3 py-3 text-sm text-rr-muted">
-              <IconLoader2 size={16} className="animate-spin" />
-              <span>Searching...</span>
-            </div>
-          ) : null}
+      {open && trimmedQuery.length >= 2 && coords ? (
+        <div
+          style={{
+            position: "fixed",
+            top: coords.top,
+            left: coords.left,
+            width: coords.width,
+          }}
+          className="z-[60] overflow-hidden rounded-md border border-rr-border bg-rr-surface shadow-lg"
+        >
+          <div
+            style={{ maxHeight: coords.maxHeight }}
+            className="overflow-y-auto overscroll-contain"
+          >
+            {loading ? (
+              <div className="flex items-center gap-2 px-3 py-3 text-sm text-rr-muted">
+                <IconLoader2 size={16} className="animate-spin" />
+                <span>Searching...</span>
+              </div>
+            ) : null}
 
-          {!loading && hasFetched && results.length === 0 ? (
-            <div className="px-3 py-3 text-sm text-rr-muted">
-              No competitions found
-            </div>
-          ) : null}
+            {!loading && hasFetched && results.length === 0 ? (
+              <div className="px-3 py-3 text-sm text-rr-muted">
+                No competitions found
+              </div>
+            ) : null}
 
-          {!loading && results.length > 0 ? (
-            <ul id="competition-search-listbox" role="listbox" className="py-1">
-              {results.map((item, index) => (
-                <li key={item.id}>
-                  <button
-                    id={`competition-search-option-${item.id}`}
-                    type="button"
-                    role="option"
-                    aria-selected={index === activeIndex}
-                    className={[
-                      "flex w-full min-w-0 items-center gap-2.5 px-2.5 py-2.5 text-left transition-colors sm:gap-3 sm:px-3",
-                      index === activeIndex
-                        ? "bg-rr-elevated"
-                        : "hover:bg-rr-elevated",
-                    ].join(" ")}
-                    onMouseEnter={() => setActiveIndex(index)}
-                    onClick={() => handleSelect(item)}
-                  >
-                    <div className="relative h-10 w-10 shrink-0 basis-10 overflow-hidden rounded-md bg-rr-elevated">
-                      {item.imageUrl ? (
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.prize}
-                          fill
-                          sizes="40px"
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-xs font-medium text-rr-muted">
-                          {item.prize.slice(0, 1).toUpperCase()}
+            {!loading && results.length > 0 ? (
+              <ul
+                id="competition-search-listbox"
+                role="listbox"
+                className="py-1"
+              >
+                {results.map((item, index) => (
+                  <li key={item.id}>
+                    <button
+                      id={`competition-search-option-${item.id}`}
+                      type="button"
+                      role="option"
+                      aria-selected={index === activeIndex}
+                      className={[
+                        "flex w-full min-w-0 items-center gap-3 px-3 py-2.5 text-left transition-colors",
+                        index === activeIndex
+                          ? "bg-rr-elevated"
+                          : "hover:bg-rr-elevated",
+                      ].join(" ")}
+                      onMouseEnter={() => setActiveIndex(index)}
+                      onClick={() => handleSelect(item)}
+                    >
+                      <div className="relative h-10 w-10 shrink-0 basis-10 overflow-hidden rounded-md bg-rr-elevated">
+                        {item.imageUrl ? (
+                          <Image
+                            src={item.imageUrl}
+                            alt={item.prize}
+                            fill
+                            sizes="40px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-xs font-medium text-rr-muted">
+                            {item.prize.slice(0, 1).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="min-w-0 flex-1 overflow-hidden">
+                        <div className="truncate text-sm font-medium text-rr-primary">
+                          {item.prize}
                         </div>
-                      )}
-                    </div>
-
-                    <div className="min-w-0 flex-1 overflow-hidden">
-                      <div className="truncate text-sm font-medium text-rr-primary">
-                        {item.prize}
+                        <div className="truncate text-xs text-rr-muted">
+                          {item.operator?.name ?? "Unknown operator"}
+                        </div>
                       </div>
-                      <div className="truncate text-xs text-rr-muted">
-                        {item.operator?.name ?? "Unknown operator"}
-                      </div>
-                    </div>
 
-                    <div className="w-[64px] shrink-0 text-right text-xs font-medium text-rr-green sm:w-[88px]">
-                      {formatTicketPrice(item.ticketPrice)}
-                    </div>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : null}
+                      <div className="shrink-0 whitespace-nowrap text-right text-xs font-medium text-rr-green">
+                        {formatTicketPrice(item.ticketPrice)}
+                      </div>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         </div>
       ) : null}
     </div>
