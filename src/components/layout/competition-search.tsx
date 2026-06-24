@@ -37,6 +37,14 @@ export function CompetitionSearch() {
 
   const trimmedQuery = query.trim();
 
+  function resetSearchState() {
+    setResults([]);
+    setLoading(false);
+    setOpen(false);
+    setHasFetched(false);
+    setActiveIndex(-1);
+  }
+
   useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
       if (!containerRef.current?.contains(event.target as Node)) {
@@ -53,23 +61,10 @@ export function CompetitionSearch() {
   }, []);
 
   useEffect(() => {
+    if (trimmedQuery.length < 2) return;
+
     requestIdRef.current += 1;
     const currentRequestId = requestIdRef.current;
-
-    if (trimmedQuery.length < 2) {
-      setResults([]);
-      setLoading(false);
-      setOpen(false);
-      setHasFetched(false);
-      setActiveIndex(-1);
-      return;
-    }
-
-    setOpen(true);
-    setLoading(true);
-    setHasFetched(false);
-    setResults([]);
-    setActiveIndex(-1);
 
     const timer = window.setTimeout(async () => {
       try {
@@ -142,11 +137,12 @@ export function CompetitionSearch() {
   }
 
   return (
-    <div ref={containerRef} className="relative">
-      <div className="flex h-9 items-center gap-2 rounded-md bg-rr-elevated px-3">
+    <div ref={containerRef} className="relative w-full">
+      <div className="flex h-9 w-full items-center gap-2 rounded-md bg-rr-elevated px-3">
         <IconSearch size={16} className="text-rr-muted" />
         <input
           type="text"
+          role="combobox"
           value={query}
           placeholder="Search competitions..."
           autoComplete="off"
@@ -161,7 +157,24 @@ export function CompetitionSearch() {
               : undefined
           }
           className="w-full bg-transparent text-sm text-rr-primary placeholder:text-rr-muted outline-none"
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event) => {
+            const nextQuery = event.target.value;
+            const nextTrimmedQuery = nextQuery.trim();
+
+            setQuery(nextQuery);
+
+            if (nextTrimmedQuery.length < 2) {
+              resetSearchState();
+              return;
+            }
+
+            requestIdRef.current += 1;
+            setResults([]);
+            setLoading(true);
+            setOpen(true);
+            setHasFetched(false);
+            setActiveIndex(-1);
+          }}
           onFocus={() => {
             if (trimmedQuery.length >= 2 && (loading || hasFetched)) {
               setOpen(true);
@@ -172,7 +185,7 @@ export function CompetitionSearch() {
       </div>
 
       {open && trimmedQuery.length >= 2 ? (
-        <div className="absolute left-0 right-0 top-full z-[60] mt-2 overflow-hidden rounded-md border border-rr-border bg-rr-surface shadow-lg">
+        <div className="absolute left-0 right-0 top-full z-[60] mt-2 w-full overflow-hidden rounded-md border border-rr-border bg-rr-surface shadow-lg">
           {loading ? (
             <div className="flex items-center gap-2 px-3 py-3 text-sm text-rr-muted">
               <IconLoader2 size={16} className="animate-spin" />
@@ -196,7 +209,7 @@ export function CompetitionSearch() {
                     role="option"
                     aria-selected={index === activeIndex}
                     className={[
-                      "flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors",
+                      "flex w-full min-w-0 items-center gap-3 px-3 py-2.5 text-left transition-colors",
                       index === activeIndex
                         ? "bg-rr-elevated"
                         : "hover:bg-rr-elevated",
@@ -204,7 +217,7 @@ export function CompetitionSearch() {
                     onMouseEnter={() => setActiveIndex(index)}
                     onClick={() => handleSelect(item)}
                   >
-                    <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-rr-elevated">
+                    <div className="relative h-10 w-10 shrink-0 basis-10 overflow-hidden rounded-md bg-rr-elevated">
                       {item.imageUrl ? (
                         <Image
                           src={item.imageUrl}
@@ -220,7 +233,7 @@ export function CompetitionSearch() {
                       )}
                     </div>
 
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-0 flex-1 overflow-hidden">
                       <div className="truncate text-sm font-medium text-rr-primary">
                         {item.prize}
                       </div>
@@ -229,7 +242,7 @@ export function CompetitionSearch() {
                       </div>
                     </div>
 
-                    <div className="shrink-0 text-xs font-medium text-rr-green">
+                    <div className="w-[72px] shrink-0 text-right text-xs font-medium text-rr-green sm:w-[88px]">
                       {formatTicketPrice(item.ticketPrice)}
                     </div>
                   </button>

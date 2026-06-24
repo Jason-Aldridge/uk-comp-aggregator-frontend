@@ -50,14 +50,15 @@ export function Navbar() {
 
   return (
     <div className="relative">
-      <nav className="mt-2 flex h-[52px] items-center gap-3 px-5 bg-rr-surface">
-        <Link href="/" className="font-medium tracking-[-0.3px] text-rr-primary no-underline">
-          RAFFLE<span className="text-rr-green">RADAR</span>
-        </Link>
+      <div className="mt-2 bg-rr-surface">
+        <nav className="flex h-[52px] items-center gap-3 px-5">
+          <Link href="/" className="font-medium tracking-[-0.3px] text-rr-primary no-underline">
+            RAFFLE<span className="text-rr-green">RADAR</span>
+          </Link>
 
-        <div className="flex-1 max-w-[420px] md:max-w-[520px] min-w-0">
-          <CompetitionSearch />
-        </div>
+          <div className="hidden sm:block flex-1 max-w-[420px] md:max-w-[520px] min-w-0">
+            <CompetitionSearch />
+          </div>
 
         <div className="hidden md:flex gap-1 ml-4 md:ml-8">
           <Link
@@ -86,7 +87,7 @@ export function Navbar() {
           </a>
         </div>
 
-        <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-2">
           <Button
             variant="icon"
             className="cursor-pointer"
@@ -125,8 +126,13 @@ export function Navbar() {
               <Button variant="primary" className="text-sm">Sign up</Button>
             </div>
           )}
+          </div>
+        </nav>
+
+        <div className="px-5 pb-3 sm:hidden">
+          <CompetitionSearch />
         </div>
-      </nav>
+      </div>
 
       {menuOpen ? (
         <div className="absolute left-0 right-0 top-full bg-rr-surface md:hidden z-50 shadow-lg border-t border-rr-border">
