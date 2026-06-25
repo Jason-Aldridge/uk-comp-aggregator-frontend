@@ -44,6 +44,16 @@ const defaultSortOptions: SortOption[] = [
   { label: "Lowest price", sortBy: "ticketPrice", sortOrder: "asc" },
 ];
 
+const otherSubcategoryOptions: FilterOption[] = [
+  { value: "other", label: "All" },
+  { value: "home", label: "Home" },
+  { value: "holidays", label: "Holidays" },
+  { value: "collectibles", label: "Collectibles" },
+  { value: "experiences", label: "Experiences" },
+  { value: "sports", label: "Sports" },
+  { value: "none", label: "Uncategorised" },
+];
+
 type FilterBarProps = {
   categoryOptions?: FilterOption[];
   closingOptions?: FilterOption[];
@@ -69,7 +79,7 @@ export function FilterBar({
   const sortOpts = sortOptions ?? defaultSortOptions;
 
   const freeOnly = searchParams.get("freeOnly") === "true";
-  const category = freeOnly ? "free" : (searchParams.get("category") ?? "all");
+  const categoryParam = searchParams.get("category");
   const currentClosing = searchParams.get("closing");
   const closing = currentClosing ?? "";
   const sortBy = searchParams.get("sortBy") ?? "bestValue";
@@ -78,6 +88,16 @@ export function FilterBar({
   const showCategory = categoryOpts.length > 0;
   const showClosing = closingOpts.length > 0;
   const showSort = sortOpts.length > 0;
+
+  const otherSubcategoryValues = new Set(
+    otherSubcategoryOptions
+      .map((opt) => opt.value)
+      .filter((value) => value !== "other"),
+  );
+  const isOtherSubcategory = categoryParam ? otherSubcategoryValues.has(categoryParam) : false;
+  const currentMainCategory = freeOnly ? "free" : isOtherSubcategory ? "other" : (categoryParam ?? "all");
+  const currentOtherSubcategory = currentMainCategory === "other" ? (categoryParam ?? "other") : null;
+  const showOtherSubcategories = currentMainCategory === "other";
 
   const isSortOpen = showSort && sortOpen;
 
@@ -167,12 +187,11 @@ export function FilterBar({
   return (
     <div className={cn("border-b border-rr-border bg-rr-surface", className)}>
       <div className="container py-3">
-        <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-3">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-3">
           {showCategory ? (
-            <div className="flex flex-wrap gap-[5px] flex-1">
+            <div className="order-2 flex flex-wrap gap-2 md:order-1 md:flex-1 md:gap-[5px]">
               {categoryOpts.map((opt) => {
-                const current = category === "all" ? "all" : category;
-                const isActive = opt.value === current;
+                const isActive = opt.value === currentMainCategory;
 
                 return (
                   <button
@@ -201,6 +220,17 @@ export function FilterBar({
                         return;
                       }
 
+                      if (opt.value === "other") {
+                        updateParams({
+                          category:
+                            currentMainCategory === "other" && categoryParam === "other"
+                              ? null
+                              : "other",
+                          freeOnly: null,
+                        });
+                        return;
+                      }
+
                       updateParams({
                         category: isActive ? null : opt.value,
                         freeOnly: null,
@@ -214,10 +244,14 @@ export function FilterBar({
             </div>
           ) : null}
 
-          <div className={cn("flex flex-col gap-2 md:flex-row md:items-center md:gap-[5px]", showCategory ? "md:flex-shrink-0" : "")}
+          <div
+            className={cn(
+              "order-1 flex flex-col gap-3 rounded-xl bg-rr-elevated/50 p-3 md:order-2 md:flex-row md:items-center md:gap-[5px] md:rounded-none md:bg-transparent md:p-0",
+              showCategory ? "md:flex-shrink-0" : "",
+            )}
           >
             {showClosing ? (
-              <div className="flex items-center gap-[5px] flex-wrap">
+              <div className="flex flex-wrap items-center gap-2 md:gap-[5px]">
                 <span className="text-sm text-rr-muted">Closing:</span>
                 {closingOpts.map((opt) => {
                   const isActive = opt.value === closing;
@@ -301,6 +335,31 @@ export function FilterBar({
             ) : null}
           </div>
         </div>
+
+        {showOtherSubcategories ? (
+          <div className="mt-4 flex flex-wrap gap-2 md:mt-2 md:gap-[6px]">
+            {otherSubcategoryOptions.map((opt) => {
+              const isActive = opt.value === currentOtherSubcategory;
+
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  className={cn(
+                    "inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition cursor-pointer md:px-2.5 md:py-1",
+                    isActive
+                      ? "bg-rr-elevated text-rr-primary shadow-sm"
+                      : "bg-rr-surface text-rr-muted hover:bg-rr-elevated hover:text-rr-primary",
+                  )}
+                  aria-pressed={isActive}
+                  onClick={() => updateParam("category", opt.value)}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
       </div>
     </div>
   );
