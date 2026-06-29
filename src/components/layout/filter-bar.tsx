@@ -128,7 +128,7 @@ export function FilterBar({
         return;
       }
 
-      startLoading();
+      startLoading(nextHref);
       router.push(nextHref);
     },
     [pathname, router, searchParams, startLoading],
@@ -159,7 +159,7 @@ export function FilterBar({
         return;
       }
 
-      startLoading();
+      startLoading(nextHref);
       router.push(nextHref);
     },
     [pathname, router, searchParams, startLoading],

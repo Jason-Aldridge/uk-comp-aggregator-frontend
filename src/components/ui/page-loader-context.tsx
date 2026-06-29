@@ -1,12 +1,21 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { PageLoaderOverlay } from "@/components/ui/PageLoaderOverlay";
 
 type PageLoaderContextValue = {
   isLoading: boolean;
-  startLoading: () => void;
+  startLoading: (nextHref: string) => void;
   finishLoading: () => void;
 };
 
@@ -16,34 +25,64 @@ export function PageLoaderProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-  const startedAtRef = useRef<number | null>(null);
+  const pendingHrefRef = useRef<string | null>(null);
+  const safetyTimerRef = useRef<number | null>(null);
 
-  const startLoading = useCallback(() => {
-    startedAtRef.current = Date.now();
-    setIsLoading(true);
+  const clearSafetyTimer = useCallback(() => {
+    if (safetyTimerRef.current !== null) {
+      window.clearTimeout(safetyTimerRef.current);
+      safetyTimerRef.current = null;
+    }
   }, []);
+
+  const startLoading = useCallback(
+    (nextHref: string) => {
+      const qs = searchParams.toString();
+      const currentHref = qs ? `${pathname}?${qs}` : pathname;
+
+      if (nextHref === currentHref) {
+        return;
+      }
+
+      pendingHrefRef.current = nextHref;
+      setIsLoading(true);
+
+      clearSafetyTimer();
+      safetyTimerRef.current = window.setTimeout(() => {
+        pendingHrefRef.current = null;
+        safetyTimerRef.current = null;
+        setIsLoading(false);
+      }, 5000);
+    },
+    [clearSafetyTimer, pathname, searchParams],
+  );
 
   const finishLoading = useCallback(() => {
-    startedAtRef.current = null;
+    pendingHrefRef.current = null;
+    clearSafetyTimer();
     setIsLoading(false);
-  }, []);
+  }, [clearSafetyTimer]);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!pendingHrefRef.current) {
       return;
     }
 
-    const elapsed = startedAtRef.current ? Date.now() - startedAtRef.current : 0;
-    const remaining = Math.max(0, 220 - elapsed);
-    const timer = window.setTimeout(() => {
-      setIsLoading(false);
-      startedAtRef.current = null;
-    }, remaining);
+    const qs = searchParams.toString();
+    const currentHref = qs ? `${pathname}?${qs}` : pathname;
 
+    if (pendingHrefRef.current === currentHref) {
+      pendingHrefRef.current = null;
+      clearSafetyTimer();
+      setIsLoading(false);
+    }
+  }, [clearSafetyTimer, pathname, searchParams]);
+
+  useEffect(() => {
     return () => {
-      window.clearTimeout(timer);
+      clearSafetyTimer();
     };
-  }, [isLoading, pathname, searchParams]);
+  }, [clearSafetyTimer]);
 
   const value = useMemo(
     () => ({
