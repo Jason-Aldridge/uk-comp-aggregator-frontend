@@ -1,11 +1,10 @@
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
-import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import { urlFor } from "@/sanity/client";
-import { RelatedReviews } from "./RelatedReviews";
+import { RelatedPosts } from "./RelatedPosts";
 import { portableTextComponents } from "./portableTextComponents";
 
-type ReviewSlug = {
+type PostSlug = {
   current: string;
 };
 
@@ -15,26 +14,24 @@ type SeoMeta = {
   seoImage?: unknown;
 };
 
-type ReviewData = {
+type PostData = {
   title: string;
-  slug: ReviewSlug;
-  operatorName?: string | null;
+  slug: PostSlug;
   heroImage?: unknown;
   excerpt?: string | null;
-  rating?: number | null;
-  publishedAt?: string | null;
+  category?: string | null;
   body?: unknown[];
+  publishedAt?: string | null;
   seo?: SeoMeta;
 };
 
-type ReviewListItem = {
+type PostListItem = {
   _id: string;
   title: string;
-  slug: ReviewSlug;
-  operatorName?: string | null;
+  slug: PostSlug;
   heroImage?: unknown;
   excerpt: string;
-  rating?: number | null;
+  category?: string | null;
   publishedAt: string;
 };
 
@@ -49,33 +46,15 @@ function formatPublishedDate(value: string) {
   }).format(date);
 }
 
-function Stars({ rating }: { rating: number }) {
-  const clamped = Math.max(0, Math.min(5, rating));
-  const filled = Math.round(clamped);
-  const stars = Array.from({ length: 5 }, (_, idx) => idx < filled);
-
-  return (
-    <div className="flex items-center gap-0.5 text-rr-green">
-      {stars.map((isFilled, idx) =>
-        isFilled ? (
-          <IconStarFilled key={idx} size={16} />
-        ) : (
-          <IconStar key={idx} size={16} />
-        ),
-      )}
-    </div>
-  );
-}
-
-export function ReviewArticle({
-  review,
-  relatedReviews,
+export function PostArticle({
+  post,
+  relatedPosts,
 }: {
-  review: ReviewData;
-  relatedReviews?: ReviewListItem[];
+  post: PostData;
+  relatedPosts?: PostListItem[];
 }) {
-  const imgSrc = review.heroImage
-    ? urlFor(review.heroImage)
+  const imgSrc = post.heroImage
+    ? urlFor(post.heroImage)
         .width(1400)
         .height(788)
         .fit("crop")
@@ -96,7 +75,7 @@ export function ReviewArticle({
               >
                 <Image
                   src={imgSrc}
-                  alt={review.title}
+                  alt={post.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 1100px"
                   className="object-cover"
@@ -110,41 +89,32 @@ export function ReviewArticle({
       <section className="py-10">
         <div className="container">
           <div className="mx-auto max-w-[780px] lg:max-w-[860px]">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex flex-col gap-1">
-                {review.operatorName ? (
-                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-rr-green">
-                    {review.operatorName}
-                  </p>
-                ) : null}
-                {review.publishedAt ? (
-                  <p className="text-sm text-rr-muted">
-                    {formatPublishedDate(review.publishedAt)}
-                  </p>
-                ) : null}
-              </div>
-              {typeof review.rating === "number" ? (
-                <Stars rating={review.rating} />
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              {post.category ? (
+                <span className="inline-flex rounded-full border border-rr-green-border bg-rr-green-bg px-2.5 py-1 text-[11px] font-medium text-rr-green">
+                  {post.category}
+                </span>
+              ) : null}
+              {post.publishedAt ? (
+                <p className="text-sm text-rr-muted">{formatPublishedDate(post.publishedAt)}</p>
               ) : null}
             </div>
 
             <h1 className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl">
-              {review.title}
+              {post.title}
             </h1>
 
-            {review.excerpt ? (
-              <p className="mt-5 text-[17px] italic leading-7 text-rr-secondary">
-                {review.excerpt}
-              </p>
+            {post.excerpt ? (
+              <p className="mt-5 text-[17px] italic leading-7 text-rr-secondary">{post.excerpt}</p>
             ) : null}
 
             <div className="mt-10">
-              <PortableText value={review.body ?? []} components={portableTextComponents} />
+              <PortableText value={post.body ?? []} components={portableTextComponents} />
             </div>
           </div>
 
           <div className="mx-auto mt-12 max-w-[780px] lg:max-w-[860px]">
-            <RelatedReviews reviews={relatedReviews ?? []} />
+            <RelatedPosts posts={relatedPosts ?? []} />
           </div>
         </div>
       </section>

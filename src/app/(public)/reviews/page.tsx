@@ -23,6 +23,8 @@ type ReviewListItem = {
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Reviews — RaffleRadar",
+    description:
+      "In-depth, independent reviews of UK competition operators — pricing, odds, and whether they're worth entering.",
   };
 }
 
@@ -32,35 +34,42 @@ export default async function ReviewsPage() {
   return (
     <main className="bg-rr-bg">
       <section className="bg-gradient-to-b from-rr-surface to-rr-bg">
-        <div className="container py-14 md:py-16">
-          <div className="mx-auto max-w-[760px] text-center">
-            <h1 className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl">
-              Reviews
+        <div className="container py-16 md:py-20">
+          <div className="max-w-[760px]">
+            <p className="mb-4 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-rr-green">
+              <span className="h-px w-8 bg-rr-green" />
+              Operator Reviews
+            </p>
+            <h1 className="text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-rr-primary md:text-6xl">
+              We do the <span className="text-rr-green">digging</span> so you don&apos;t lose the bet.
             </h1>
-            <p className="mx-auto mt-5 max-w-[680px] text-base leading-7 text-rr-secondary md:text-lg">
-              In-depth reviews of UK competition operators — what they offer, how they price, and
-              whether they’re worth your time.
+            <p className="mt-6 max-w-[600px] text-base leading-7 text-rr-secondary md:text-lg">
+              Independent reviews of every major UK competition operator — what they run, how they
+              price their tickets, the odds behind the headline, and whether they&apos;re actually
+              worth your money.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="pb-14">
+      <section className="pb-16 pt-12">
         <div className="container">
           {reviews.length ? (
-            <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {reviews.map((review) => (
-                <ReviewCard
-                  key={review._id}
-                  title={review.title}
-                  slug={review.slug}
-                  operatorName={review.operatorName}
-                  heroImage={review.heroImage}
-                  excerpt={review.excerpt}
-                  rating={review.rating}
-                  publishedAt={review.publishedAt}
-                />
-              ))}
+            <div className="mx-auto max-w-[1100px]">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {reviews.map((review) => (
+                  <ReviewCard
+                    key={review._id}
+                    title={review.title}
+                    slug={review.slug}
+                    operatorName={review.operatorName}
+                    heroImage={review.heroImage}
+                    excerpt={review.excerpt}
+                    rating={review.rating}
+                    publishedAt={review.publishedAt}
+                  />
+                ))}
+              </div>
             </div>
           ) : (
             <div className="py-20 text-center text-rr-muted">No reviews yet. Check back soon.</div>

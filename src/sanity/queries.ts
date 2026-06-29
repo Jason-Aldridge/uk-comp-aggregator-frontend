@@ -46,3 +46,36 @@ export const RELATED_REVIEWS = `*[_type == "review" && defined(slug.current) && 
   rating,
   publishedAt
 }`;
+
+export const ALL_POSTS = `*[_type == "post" && defined(slug.current)] | order(publishedAt desc){
+  _id,
+  title,
+  slug,
+  heroImage,
+  excerpt,
+  category,
+  publishedAt
+}`;
+
+export const POST_BY_SLUG = `*[_type == "post" && slug.current == $slug][0]{
+  title,
+  slug,
+  heroImage,
+  excerpt,
+  category,
+  body,
+  publishedAt,
+  seo
+}`;
+
+export const ALL_POST_SLUGS = `*[_type == "post" && defined(slug.current)][].slug.current`;
+
+export const RELATED_POSTS = `*[_type == "post" && defined(slug.current) && slug.current != $slug] | order(publishedAt desc)[0...3]{
+  _id,
+  title,
+  slug,
+  heroImage,
+  excerpt,
+  category,
+  publishedAt
+}`;

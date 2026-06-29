@@ -33,6 +33,7 @@ export function Navbar() {
   const isCompetitionsActive =
     pathname === "/competitions" || pathname.startsWith("/competitions/");
   const isReviewsActive = pathname === "/reviews" || pathname.startsWith("/reviews/");
+  const isBlogActive = pathname === "/blog" || pathname.startsWith("/blog/");
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 768px)");
@@ -61,7 +62,7 @@ export function Navbar() {
             <CompetitionSearch />
           </div>
 
-        <div className="hidden md:flex gap-1 ml-4 md:ml-8">
+          <div className="hidden md:ml-8 md:flex md:gap-1 ml-4">
           <Link
             href="/competitions"
             aria-current={isCompetitionsActive ? "page" : undefined}
@@ -80,18 +81,30 @@ export function Navbar() {
           >
             Operators
           </a>
-            <Link
-              href="/reviews"
-              aria-current={isReviewsActive ? "page" : undefined}
-              className={cn(
-                "text-sm px-3 py-2 rounded-md no-underline whitespace-nowrap",
-                isReviewsActive
-                  ? "bg-rr-green text-rr-on-accent"
-                  : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
-              )}
-            >
-              Reviews
-            </Link>
+          <Link
+            href="/reviews"
+            aria-current={isReviewsActive ? "page" : undefined}
+            className={cn(
+              "text-sm px-3 py-2 rounded-md no-underline whitespace-nowrap",
+              isReviewsActive
+                ? "bg-rr-green text-rr-on-accent"
+                : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
+            )}
+          >
+            Reviews
+          </Link>
+          <Link
+            href="/blog"
+            aria-current={isBlogActive ? "page" : undefined}
+            className={cn(
+              "text-sm px-3 py-2 rounded-md no-underline whitespace-nowrap",
+              isBlogActive
+                ? "bg-rr-green text-rr-on-accent"
+                : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
+            )}
+          >
+            Blog
+          </Link>
           <a
             href="#"
             className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
@@ -182,6 +195,19 @@ export function Navbar() {
               onClick={() => setMenuOpen(false)}
             >
               Reviews
+            </Link>
+            <Link
+              href="/blog"
+              aria-current={isBlogActive ? "page" : undefined}
+              className={cn(
+                "text-sm px-3 py-2 rounded-md no-underline",
+                isBlogActive
+                  ? "bg-rr-green text-rr-on-accent"
+                  : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
+              )}
+              onClick={() => setMenuOpen(false)}
+            >
+              Blog
             </Link>
             <a
               href="#"
