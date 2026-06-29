@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePageLoader } from "@/components/ui/page-loader-context";
 
 type AccentTone = "green" | "red";
 
@@ -22,6 +25,8 @@ export function SectionHeader({
   viewAllHref,
   accentTone = "green",
 }: SectionHeaderProps) {
+  const { startLoading } = usePageLoader();
+
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
@@ -35,6 +40,7 @@ export function SectionHeader({
       <Link
         href={viewAllHref}
         className="shrink-0 text-sm font-medium text-rr-green no-underline transition-opacity hover:opacity-80"
+        onClick={() => startLoading(viewAllHref)}
       >
         View All →
       </Link>

@@ -26,6 +26,7 @@ export function PageLoaderProvider({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const pendingHrefRef = useRef<string | null>(null);
+  const visibleStartedAtRef = useRef<number | null>(null);
   const safetyTimerRef = useRef<number | null>(null);
 
   const clearSafetyTimer = useCallback(() => {
@@ -45,13 +46,10 @@ export function PageLoaderProvider({ children }: { children: ReactNode }) {
       }
 
       pendingHrefRef.current = nextHref;
-      setIsLoading(true);
-
       clearSafetyTimer();
       safetyTimerRef.current = window.setTimeout(() => {
         pendingHrefRef.current = null;
         safetyTimerRef.current = null;
-        setIsLoading(false);
       }, 5000);
     },
     [clearSafetyTimer, pathname, searchParams],
@@ -59,24 +57,41 @@ export function PageLoaderProvider({ children }: { children: ReactNode }) {
 
   const finishLoading = useCallback(() => {
     pendingHrefRef.current = null;
+    visibleStartedAtRef.current = null;
     clearSafetyTimer();
     setIsLoading(false);
   }, [clearSafetyTimer]);
 
   useEffect(() => {
-    if (!pendingHrefRef.current) {
-      return;
-    }
-
     const qs = searchParams.toString();
     const currentHref = qs ? `${pathname}?${qs}` : pathname;
 
-    if (pendingHrefRef.current === currentHref) {
-      pendingHrefRef.current = null;
-      clearSafetyTimer();
-      setIsLoading(false);
+    if (!pendingHrefRef.current || pendingHrefRef.current !== currentHref) {
+      return;
     }
+
+    pendingHrefRef.current = null;
+    visibleStartedAtRef.current = Date.now();
+    clearSafetyTimer();
+    setIsLoading(true);
   }, [clearSafetyTimer, pathname, searchParams]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      return;
+    }
+
+    const elapsed = visibleStartedAtRef.current ? Date.now() - visibleStartedAtRef.current : 0;
+    const remaining = Math.max(0, 180 - elapsed);
+    const timer = window.setTimeout(() => {
+      visibleStartedAtRef.current = null;
+      setIsLoading(false);
+    }, remaining);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [isLoading]);
 
   useEffect(() => {
     return () => {
