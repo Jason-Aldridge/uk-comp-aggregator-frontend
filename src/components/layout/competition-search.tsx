@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { IconLoader2, IconSearch, IconX } from "@tabler/icons-react";
+import { IconSearch, IconX } from "@tabler/icons-react";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import { RadarLoader } from "@/components/ui/RadarLoader";
 import { getCompetitionSearch, type CompetitionSearchResult } from "@/lib/api";
 
 const priceFormatter = new Intl.NumberFormat("en-GB", {
@@ -206,9 +207,8 @@ export function CompetitionSearch() {
       {open && trimmedQuery.length >= 2 ? (
         <div className="absolute left-0 right-0 top-full z-[60] mt-2 max-h-[70vh] overflow-x-hidden overflow-y-auto overscroll-contain rounded-md border border-rr-border bg-rr-surface shadow-lg">
           {loading ? (
-            <div className="flex items-center gap-2 px-3 py-3 text-sm text-rr-muted">
-              <IconLoader2 size={16} className="animate-spin" />
-              <span>Searching...</span>
+            <div className="flex items-center justify-center px-3 py-3">
+              <RadarLoader size="md" />
             </div>
           ) : null}
 

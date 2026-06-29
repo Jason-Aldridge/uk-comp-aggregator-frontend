@@ -29,16 +29,18 @@ export default async function Page({
         <Suspense fallback={null}>
           <FilterBar />
         </Suspense>
-        <CompetitionGrid
-          params={{
-            category: params.category,
-            closing: params.closing,
-            sortBy: params.sortBy,
-            sortOrder: params.sortOrder,
-            freeOnly: params.freeOnly === "true",
-            limit: 500,
-          }}
-        />
+        <Suspense fallback={null}>
+          <CompetitionGrid
+            params={{
+              category: params.category,
+              closing: params.closing,
+              sortBy: params.sortBy,
+              sortOrder: params.sortOrder,
+              freeOnly: params.freeOnly === "true",
+              limit: 500,
+            }}
+          />
+        </Suspense>
       </main>
     );
   }

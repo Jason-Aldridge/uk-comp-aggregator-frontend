@@ -1,6 +1,7 @@
 "use client";
 
 import { CompetitionCard } from "@/components/competitions/competition-card";
+import { RadarLoader } from "@/components/ui/RadarLoader";
 import { useInfinitePagination } from "@/lib/use-infinite-pagination";
 import type { Competition } from "@/types/competition";
 
@@ -16,9 +17,9 @@ export function CompetitionGridClient({
   pageSize = 20,
 }: CompetitionGridClientProps) {
   const { visibleItems, hasMore, loadMoreRef } = useInfinitePagination({
-      items: competitions,
-      pageSize,
-    });
+    items: competitions,
+    pageSize,
+  });
 
   const featuredSet = new Set(featuredIds);
 
@@ -39,7 +40,9 @@ export function CompetitionGridClient({
 
             {hasMore ? (
               <div className="mt-6" aria-hidden="true">
-                <div ref={loadMoreRef} className="h-6 w-full" />
+                <div ref={loadMoreRef} className="flex h-14 w-full items-center justify-center">
+                  <RadarLoader size="md" />
+                </div>
               </div>
             ) : null}
           </>

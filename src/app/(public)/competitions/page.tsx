@@ -153,19 +153,21 @@ export default async function CompetitionsPage({
         </div>
       </section>
 
-      <CompetitionGrid
-        params={{
-          category: params.category,
-          closing,
-          sortBy,
-          sortOrder,
-          minPrizeValue: params.minPrizeValue ? Number(params.minPrizeValue) : undefined,
-          freeOnly: params.freeOnly === "true",
-          excludeInstant: params.excludeInstant === "true",
-          excludeFree: params.excludeFree === "true",
-          limit: 500,
-        }}
-      />
+      <Suspense fallback={null}>
+        <CompetitionGrid
+          params={{
+            category: params.category,
+            closing,
+            sortBy,
+            sortOrder,
+            minPrizeValue: params.minPrizeValue ? Number(params.minPrizeValue) : undefined,
+            freeOnly: params.freeOnly === "true",
+            excludeInstant: params.excludeInstant === "true",
+            excludeFree: params.excludeFree === "true",
+            limit: 500,
+          }}
+        />
+      </Suspense>
     </main>
   );
 }

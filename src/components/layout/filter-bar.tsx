@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { IconChartBar, IconChevronDown, IconClock } from "@tabler/icons-react";
+import { usePageLoader } from "@/components/ui/page-loader-context";
 import { cn } from "@/lib/cn";
 
 export type FilterOption = {
@@ -70,6 +71,7 @@ export function FilterBar({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { startLoading } = usePageLoader();
 
   const [sortOpen, setSortOpen] = useState(false);
   const [closingOpen, setClosingOpen] = useState(false);
@@ -118,9 +120,18 @@ export function FilterBar({
       params.delete("page");
 
       const qs = params.toString();
-      router.push(qs ? `${pathname}?${qs}` : pathname);
+      const nextHref = qs ? `${pathname}?${qs}` : pathname;
+      const currentQs = searchParams.toString();
+      const currentHref = currentQs ? `${pathname}?${currentQs}` : pathname;
+
+      if (nextHref === currentHref) {
+        return;
+      }
+
+      startLoading();
+      router.push(nextHref);
     },
-    [pathname, router, searchParams],
+    [pathname, router, searchParams, startLoading],
   );
 
   const updateParams = useCallback(
@@ -140,9 +151,18 @@ export function FilterBar({
       params.delete("page");
 
       const qs = params.toString();
-      router.push(qs ? `${pathname}?${qs}` : pathname);
+      const nextHref = qs ? `${pathname}?${qs}` : pathname;
+      const currentQs = searchParams.toString();
+      const currentHref = currentQs ? `${pathname}?${currentQs}` : pathname;
+
+      if (nextHref === currentHref) {
+        return;
+      }
+
+      startLoading();
+      router.push(nextHref);
     },
-    [pathname, router, searchParams],
+    [pathname, router, searchParams, startLoading],
   );
 
   const handleClosingClick = useCallback(

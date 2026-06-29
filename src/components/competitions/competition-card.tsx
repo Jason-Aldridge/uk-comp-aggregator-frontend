@@ -40,8 +40,6 @@ interface Props {
 
 const ticketCountFormatter = new Intl.NumberFormat("en-GB");
 
-
-
 export function CompetitionCard({ competition, featured }: Props) {
   const {
     id,
@@ -72,7 +70,7 @@ export function CompetitionCard({ competition, featured }: Props) {
         featured ? "border-rr-green-border" : "",
       ].join(" ")}
     >
-      <div className="relative h-[150px] bg-rr-elevated flex items-center justify-center">
+      <div className="relative flex h-[150px] items-center justify-center bg-rr-elevated">
         {imageUrl ? (
           <Image src={imageUrl} alt={prize} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
         ) : (
