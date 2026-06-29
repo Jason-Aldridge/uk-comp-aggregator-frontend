@@ -34,16 +34,17 @@ export default async function ReviewsPage() {
   return (
     <main className="bg-rr-bg">
       <section className="bg-gradient-to-b from-rr-surface to-rr-bg">
-        <div className="container py-16 md:py-20">
+        <div className="container py-8 md:py-20">
           <div className="max-w-[760px]">
-            <p className="mb-4 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-rr-green">
+            <p className="mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-rr-green md:mb-4">
               <span className="h-px w-8 bg-rr-green" />
               Operator Reviews
             </p>
-            <h1 className="text-4xl font-medium leading-[1.05] tracking-[-0.03em] text-rr-primary md:text-6xl">
-              We do the <span className="text-rr-green">digging</span> so you don&apos;t lose the bet.
+            <h1 className="text-2xl font-medium leading-[1.1] tracking-[-0.03em] text-rr-primary md:text-6xl md:leading-[1.05]">
+              We do the <span className="text-rr-green">digging</span>{" "}
+              so you don&apos;t lose the bet.
             </h1>
-            <p className="mt-6 max-w-[600px] text-base leading-7 text-rr-secondary md:text-lg">
+            <p className="mt-3 hidden max-w-[600px] text-base leading-7 text-rr-secondary md:mt-6 md:block md:text-lg">
               Independent reviews of every major UK competition operator — what they run, how they
               price their tickets, the odds behind the headline, and whether they&apos;re actually
               worth your money.
@@ -52,24 +53,22 @@ export default async function ReviewsPage() {
         </div>
       </section>
 
-      <section className="pb-16 pt-12">
+      <section className="pb-12 pt-6 md:pb-16 md:pt-12">
         <div className="container">
           {reviews.length ? (
-            <div className="mx-auto max-w-[1100px]">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {reviews.map((review) => (
-                  <ReviewCard
-                    key={review._id}
-                    title={review.title}
-                    slug={review.slug}
-                    operatorName={review.operatorName}
-                    heroImage={review.heroImage}
-                    excerpt={review.excerpt}
-                    rating={review.rating}
-                    publishedAt={review.publishedAt}
-                  />
-                ))}
-              </div>
+            <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {reviews.map((review) => (
+                <ReviewCard
+                  key={review._id}
+                  title={review.title}
+                  slug={review.slug}
+                  operatorName={review.operatorName}
+                  heroImage={review.heroImage}
+                  excerpt={review.excerpt}
+                  rating={review.rating}
+                  publishedAt={review.publishedAt}
+                />
+              ))}
             </div>
           ) : (
             <div className="py-20 text-center text-rr-muted">No reviews yet. Check back soon.</div>
