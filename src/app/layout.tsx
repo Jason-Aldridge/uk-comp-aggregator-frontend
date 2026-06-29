@@ -1,5 +1,6 @@
 import "@fontsource/inter/latin.css";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
@@ -24,12 +25,14 @@ export default function RootLayout({
     <html lang="en" className="font-sans" suppressHydrationWarning>
       <body>
         <ThemeProvider>
-          <PageLoaderProvider>
-            <AuthProvider>
-              <Navbar />
-              {children}
-            </AuthProvider>
-          </PageLoaderProvider>
+          <Suspense fallback={null}>
+            <PageLoaderProvider>
+              <AuthProvider>
+                <Navbar />
+                {children}
+              </AuthProvider>
+            </PageLoaderProvider>
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>
