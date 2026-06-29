@@ -9,6 +9,7 @@ import { cn } from "@/lib/cn";
 import { useAuth } from "@/contexts/auth-context";
 import { CompetitionSearch } from "@/components/layout/competition-search";
 import { Button } from "@/components/ui/button";
+import { usePageLoader } from "@/components/ui/page-loader-context";
 
 function getInitials(value: string): string {
   const parts = value
@@ -28,6 +29,7 @@ export function Navbar() {
   const { user } = useAuth();
   const { setTheme } = useTheme();
   const pathname = usePathname();
+  const { startLoading } = usePageLoader();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const isCompetitionsActive =
@@ -72,6 +74,7 @@ export function Navbar() {
                 ? "bg-rr-green text-rr-on-accent"
                 : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
             )}
+            onClick={() => startLoading("/competitions")}
           >
             Competitions
           </Link>
@@ -172,7 +175,10 @@ export function Navbar() {
                   ? "bg-rr-green text-rr-on-accent"
                   : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
               )}
-              onClick={() => setMenuOpen(false)}
+              onClick={() => {
+                startLoading("/competitions");
+                setMenuOpen(false);
+              }}
             >
               Competitions
             </Link>
