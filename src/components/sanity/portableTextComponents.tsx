@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { PortableTextComponents } from "@portabletext/react";
 import { urlFor } from "@/sanity/client";
@@ -45,6 +46,10 @@ export const portableTextComponents: PortableTextComponents = {
     number: ({ children }) => <li>{children}</li>,
   },
   marks: {
+    strong: ({ children }) => <strong className="font-semibold text-rr-primary">{children}</strong>,
+    em: ({ children }) => <em className="italic">{children}</em>,
+    underline: ({ children }) => <span className="underline underline-offset-4">{children}</span>,
+    "strike-through": ({ children }) => <span className="line-through">{children}</span>,
     link: ({ children, value }) => {
       const href =
         value && typeof value === "object" && "href" in value
@@ -84,7 +89,13 @@ export const portableTextComponents: PortableTextComponents = {
 
       return (
         <figure className="my-8 overflow-hidden rounded-xl border border-rr-border bg-rr-surface">
-          <img src={src} alt={alt} className="h-auto w-full object-cover" />
+          <Image
+            src={src}
+            alt={alt}
+            width={1200}
+            height={800}
+            className="h-auto w-full object-cover"
+          />
           {alt ? <figcaption className="px-4 py-3 text-sm text-rr-muted">{alt}</figcaption> : null}
         </figure>
       );

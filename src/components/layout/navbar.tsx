@@ -32,6 +32,7 @@ export function Navbar() {
 
   const isCompetitionsActive =
     pathname === "/competitions" || pathname.startsWith("/competitions/");
+  const isReviewsActive = pathname === "/reviews" || pathname.startsWith("/reviews/");
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 768px)");
@@ -79,6 +80,18 @@ export function Navbar() {
           >
             Operators
           </a>
+            <Link
+              href="/reviews"
+              aria-current={isReviewsActive ? "page" : undefined}
+              className={cn(
+                "text-sm px-3 py-2 rounded-md no-underline whitespace-nowrap",
+                isReviewsActive
+                  ? "bg-rr-green text-rr-on-accent"
+                  : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
+              )}
+            >
+              Reviews
+            </Link>
           <a
             href="#"
             className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
@@ -157,6 +170,19 @@ export function Navbar() {
             >
               Operators
             </a>
+            <Link
+              href="/reviews"
+              aria-current={isReviewsActive ? "page" : undefined}
+              className={cn(
+                "text-sm px-3 py-2 rounded-md no-underline",
+                isReviewsActive
+                  ? "bg-rr-green text-rr-on-accent"
+                  : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
+              )}
+              onClick={() => setMenuOpen(false)}
+            >
+              Reviews
+            </Link>
             <a
               href="#"
               className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline"
