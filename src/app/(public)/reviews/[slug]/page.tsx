@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { sanityClient, urlFor } from "@/sanity/client";
-import { ALL_REVIEW_SLUGS, REVIEW_BY_SLUG } from "@/sanity/queries";
+import { ALL_REVIEW_SLUGS, RELATED_REVIEWS, REVIEW_BY_SLUG } from "@/sanity/queries";
 import { ReviewArticle } from "@/components/sanity/ReviewArticle";
 
 export const revalidate = 60;
@@ -30,6 +30,17 @@ type ReviewData = {
   body?: unknown[];
   publishedAt?: string | null;
   seo?: SeoMeta;
+};
+
+type ReviewListItem = {
+  _id: string;
+  title: string;
+  slug: ReviewSlug;
+  operatorName?: string | null;
+  heroImage?: unknown;
+  excerpt: string;
+  rating?: number | null;
+  publishedAt: string;
 };
 
 export async function generateStaticParams() {
@@ -78,5 +89,7 @@ export default async function ReviewPage({
     notFound();
   }
 
-  return <ReviewArticle review={review} />;
+  const relatedReviews = await sanityClient.fetch<ReviewListItem[]>(RELATED_REVIEWS, { slug });
+
+  return <ReviewArticle review={review} relatedReviews={relatedReviews} />;
 }

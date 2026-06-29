@@ -2,6 +2,7 @@ import Image from "next/image";
 import { PortableText } from "@portabletext/react";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import { urlFor } from "@/sanity/client";
+import { RelatedReviews } from "./RelatedReviews";
 import { portableTextComponents } from "./portableTextComponents";
 
 type ReviewSlug = {
@@ -24,6 +25,17 @@ type ReviewData = {
   publishedAt?: string | null;
   body?: unknown[];
   seo?: SeoMeta;
+};
+
+type ReviewListItem = {
+  _id: string;
+  title: string;
+  slug: ReviewSlug;
+  operatorName?: string | null;
+  heroImage?: unknown;
+  excerpt: string;
+  rating?: number | null;
+  publishedAt: string;
 };
 
 function formatPublishedDate(value: string) {
@@ -55,7 +67,13 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-export function ReviewArticle({ review }: { review: ReviewData }) {
+export function ReviewArticle({
+  review,
+  relatedReviews,
+}: {
+  review: ReviewData;
+  relatedReviews?: ReviewListItem[];
+}) {
   const imgSrc = review.heroImage
     ? urlFor(review.heroImage)
         .width(1400)
@@ -121,11 +139,12 @@ export function ReviewArticle({ review }: { review: ReviewData }) {
             ) : null}
 
             <div className="mt-10">
-              <PortableText
-                value={review.body ?? []}
-                components={portableTextComponents}
-              />
+              <PortableText value={review.body ?? []} components={portableTextComponents} />
             </div>
+          </div>
+
+          <div className="mx-auto mt-12 max-w-[760px] lg:max-w-[820px]">
+            <RelatedReviews reviews={relatedReviews ?? []} />
           </div>
         </div>
       </section>

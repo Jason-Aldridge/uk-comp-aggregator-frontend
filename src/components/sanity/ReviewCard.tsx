@@ -57,7 +57,7 @@ export function ReviewCard({
   const imgSrc = heroImage
     ? urlFor(heroImage)
         .width(600)
-        .height(400)
+        .height(338)
         .fit("crop")
         .crop("focalpoint")
         .auto("format")
@@ -73,7 +73,7 @@ export function ReviewCard({
       <article className="h-full overflow-hidden rounded-[10px] border border-rr-border bg-rr-elevated transition group-hover:-translate-y-0.5 group-hover:border-rr-green/40">
         <div
           className="relative w-full overflow-hidden bg-rr-surface"
-          style={{ aspectRatio: "3 / 2" }}
+          style={{ aspectRatio: "16 / 9" }}
         >
           {imgSrc ? (
             <Image
