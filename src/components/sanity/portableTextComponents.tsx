@@ -50,6 +50,11 @@ export const portableTextComponents: PortableTextComponents = {
     em: ({ children }) => <em className="italic">{children}</em>,
     underline: ({ children }) => <span className="underline underline-offset-4">{children}</span>,
     "strike-through": ({ children }) => <span className="line-through">{children}</span>,
+    colorAccent: ({ children }) => <span style={{ color: "var(--accent)" }}>{children}</span>,
+    colorGood: ({ children }) => <span style={{ color: "var(--vr-good-text)" }}>{children}</span>,
+    colorWarn: ({ children }) => <span style={{ color: "var(--vr-warn-text)" }}>{children}</span>,
+    colorDanger: ({ children }) => <span style={{ color: "var(--vr-danger-text)" }}>{children}</span>,
+    colorMuted: ({ children }) => <span style={{ color: "var(--text-muted)" }}>{children}</span>,
     link: ({ children, value }) => {
       const href =
         value && typeof value === "object" && "href" in value

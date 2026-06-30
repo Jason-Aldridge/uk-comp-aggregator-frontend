@@ -29,6 +29,11 @@ export const richTextBlock = defineType({
               { title: "Italic", value: "em" },
               { title: "Underline", value: "underline" },
               { title: "Strike", value: "strike-through" },
+              { title: "Accent (green)", value: "colorAccent" },
+              { title: "Positive (green)", value: "colorGood" },
+              { title: "Warning (amber)", value: "colorWarn" },
+              { title: "Danger (red)", value: "colorDanger" },
+              { title: "Muted (grey)", value: "colorMuted" },
             ],
             annotations: [
               {
