@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { FeaturedPostCard } from "@/components/sanity/FeaturedPostCard";
 import { PostCard } from "@/components/sanity/PostCard";
+import { ClassicPagination } from "@/components/ui/ClassicPagination";
+import { paginate } from "@/lib/classic-pagination";
 import { sanityClient } from "@/sanity/client";
 import { ALL_POSTS } from "@/sanity/queries";
 
@@ -27,9 +29,23 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function BlogPage() {
+const PAGE_SIZE = 9;
+
+type BlogPageSearchParams = {
+  page?: string;
+};
+
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<BlogPageSearchParams>;
+}) {
+  const sp = await searchParams;
+  const page = Number(sp?.page) || 1;
   const posts = await sanityClient.fetch<PostListItem[]>(ALL_POSTS);
   const [featuredPost, ...previousPosts] = posts;
+  const mobilePagination = paginate(posts, page, PAGE_SIZE);
+  const desktopPagination = paginate(previousPosts, page, PAGE_SIZE);
 
   return (
     <main className="bg-rr-bg">
@@ -60,24 +76,29 @@ export default async function BlogPage() {
             <div className="py-20 text-center text-rr-muted">No posts yet. Check back soon.</div>
           ) : (
             <div>
-              {/* Mobile: single uniform stream, featured looks like any other card */}
-              <div className="grid grid-cols-1 gap-4 md:hidden">
-                {posts.map((post) => (
-                  <PostCard
-                    key={post._id}
-                    title={post.title}
-                    slug={post.slug}
-                    heroImage={post.heroImage}
-                    excerpt={post.excerpt}
-                    category={post.category}
-                    publishedAt={post.publishedAt}
-                  />
-                ))}
+              <div className="md:hidden">
+                <div className="grid grid-cols-1 gap-4">
+                  {mobilePagination.items.map((post) => (
+                    <PostCard
+                      key={post._id}
+                      title={post.title}
+                      slug={post.slug}
+                      heroImage={post.heroImage}
+                      excerpt={post.excerpt}
+                      category={post.category}
+                      publishedAt={post.publishedAt}
+                    />
+                  ))}
+                </div>
+                <ClassicPagination
+                  currentPage={mobilePagination.currentPage}
+                  totalPages={mobilePagination.totalPages}
+                  basePath="/blog"
+                />
               </div>
 
-              {/* Desktop: featured block + previous grid */}
               <div className="hidden md:block">
-                {featuredPost ? (
+                {desktopPagination.currentPage === 1 && featuredPost ? (
                   <div>
                     <p className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-rr-green">
                       <span className="inline-block h-1.5 w-1.5 rounded-full bg-rr-green" />
@@ -94,14 +115,13 @@ export default async function BlogPage() {
                   </div>
                 ) : null}
 
-                {previousPosts.length ? (
+                {desktopPagination.items.length ? (
                   <section className="mt-14">
                     <h2 className="mb-6 text-2xl font-medium tracking-[-0.02em] text-rr-primary">
                       Previous articles
                     </h2>
-
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                      {previousPosts.map((post) => (
+                      {desktopPagination.items.map((post) => (
                         <PostCard
                           key={post._id}
                           title={post.title}
@@ -113,6 +133,11 @@ export default async function BlogPage() {
                         />
                       ))}
                     </div>
+                    <ClassicPagination
+                      currentPage={desktopPagination.currentPage}
+                      totalPages={desktopPagination.totalPages}
+                      basePath="/blog"
+                    />
                   </section>
                 ) : null}
               </div>

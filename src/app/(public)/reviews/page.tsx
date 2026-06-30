@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { ReviewCard } from "@/components/sanity/ReviewCard";
+import { ClassicPagination } from "@/components/ui/ClassicPagination";
+import { paginate } from "@/lib/classic-pagination";
 import { sanityClient } from "@/sanity/client";
 import { ALL_REVIEWS } from "@/sanity/queries";
-import { ReviewCard } from "@/components/sanity/ReviewCard";
 
 export const revalidate = 60;
 
@@ -28,8 +30,21 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function ReviewsPage() {
+const PAGE_SIZE = 9;
+
+type ReviewsPageSearchParams = {
+  page?: string;
+};
+
+export default async function ReviewsPage({
+  searchParams,
+}: {
+  searchParams: Promise<ReviewsPageSearchParams>;
+}) {
+  const sp = await searchParams;
+  const page = Number(sp?.page) || 1;
   const reviews = await sanityClient.fetch<ReviewListItem[]>(ALL_REVIEWS);
+  const pagination = paginate(reviews, page, PAGE_SIZE);
 
   return (
     <main className="bg-rr-bg">
@@ -59,20 +74,27 @@ export default async function ReviewsPage() {
         <div className="container">
           <div className="mx-auto max-w-[1100px]">
           {reviews.length ? (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {reviews.map((review) => (
-                <ReviewCard
-                  key={review._id}
-                  title={review.title}
-                  slug={review.slug}
-                  operatorName={review.operatorName}
-                  heroImage={review.heroImage}
-                  excerpt={review.excerpt}
-                  rating={review.rating}
-                  publishedAt={review.publishedAt}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {pagination.items.map((review) => (
+                  <ReviewCard
+                    key={review._id}
+                    title={review.title}
+                    slug={review.slug}
+                    operatorName={review.operatorName}
+                    heroImage={review.heroImage}
+                    excerpt={review.excerpt}
+                    rating={review.rating}
+                    publishedAt={review.publishedAt}
+                  />
+                ))}
+              </div>
+              <ClassicPagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                basePath="/reviews"
+              />
+            </>
           ) : (
             <div className="py-20 text-center text-rr-muted">No reviews yet. Check back soon.</div>
           )}
