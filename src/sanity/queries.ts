@@ -82,3 +82,19 @@ export const RELATED_POSTS = `*[_type == "post" && defined(slug.current) && slug
   category,
   publishedAt
 }`;
+
+export const SITE_SETTINGS = `*[_type == "siteSettings"][0]{
+  footerColumns[]{
+    heading,
+    links[]{
+      label,
+      href
+    }
+  },
+  footerLinks[]{
+    label,
+    href
+  },
+  footerCopyright,
+  footerDisclaimer
+}`;
