@@ -12,6 +12,23 @@ export const review = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "titleColor",
+      title: "Title colour",
+      type: "string",
+      options: {
+        list: [
+          { title: "Default", value: "default" },
+          { title: "Accent (green)", value: "accent" },
+          { title: "Positive (green)", value: "good" },
+          { title: "Warning (amber)", value: "warn" },
+          { title: "Danger (red)", value: "danger" },
+          { title: "Muted (grey)", value: "muted" },
+        ],
+        layout: "dropdown",
+      },
+      initialValue: "default",
+    }),
+    defineField({
       name: "slug",
       title: "Slug",
       type: "slug",

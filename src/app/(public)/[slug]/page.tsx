@@ -29,6 +29,7 @@ type CmsPage = {
   title: string;
   heroEyebrow?: string;
   heroHeading: string;
+  heroHeadingColor?: string | null;
   heroLead?: string;
   heroCtaPrimary?: CtaLink;
   heroCtaSecondary?: CtaLink;

@@ -33,6 +33,23 @@ export const page = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "heroHeadingColor",
+      title: "Hero Heading colour",
+      type: "string",
+      options: {
+        list: [
+          { title: "Default", value: "default" },
+          { title: "Accent (green)", value: "accent" },
+          { title: "Positive (green)", value: "good" },
+          { title: "Warning (amber)", value: "warn" },
+          { title: "Danger (red)", value: "danger" },
+          { title: "Muted (grey)", value: "muted" },
+        ],
+        layout: "dropdown",
+      },
+      initialValue: "default",
+    }),
+    defineField({
       name: "heroLead",
       title: "Hero Lead",
       type: "text",

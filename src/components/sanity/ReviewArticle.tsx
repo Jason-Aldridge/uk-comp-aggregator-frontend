@@ -2,6 +2,7 @@ import Image from "next/image";
 import { PortableText } from "@portabletext/react";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import { urlFor } from "@/sanity/client";
+import { titleColorVar } from "@/lib/titleColor";
 import { RelatedReviews } from "./RelatedReviews";
 import { portableTextComponents } from "./portableTextComponents";
 
@@ -17,6 +18,7 @@ type SeoMeta = {
 
 type ReviewData = {
   title: string;
+  titleColor?: string | null;
   slug: ReviewSlug;
   operatorName?: string | null;
   heroImage?: unknown;
@@ -74,6 +76,7 @@ export function ReviewArticle({
   review: ReviewData;
   relatedReviews?: ReviewListItem[];
 }) {
+  const headingColor = titleColorVar(review.titleColor);
   const imgSrc = review.heroImage
     ? urlFor(review.heroImage)
         .width(1400)
@@ -128,7 +131,10 @@ export function ReviewArticle({
               ) : null}
             </div>
 
-            <h1 className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl">
+            <h1
+              className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl"
+              style={headingColor ? { color: headingColor } : undefined}
+            >
               {review.title}
             </h1>
 

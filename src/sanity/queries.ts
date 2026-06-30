@@ -2,6 +2,7 @@ export const PAGE_BY_SLUG = `*[_type == "page" && slug.current == $slug][0]{
   title,
   heroEyebrow,
   heroHeading,
+  heroHeadingColor,
   heroLead,
   heroCtaPrimary,
   heroCtaSecondary,
@@ -24,6 +25,7 @@ export const ALL_REVIEWS = `*[_type == "review" && defined(slug.current)] | orde
 
 export const REVIEW_BY_SLUG = `*[_type == "review" && slug.current == $slug][0]{
   title,
+  titleColor,
   slug,
   operatorName,
   heroImage,
@@ -59,6 +61,7 @@ export const ALL_POSTS = `*[_type == "post" && defined(slug.current)] | order(pu
 
 export const POST_BY_SLUG = `*[_type == "post" && slug.current == $slug][0]{
   title,
+  titleColor,
   slug,
   heroImage,
   excerpt,

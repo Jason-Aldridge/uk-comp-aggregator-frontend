@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { IconArrowRight, IconInfoCircle } from "@tabler/icons-react";
+import { titleColorVar } from "@/lib/titleColor";
 import { Button } from "@/components/ui/button";
 import { CalloutBlock } from "./blocks/CalloutBlock";
 import { CardsBlock } from "./blocks/CardsBlock";
@@ -23,6 +24,7 @@ type PageData = {
   title: string;
   heroEyebrow?: string;
   heroHeading: string;
+  heroHeadingColor?: string | null;
   heroLead?: string;
   heroCtaPrimary?: CtaLink;
   heroCtaSecondary?: CtaLink;
@@ -52,6 +54,7 @@ function CtaButton({
 
 export function PageRenderer({ page }: { page: PageData }) {
   const sections = page.sections ?? [];
+  const headingColor = titleColorVar(page.heroHeadingColor);
 
   return (
     <main className="bg-rr-bg">
@@ -64,7 +67,10 @@ export function PageRenderer({ page }: { page: PageData }) {
               </p>
             ) : null}
 
-            <h1 className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl">
+            <h1
+              className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl"
+              style={headingColor ? { color: headingColor } : undefined}
+            >
               {page.heroHeading}
             </h1>
 

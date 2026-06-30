@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
 import { urlFor } from "@/sanity/client";
+import { titleColorVar } from "@/lib/titleColor";
 import { RelatedPosts } from "./RelatedPosts";
 import { portableTextComponents } from "./portableTextComponents";
 
@@ -16,6 +17,7 @@ type SeoMeta = {
 
 type PostData = {
   title: string;
+  titleColor?: string | null;
   slug: PostSlug;
   heroImage?: unknown;
   excerpt?: string | null;
@@ -53,6 +55,7 @@ export function PostArticle({
   post: PostData;
   relatedPosts?: PostListItem[];
 }) {
+  const headingColor = titleColorVar(post.titleColor);
   const imgSrc = post.heroImage
     ? urlFor(post.heroImage)
         .width(1400)
@@ -102,7 +105,10 @@ export function PostArticle({
               ) : null}
             </div>
 
-            <h1 className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl">
+            <h1
+              className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl"
+              style={headingColor ? { color: headingColor } : undefined}
+            >
               {post.title}
             </h1>
 
