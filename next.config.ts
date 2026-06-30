@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   images: {
+    minimumCacheTTL: 2678400,
+    deviceSizes: [640, 750, 1080, 1920],
+    imageSizes: [300, 600],
     remotePatterns: [
       { protocol: "https", hostname: "www.revcomps.com", pathname: "/**" },
       { protocol: "https", hostname: "7days-production.s3.eu-west-2.amazonaws.com", pathname: "/**" },

@@ -41,6 +41,7 @@ export function FeaturedPostCard({
         .height(620)
         .fit("max")
         .auto("format")
+        .quality(75)
         .url()
     : null;
 
@@ -59,6 +60,7 @@ export function FeaturedPostCard({
                 fill
                 sizes="(max-width: 1024px) 100vw, 56vw"
                 className="object-contain"
+                unoptimized
               />
             ) : (
               <div className="h-full w-full bg-rr-surface" />

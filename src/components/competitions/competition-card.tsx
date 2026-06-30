@@ -72,7 +72,14 @@ export function CompetitionCard({ competition, featured }: Props) {
     >
       <div className="relative flex h-[150px] items-center justify-center bg-rr-elevated">
         {imageUrl ? (
-          <Image src={imageUrl} alt={prize} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
+          <Image
+            src={imageUrl}
+            alt={prize}
+            fill
+            sizes="(max-width: 768px) 50vw, 25vw"
+            className="object-cover"
+            unoptimized
+          />
         ) : (
           <PlaceholderIcon category={category} />
         )}

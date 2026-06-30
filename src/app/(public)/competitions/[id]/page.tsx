@@ -420,6 +420,7 @@ export default async function Page({
                   priority
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"
+                  unoptimized
                 />
               ) : (
                 <PlaceholderIcon category={category} />
@@ -478,6 +479,7 @@ export default async function Page({
                   priority
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"
+                  unoptimized
                 />
               ) : (
                 <PlaceholderIcon category={category} />

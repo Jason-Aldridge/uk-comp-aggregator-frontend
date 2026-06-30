@@ -81,7 +81,7 @@ export const portableTextComponents: PortableTextComponents = {
   },
   types: {
     image: ({ value }) => {
-      const src = urlFor(value).width(1200).fit("max").auto("format").url();
+      const src = urlFor(value).width(1200).fit("max").auto("format").quality(75).url();
       const alt =
         value && typeof value === "object" && "alt" in value
           ? String(value.alt ?? "")
@@ -94,7 +94,9 @@ export const portableTextComponents: PortableTextComponents = {
             alt={alt}
             width={1200}
             height={800}
+            sizes="(max-width: 1024px) 100vw, 860px"
             className="h-auto w-full object-cover"
+            unoptimized
           />
           {alt ? <figcaption className="px-4 py-3 text-sm text-rr-muted">{alt}</figcaption> : null}
         </figure>

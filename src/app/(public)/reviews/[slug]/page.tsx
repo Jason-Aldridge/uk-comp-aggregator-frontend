@@ -64,7 +64,14 @@ export async function generateMetadata({
   const description = review.seo?.seoDescription ?? review.excerpt ?? undefined;
   const imageSource = review.seo?.seoImage ?? review.heroImage;
   const imageUrl = imageSource
-    ? urlFor(imageSource).width(1200).height(630).fit("crop").crop("focalpoint").url()
+    ? urlFor(imageSource)
+        .width(1200)
+        .height(630)
+        .fit("crop")
+        .crop("focalpoint")
+        .auto("format")
+        .quality(75)
+        .url()
     : undefined;
 
   return {

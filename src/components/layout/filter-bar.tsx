@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { IconChartBar, IconChevronDown, IconClock } from "@tabler/icons-react";
-import { usePageLoader } from "@/components/ui/page-loader-context";
 import { cn } from "@/lib/cn";
 
 export type FilterOption = {
@@ -71,7 +70,6 @@ export function FilterBar({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { startLoading } = usePageLoader();
 
   const [sortOpen, setSortOpen] = useState(false);
   const [closingOpen, setClosingOpen] = useState(false);
@@ -128,10 +126,9 @@ export function FilterBar({
         return;
       }
 
-      startLoading(nextHref);
       router.push(nextHref);
     },
-    [pathname, router, searchParams, startLoading],
+    [pathname, router, searchParams],
   );
 
   const updateParams = useCallback(
@@ -159,10 +156,9 @@ export function FilterBar({
         return;
       }
 
-      startLoading(nextHref);
       router.push(nextHref);
     },
-    [pathname, router, searchParams, startLoading],
+    [pathname, router, searchParams],
   );
 
   const handleClosingClick = useCallback(

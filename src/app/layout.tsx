@@ -1,10 +1,8 @@
 import "@fontsource/inter/latin.css";
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import { PageLoaderProvider } from "@/components/ui/page-loader-context";
 import { AuthProvider } from "@/contexts/auth-context";
 
 export const metadata: Metadata = {
@@ -25,14 +23,10 @@ export default function RootLayout({
     <html lang="en" className="font-sans" suppressHydrationWarning>
       <body>
         <ThemeProvider>
-          <Suspense fallback={null}>
-            <PageLoaderProvider>
-              <AuthProvider>
-                <Navbar />
-                {children}
-              </AuthProvider>
-            </PageLoaderProvider>
-          </Suspense>
+          <AuthProvider>
+            <Navbar />
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

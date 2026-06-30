@@ -60,6 +60,7 @@ export function PostArticle({
         .fit("crop")
         .crop("focalpoint")
         .auto("format")
+        .quality(75)
         .url()
     : null;
 
@@ -79,6 +80,7 @@ export function PostArticle({
                   fill
                   sizes="(max-width: 1024px) 100vw, 1100px"
                   className="object-cover"
+                  unoptimized
                 />
               </div>
             ) : null}

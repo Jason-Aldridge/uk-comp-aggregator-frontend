@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { IconArrowLeft } from "@tabler/icons-react";
+import { RadarLoader } from "@/components/ui/RadarLoader";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { CompetitionGrid } from "@/components/competitions/competition-grid";
@@ -22,6 +23,7 @@ export default async function CompetitionsPage({
   searchParams: Promise<CompetitionsPageSearchParams>;
 }) {
   const params = await searchParams;
+  const suspenseKey = JSON.stringify(params);
 
   const defaultSortOrderBySortBy: Record<string, "asc" | "desc"> = {
     bestValue: "desc",
@@ -153,7 +155,14 @@ export default async function CompetitionsPage({
         </div>
       </section>
 
-      <Suspense fallback={null}>
+      <Suspense
+        key={suspenseKey}
+        fallback={
+          <div className="flex min-h-[40vh] items-center justify-center bg-rr-bg">
+            <RadarLoader size="lg" />
+          </div>
+        }
+      >
         <CompetitionGrid
           params={{
             category: params.category,

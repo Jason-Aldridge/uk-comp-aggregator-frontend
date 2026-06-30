@@ -44,6 +44,7 @@ export function PostCard({
         .fit("crop")
         .crop("focalpoint")
         .auto("format")
+        .quality(75)
         .url()
     : null;
 
@@ -58,6 +59,7 @@ export function PostCard({
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover transition group-hover:scale-[1.015]"
+              unoptimized
             />
           ) : (
             <div className="h-full w-full bg-rr-surface" />
