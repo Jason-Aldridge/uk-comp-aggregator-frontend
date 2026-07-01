@@ -46,62 +46,121 @@ export async function Footer() {
   const footerDisclaimer = settings?.footerDisclaimer?.trim() || "";
 
   return (
-    <footer className="border-t border-rr-border bg-rr-surface">
-      <div className="container py-8 md:py-12">
-        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between md:gap-12">
-          <div className="max-w-[260px]">
+    <footer className="mt-20 border-t border-rr-border bg-rr-bg">
+      <div className="container py-14 md:py-16">
+        <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between lg:gap-16">
+          <div className="max-w-[300px]">
             <Link
               href="/"
-              className="inline-block font-medium tracking-[-0.3px] text-rr-primary no-underline"
+              className="inline-flex items-center text-xl font-semibold tracking-[-0.4px] text-rr-primary no-underline"
             >
               RAFFLE<span className="text-rr-green">RADAR</span>
             </Link>
+            <p className="mt-4 text-sm leading-6 text-rr-muted">
+              Track every UK prize competition in one place — real odds, real value, no noise.
+            </p>
           </div>
 
           {columns.length ? (
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {columns.map((column, index) => (
-                <div key={`${column.heading ?? "footer"}-${index}`} className="min-w-[160px]">
-                  {column.heading ? (
-                    <h2 className="mb-3 text-sm font-medium text-rr-primary">{column.heading}</h2>
-                  ) : null}
+            <div className="w-full lg:w-auto">
+              {/* Desktop / tablet: open columns */}
+              <div className="hidden gap-10 sm:grid sm:grid-cols-2 lg:grid-cols-3 lg:gap-14">
+                {columns.map((column, index) => (
+                  <div key={`${column.heading ?? "footer"}-${index}`} className="min-w-[150px]">
+                    {column.heading ? (
+                      <h2 className="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-rr-muted">
+                        {column.heading}
+                      </h2>
+                    ) : null}
 
-                  <ul className="space-y-2">
-                    {(column.links ?? []).map((link) => (
-                      <li key={`${link.label}-${link.href}`}>
-                        {isExternalHref(link.href) ? (
-                          <a
-                            href={link.href}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-sm text-rr-secondary no-underline transition hover:text-rr-green"
-                          >
-                            {link.label}
-                          </a>
-                        ) : (
-                          <Link
-                            href={link.href}
-                            className="text-sm text-rr-secondary no-underline transition hover:text-rr-green"
-                          >
-                            {link.label}
-                          </Link>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+                    <ul className="space-y-3">
+                      {(column.links ?? []).map((link) => (
+                        <li key={`${link.label}-${link.href}`}>
+                          {isExternalHref(link.href) ? (
+                            <a
+                              href={link.href}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-sm text-rr-secondary no-underline transition-colors hover:text-rr-primary"
+                            >
+                              {link.label}
+                            </a>
+                          ) : (
+                            <Link
+                              href={link.href}
+                              className="text-sm text-rr-secondary no-underline transition-colors hover:text-rr-primary"
+                            >
+                              {link.label}
+                            </Link>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+
+              {/* Mobile: collapsible accordion via native <details>, no JS */}
+              <div className="w-full sm:hidden">
+                {columns.map((column, index) => (
+                  <details
+                    key={`m-${column.heading ?? "footer"}-${index}`}
+                    className="group border-b border-rr-border"
+                  >
+                    <summary className="flex cursor-pointer list-none items-center justify-between py-4 text-xs font-semibold uppercase tracking-[0.14em] text-rr-primary [&::-webkit-details-marker]:hidden">
+                      {column.heading ?? "Links"}
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        className="text-rr-muted transition-transform duration-300 group-open:rotate-180"
+                        aria-hidden
+                      >
+                        <path
+                          d="M6 9l6 6 6-6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </summary>
+                    <ul className="space-y-3 pb-5 pt-1">
+                      {(column.links ?? []).map((link) => (
+                        <li key={`m-${link.label}-${link.href}`}>
+                          {isExternalHref(link.href) ? (
+                            <a
+                              href={link.href}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-sm text-rr-secondary no-underline transition-colors hover:text-rr-green"
+                            >
+                              {link.label}
+                            </a>
+                          ) : (
+                            <Link
+                              href={link.href}
+                              className="text-sm text-rr-secondary no-underline transition-colors hover:text-rr-green"
+                            >
+                              {link.label}
+                            </Link>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                ))}
+              </div>
             </div>
           ) : null}
         </div>
 
-        <div className="mt-8 border-t border-rr-border pt-5">
-          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-            <p className="text-sm text-rr-secondary">{footerCopyright}</p>
-            {footerDisclaimer ? (
-              <p className="max-w-[640px] text-sm leading-6 text-rr-muted">{footerDisclaimer}</p>
-            ) : null}
-          </div>
+        <div className="mt-12 flex flex-col gap-4 border-t border-rr-border pt-6 md:flex-row md:items-start md:justify-between">
+          <p className="text-sm text-rr-muted">{footerCopyright}</p>
+          {footerDisclaimer ? (
+            <p className="max-w-[560px] text-xs leading-6 text-rr-muted">{footerDisclaimer}</p>
+          ) : null}
         </div>
       </div>
     </footer>
