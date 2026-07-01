@@ -32,6 +32,7 @@ export function Navbar() {
 
   const isCompetitionsActive =
     pathname === "/competitions" || pathname.startsWith("/competitions/");
+  const isOperatorsActive = pathname === "/operators" || pathname.startsWith("/operators/");
   const isReviewsActive = pathname === "/reviews" || pathname.startsWith("/reviews/");
   const isBlogActive = pathname === "/blog" || pathname.startsWith("/blog/");
 
@@ -75,12 +76,18 @@ export function Navbar() {
           >
             Competitions
           </Link>
-          <a
-            href="#"
-            className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
+          <Link
+            href="/operators"
+            aria-current={isOperatorsActive ? "page" : undefined}
+            className={cn(
+              "text-sm px-3 py-2 rounded-md no-underline whitespace-nowrap",
+              isOperatorsActive
+                ? "bg-rr-green text-rr-on-accent"
+                : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
+            )}
           >
             Operators
-          </a>
+          </Link>
           <Link
             href="/reviews"
             aria-current={isReviewsActive ? "page" : undefined}
@@ -176,13 +183,19 @@ export function Navbar() {
             >
               Competitions
             </Link>
-            <a
-              href="#"
-              className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline"
+            <Link
+              href="/operators"
+              aria-current={isOperatorsActive ? "page" : undefined}
+              className={cn(
+                "text-sm px-3 py-2 rounded-md no-underline",
+                isOperatorsActive
+                  ? "bg-rr-green text-rr-on-accent"
+                  : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
+              )}
               onClick={() => setMenuOpen(false)}
             >
               Operators
-            </a>
+            </Link>
             <Link
               href="/reviews"
               aria-current={isReviewsActive ? "page" : undefined}

@@ -64,6 +64,15 @@ export async function apiFetch<T>(
   return res.json() as Promise<T>;
 }
 
+function toNum(value: unknown): number | null {
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  if (typeof value === "string") {
+    const n = Number.parseFloat(value);
+    return Number.isFinite(n) ? n : null;
+  }
+  return null;
+}
+
 export async function getStats() {
   return apiFetch<{
     competitionsCount: number;
@@ -79,6 +88,7 @@ export type GetCompetitionsParams = {
   sortOrder?: string;
   category?: string;
   closing?: string;
+  operator?: string;
   minPrizeValue?: number;
   website?: string;
   freeOnly?: boolean;
@@ -125,6 +135,28 @@ export type CompetitionSearchResult = {
   } | null;
 };
 
+export type OperatorSummary = {
+  id: string;
+  slug: string;
+  name: string;
+  logoUrl: string | null;
+  avgVr: number | null;
+  vrSampleSize: number | null;
+  activeCompetitionsCount: number | null;
+};
+
+export type OperatorDetail = {
+  id: string;
+  slug: string;
+  name: string;
+  logoUrl: string | null;
+  avgVr: number | null;
+  vrSampleSize: number | null;
+  activeCompetitionsCount: number | null;
+  baseUrl: string | null;
+  competitions: CompetitionDetail[];
+};
+
 function normalizeCompetitionsResponse(value: unknown) {
   if (Array.isArray(value)) return value;
   if (value && typeof value === "object") {
@@ -168,6 +200,73 @@ function normalizeCompetitionSearchResponse(value: unknown): CompetitionSearchRe
   });
 }
 
+function normalizeOperatorSummary(value: unknown): OperatorSummary[] {
+  if (!Array.isArray(value)) return [];
+
+  return value.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+
+    const data = item as Record<string, unknown>;
+    const id = typeof data.id === "string" ? data.id : null;
+    const slug = typeof data.slug === "string" ? data.slug : null;
+    const name = typeof data.name === "string" ? data.name : null;
+
+    if (!id || !slug || !name) return [];
+
+    return [{
+      id,
+      slug,
+      name,
+      logoUrl:
+        typeof data.logo === "string"
+          ? data.logo
+          : typeof data.logoUrl === "string"
+            ? data.logoUrl
+            : null,
+      avgVr: toNum(data.avgVr ?? data.avg_vr),
+      vrSampleSize: toNum(data.sampleSize ?? data.vrSampleSize ?? data.vr_sample_size),
+      activeCompetitionsCount: toNum(
+        data.activeCompetitionsCount ?? data.active_competitions_count,
+      ),
+    }];
+  });
+}
+
+function normalizeOperatorDetail(value: unknown): OperatorDetail | null {
+  if (!value || typeof value !== "object") return null;
+
+  const data = value as Record<string, unknown>;
+  const id = typeof data.id === "string" ? data.id : null;
+  const slug = typeof data.slug === "string" ? data.slug : null;
+  const name = typeof data.name === "string" ? data.name : null;
+
+  if (!id || !slug || !name) return null;
+
+  return {
+    id,
+    slug,
+    name,
+    logoUrl:
+      typeof data.logo === "string"
+        ? data.logo
+        : typeof data.logoUrl === "string"
+          ? data.logoUrl
+          : null,
+    avgVr: toNum(data.avgVr ?? data.avg_vr),
+    vrSampleSize: toNum(data.sampleSize ?? data.vrSampleSize ?? data.vr_sample_size),
+    activeCompetitionsCount: toNum(
+      data.activeCompetitionsCount ?? data.active_competitions_count,
+    ),
+    baseUrl:
+      typeof data.baseUrl === "string"
+        ? data.baseUrl
+        : typeof data.base_url === "string"
+          ? data.base_url
+          : null,
+    competitions: normalizeCompetitionsResponse(data.competitions),
+  };
+}
+
 export async function getCompetitions(params?: GetCompetitionsParams) {
   const query = new URLSearchParams();
 
@@ -177,6 +276,7 @@ export async function getCompetitions(params?: GetCompetitionsParams) {
   if (params?.sortOrder) query.set("sortOrder", params.sortOrder);
   if (params?.category) query.set("category", params.category);
   if (params?.closing) query.set("closing", params.closing);
+  if (params?.operator) query.set("operator", params.operator);
   if (params?.minPrizeValue) query.set("minPrizeValue", String(params.minPrizeValue));
   if (params?.website) query.set("website", params.website);
   if (params?.freeOnly) query.set("freeOnly", "true");
@@ -196,6 +296,16 @@ export async function getCompetitionSearch(q: string, limit = 8) {
 
   const response = await apiFetch<unknown>(`/competitions/search?${query.toString()}`);
   return normalizeCompetitionSearchResponse(response);
+}
+
+export async function getOperators() {
+  const response = await apiFetch<unknown>("/operators");
+  return normalizeOperatorSummary(response);
+}
+
+export async function getOperator(slug: string) {
+  const response = await apiFetch<unknown>(`/operators/${slug}`);
+  return normalizeOperatorDetail(response);
 }
 
 type GetTopOpportunitiesParams = {

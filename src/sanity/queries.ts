@@ -28,6 +28,7 @@ export const REVIEW_BY_SLUG = `*[_type == "review" && slug.current == $slug][0]{
   titleColor,
   slug,
   operatorName,
+  operatorId,
   heroImage,
   excerpt,
   rating,

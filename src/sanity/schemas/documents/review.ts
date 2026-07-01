@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { ReviewOperatorInput } from "@/sanity/components/review-operator-input";
 
 export const review = defineType({
   name: "review",
@@ -41,6 +42,14 @@ export const review = defineType({
       name: "operatorName",
       title: "Operator Name",
       type: "string",
+    }),
+    defineField({
+      name: "operatorId",
+      title: "Operator",
+      type: "string",
+      components: {
+        input: ReviewOperatorInput,
+      },
     }),
     defineField({
       name: "heroImage",

@@ -21,6 +21,7 @@ type ReviewData = {
   titleColor?: string | null;
   slug: ReviewSlug;
   operatorName?: string | null;
+  operatorId?: string | null;
   heroImage?: unknown;
   excerpt?: string | null;
   rating?: number | null;

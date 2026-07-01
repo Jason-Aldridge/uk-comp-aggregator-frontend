@@ -1,21 +1,32 @@
 import { Suspense } from "react";
-import { IconArrowLeft } from "@tabler/icons-react";
+import { IconArrowLeft, IconX } from "@tabler/icons-react";
 import { RadarLoader } from "@/components/ui/RadarLoader";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { CompetitionGrid } from "@/components/competitions/competition-grid";
 import { FilterBar } from "@/components/layout/filter-bar";
+import { getCompetitions } from "@/lib/api";
+import type { Competition } from "@/types/competition";
 
 type CompetitionsPageSearchParams = {
   category?: string;
   closing?: string;
   sortBy?: string;
   sortOrder?: string;
+  operator?: string;
   minPrizeValue?: string;
   freeOnly?: string;
   excludeInstant?: string;
   excludeFree?: string;
 };
+
+function formatOperatorLabel(slug: string) {
+  return slug
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
 
 export default async function CompetitionsPage({
   searchParams,
@@ -24,6 +35,7 @@ export default async function CompetitionsPage({
 }) {
   const params = await searchParams;
   const suspenseKey = JSON.stringify(params);
+  const operatorSlug = params.operator?.trim() || undefined;
 
   const defaultSortOrderBySortBy: Record<string, "asc" | "desc"> = {
     bestValue: "desc",
@@ -46,6 +58,7 @@ export default async function CompetitionsPage({
     const nextParams = new URLSearchParams();
 
     if (params.category) nextParams.set("category", params.category);
+    if (operatorSlug) nextParams.set("operator", operatorSlug);
     if (params.minPrizeValue) nextParams.set("minPrizeValue", params.minPrizeValue);
     if (params.freeOnly) nextParams.set("freeOnly", params.freeOnly);
     if (params.excludeInstant) nextParams.set("excludeInstant", params.excludeInstant);
@@ -57,6 +70,42 @@ export default async function CompetitionsPage({
 
     redirect(`/competitions?${nextParams.toString()}`);
   }
+
+  let operatorLabel = operatorSlug ? formatOperatorLabel(operatorSlug) : null;
+
+  if (operatorSlug) {
+    try {
+      const operatorMatches = (await getCompetitions({
+        category: params.category,
+        closing,
+        operator: operatorSlug,
+        sortBy,
+        sortOrder,
+        minPrizeValue: params.minPrizeValue ? Number(params.minPrizeValue) : undefined,
+        freeOnly: params.freeOnly === "true",
+        excludeInstant: params.excludeInstant === "true",
+        excludeFree: params.excludeFree === "true",
+        limit: 1,
+      })) as Competition[];
+
+      operatorLabel = operatorMatches[0]?.operator?.name ?? operatorLabel;
+    } catch {
+      operatorLabel = operatorLabel ?? formatOperatorLabel(operatorSlug);
+    }
+  }
+
+  const resetOperatorParams = new URLSearchParams();
+  if (params.category) resetOperatorParams.set("category", params.category);
+  if (params.closing) resetOperatorParams.set("closing", params.closing);
+  if (params.sortBy) resetOperatorParams.set("sortBy", params.sortBy);
+  if (params.sortOrder) resetOperatorParams.set("sortOrder", params.sortOrder);
+  if (params.minPrizeValue) resetOperatorParams.set("minPrizeValue", params.minPrizeValue);
+  if (params.freeOnly) resetOperatorParams.set("freeOnly", params.freeOnly);
+  if (params.excludeInstant) resetOperatorParams.set("excludeInstant", params.excludeInstant);
+  if (params.excludeFree) resetOperatorParams.set("excludeFree", params.excludeFree);
+  const resetOperatorHref = resetOperatorParams.toString()
+    ? `/competitions?${resetOperatorParams.toString()}`
+    : "/competitions";
 
   const heading = (() => {
     const isTopPrizes =
@@ -152,6 +201,21 @@ export default async function CompetitionsPage({
               </span>
             </h1>
           </div>
+
+          {operatorSlug && operatorLabel ? (
+            <div className="mt-3 flex flex-wrap items-center gap-2 rounded-[10px] border border-rr-border bg-rr-surface px-3 py-2 text-sm text-rr-secondary">
+              <span>
+                Showing: <span className="font-medium text-rr-primary">{operatorLabel}</span> competitions
+              </span>
+              <Link
+                href={resetOperatorHref}
+                className="inline-flex items-center gap-1 rounded-full border border-rr-border px-2 py-1 text-xs text-rr-secondary no-underline transition-colors hover:bg-rr-elevated hover:text-rr-primary"
+              >
+                <IconX size={12} />
+                Clear
+              </Link>
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -167,6 +231,7 @@ export default async function CompetitionsPage({
           params={{
             category: params.category,
             closing,
+            operator: operatorSlug,
             sortBy,
             sortOrder,
             minPrizeValue: params.minPrizeValue ? Number(params.minPrizeValue) : undefined,
