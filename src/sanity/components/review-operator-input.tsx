@@ -99,9 +99,10 @@ export function ReviewOperatorInput(props: StringInputProps) {
     <FormField
       title={props.schemaType.title}
       description={props.schemaType.description}
-      __unstable_markers={props.markers}
+      inputId={elementProps.id}
       __unstable_presence={props.presence}
       validation={props.validation}
+      path={props.path}
     >
       <Card padding={3} radius={2} border>
         <Flex direction="column" gap={3}>
@@ -135,7 +136,7 @@ export function ReviewOperatorInput(props: StringInputProps) {
 
           {error ? (
             <Flex direction="column" gap={3}>
-              <Text size={1} tone="critical">
+              <Text size={1} style={{ color: "var(--card-critical-fg-color)" }}>
                 Failed to load operators: {error}
               </Text>
               {renderDefault(props)}
