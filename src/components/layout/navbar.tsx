@@ -112,12 +112,12 @@ export function Navbar() {
           >
             Blog
           </Link>
-          <a
-            href="#"
+          <Link
+            href="/how-it-works"
             className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
           >
             How it works
-          </a>
+          </Link>
         </div>
 
           <div className="ml-auto shrink-0 flex items-center gap-2">
@@ -221,13 +221,13 @@ export function Navbar() {
             >
               Blog
             </Link>
-            <a
-              href="#"
+            <Link
+              href="/how-it-works"
               className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline"
               onClick={() => setMenuOpen(false)}
             >
               How it works
-            </a>
+            </Link>
 
             {!user ? (
               <div className="mt-2 grid gap-2">
