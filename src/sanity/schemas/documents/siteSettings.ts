@@ -138,6 +138,18 @@ export const siteSettings = defineType(
       type: "text",
       rows: 2,
     }),
+    defineField({
+      name: "maintenanceMode",
+      title: "Maintenance mode (show holding page to visitors)",
+      type: "boolean",
+      initialValue: false,
+    }),
+    defineField({
+      name: "maintenanceMessage",
+      title: "Maintenance message (shown on holding page)",
+      type: "text",
+      rows: 3,
+    }),
     ],
   },
   { strict: false },

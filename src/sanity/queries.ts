@@ -97,5 +97,6 @@ export const SITE_SETTINGS = `*[_type == "siteSettings"][0]{
     href
   },
   footerCopyright,
-  footerDisclaimer
+  footerDisclaimer,
+  maintenanceMessage
 }`;
