@@ -4,6 +4,7 @@ import { operatorsBlock } from "./blocks/operatorsBlock";
 import { richTextBlock } from "./blocks/richTextBlock";
 import { statsBlock } from "./blocks/statsBlock";
 import { stepsBlock } from "./blocks/stepsBlock";
+import { howItWorksPage } from "./documents/howItWorksPage";
 import { page } from "./documents/page";
 import { post } from "./documents/post";
 import { review } from "./documents/review";
@@ -15,6 +16,7 @@ export const schemaTypes = [
   review,
   post,
   siteSettings,
+  howItWorksPage,
   richTextBlock,
   statsBlock,
   cardsBlock,

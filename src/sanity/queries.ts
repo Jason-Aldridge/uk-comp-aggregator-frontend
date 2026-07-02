@@ -100,3 +100,8 @@ export const SITE_SETTINGS = `*[_type == "siteSettings"][0]{
   footerDisclaimer,
   maintenanceMessage
 }`;
+
+export const HOW_IT_WORKS_PAGE = `*[_type == "howItWorksPage"][0]{
+  title,
+  body
+}`;

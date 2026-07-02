@@ -1,0 +1,42 @@
+import { PortableText } from "@portabletext/react";
+import { portableTextComponents } from "@/components/sanity/portableTextComponents";
+import { sanityClient } from "@/sanity/client";
+import { HOW_IT_WORKS_PAGE } from "@/sanity/queries";
+
+export const revalidate = 60;
+
+type HowItWorksPageData = {
+  title?: string | null;
+  body?: unknown[] | null;
+};
+
+export default async function HowItWorksPage() {
+  const page = await sanityClient.fetch<HowItWorksPageData | null>(HOW_IT_WORKS_PAGE);
+  const title = page?.title?.trim() || "How It Works";
+  const body = page?.body ?? [];
+  const hasBody = body.length > 0;
+
+  return (
+    <main className="bg-rr-bg">
+      <section className="py-10">
+        <div className="container">
+          <div className="mx-auto max-w-[780px] lg:max-w-[860px]">
+            <h1 className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl">
+              {title}
+            </h1>
+
+            <div className="mt-10">
+              {hasBody ? (
+                <PortableText value={body} components={portableTextComponents} />
+              ) : (
+                <p className="text-[15.5px] leading-7 text-rr-secondary">
+                  Content for this page will be available soon.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}

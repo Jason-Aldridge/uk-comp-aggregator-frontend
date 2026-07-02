@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
 import { IconMenu2, IconMoon, IconSun, IconX } from "@tabler/icons-react";
 import { cn } from "@/lib/cn";
 import { useAuth } from "@/contexts/auth-context";
 import { CompetitionSearch } from "@/components/layout/competition-search";
+import { useTheme } from "@/components/theme/theme-provider";
 import { Button } from "@/components/ui/button";
 
 function getInitials(value: string): string {
@@ -26,7 +26,7 @@ function getInitials(value: string): string {
 
 export function Navbar() {
   const { user } = useAuth();
-  const { setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -126,8 +126,7 @@ export function Navbar() {
             className="shrink-0 cursor-pointer"
             aria-label="Toggle theme"
             onClick={() => {
-              const isDark = document.documentElement.classList.contains("dark");
-              setTheme(isDark ? "light" : "dark");
+              setTheme(resolvedTheme === "dark" ? "light" : "dark");
             }}
           >
             <IconSun size={18} className="hidden dark:block" />
