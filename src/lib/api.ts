@@ -55,7 +55,7 @@ export async function apiFetch<T>(
   }
 
   if (!res.ok) {
-    const error = await res.json().catch(() => ({} as { message?: string }));
+    const error = await res.json().catch(() => ({}) as { message?: string });
     throw new Error(
       (error as { message?: string }).message ?? `HTTP ${res.status}`,
     );
@@ -157,24 +157,67 @@ export type OperatorDetail = {
   competitions: CompetitionDetail[];
 };
 
+function normalizeEmbeddedOperator(
+  value: unknown,
+): CompetitionDetail["operator"] {
+  if (!value || typeof value !== "object") return null;
+
+  const data = value as Record<string, unknown>;
+  const name = typeof data.name === "string" ? data.name : null;
+
+  if (!name) return null;
+
+  return {
+    name,
+    baseUrl:
+      typeof data.baseUrl === "string"
+        ? data.baseUrl
+        : typeof data.base_url === "string"
+          ? data.base_url
+          : "",
+    avgVr: toNum(data.avgVr ?? data.avg_vr),
+    vrSampleSize: toNum(
+      data.sampleSize ?? data.vrSampleSize ?? data.vr_sample_size,
+    ),
+  };
+}
+
+function normalizeCompetitionItem<T>(item: T): T {
+  if (!item || typeof item !== "object") return item;
+
+  const data = item as Record<string, unknown>;
+
+  if (!("operator" in data)) return item;
+
+  return {
+    ...data,
+    operator: normalizeEmbeddedOperator(data.operator),
+  } as T;
+}
+
 function normalizeCompetitionsResponse(value: unknown) {
-  if (Array.isArray(value)) return value;
-  if (value && typeof value === "object") {
+  let list: unknown[] = [];
+
+  if (Array.isArray(value)) {
+    list = value;
+  } else if (value && typeof value === "object") {
     const data = value as {
       items?: unknown;
       data?: unknown;
       competitions?: unknown;
     };
 
-    if (Array.isArray(data.items)) return data.items;
-    if (Array.isArray(data.data)) return data.data;
-    if (Array.isArray(data.competitions)) return data.competitions;
+    if (Array.isArray(data.items)) list = data.items;
+    else if (Array.isArray(data.data)) list = data.data;
+    else if (Array.isArray(data.competitions)) list = data.competitions;
   }
 
-  return [];
+  return list.map((item) => normalizeCompetitionItem(item));
 }
 
-function normalizeCompetitionSearchResponse(value: unknown): CompetitionSearchResult[] {
+function normalizeCompetitionSearchResponse(
+  value: unknown,
+): CompetitionSearchResult[] {
   return normalizeCompetitionsResponse(value).flatMap((item) => {
     if (!item || typeof item !== "object") return [];
 
@@ -190,13 +233,18 @@ function normalizeCompetitionSearchResponse(value: unknown): CompetitionSearchRe
 
     if (data.id === undefined || typeof data.prize !== "string") return [];
 
-    return [{
-      id: String(data.id),
-      prize: data.prize,
-      imageUrl: data.imageUrl ?? data.image_url ?? null,
-      ticketPrice: data.ticketPrice ?? data.ticket_price ?? null,
-      operator: data.operator && typeof data.operator.name === "string" ? { name: data.operator.name } : null,
-    }];
+    return [
+      {
+        id: String(data.id),
+        prize: data.prize,
+        imageUrl: data.imageUrl ?? data.image_url ?? null,
+        ticketPrice: data.ticketPrice ?? data.ticket_price ?? null,
+        operator:
+          data.operator && typeof data.operator.name === "string"
+            ? { name: data.operator.name }
+            : null,
+      },
+    ];
   });
 }
 
@@ -213,22 +261,26 @@ function normalizeOperatorSummary(value: unknown): OperatorSummary[] {
 
     if (!id || !slug || !name) return [];
 
-    return [{
-      id,
-      slug,
-      name,
-      logoUrl:
-        typeof data.logo === "string"
-          ? data.logo
-          : typeof data.logoUrl === "string"
-            ? data.logoUrl
-            : null,
-      avgVr: toNum(data.avgVr ?? data.avg_vr),
-      vrSampleSize: toNum(data.sampleSize ?? data.vrSampleSize ?? data.vr_sample_size),
-      activeCompetitionsCount: toNum(
-        data.activeCompetitionsCount ?? data.active_competitions_count,
-      ),
-    }];
+    return [
+      {
+        id,
+        slug,
+        name,
+        logoUrl:
+          typeof data.logo === "string"
+            ? data.logo
+            : typeof data.logoUrl === "string"
+              ? data.logoUrl
+              : null,
+        avgVr: toNum(data.avgVr ?? data.avg_vr),
+        vrSampleSize: toNum(
+          data.sampleSize ?? data.vrSampleSize ?? data.vr_sample_size,
+        ),
+        activeCompetitionsCount: toNum(
+          data.activeCompetitionsCount ?? data.active_competitions_count,
+        ),
+      },
+    ];
   });
 }
 
@@ -253,7 +305,9 @@ function normalizeOperatorDetail(value: unknown): OperatorDetail | null {
           ? data.logoUrl
           : null,
     avgVr: toNum(data.avgVr ?? data.avg_vr),
-    vrSampleSize: toNum(data.sampleSize ?? data.vrSampleSize ?? data.vr_sample_size),
+    vrSampleSize: toNum(
+      data.sampleSize ?? data.vrSampleSize ?? data.vr_sample_size,
+    ),
     activeCompetitionsCount: toNum(
       data.activeCompetitionsCount ?? data.active_competitions_count,
     ),
@@ -263,7 +317,9 @@ function normalizeOperatorDetail(value: unknown): OperatorDetail | null {
         : typeof data.base_url === "string"
           ? data.base_url
           : null,
-    competitions: normalizeCompetitionsResponse(data.competitions),
+    competitions: normalizeCompetitionsResponse(
+      data.competitions,
+    ) as CompetitionDetail[],
   };
 }
 
@@ -277,13 +333,15 @@ export async function getCompetitions(params?: GetCompetitionsParams) {
   if (params?.category) query.set("category", params.category);
   if (params?.closing) query.set("closing", params.closing);
   if (params?.operator) query.set("operator", params.operator);
-  if (params?.minPrizeValue) query.set("minPrizeValue", String(params.minPrizeValue));
+  if (params?.minPrizeValue)
+    query.set("minPrizeValue", String(params.minPrizeValue));
   if (params?.website) query.set("website", params.website);
   if (params?.freeOnly) query.set("freeOnly", "true");
   if (params?.excludeInstant) query.set("excludeInstant", "true");
   if (params?.excludeFree) query.set("excludeFree", "true");
 
-  const path = query.size > 0 ? `/competitions?${query.toString()}` : "/competitions";
+  const path =
+    query.size > 0 ? `/competitions?${query.toString()}` : "/competitions";
   const response = await apiFetch<unknown>(path);
   return normalizeCompetitionsResponse(response);
 }
@@ -294,7 +352,9 @@ export async function getCompetitionSearch(q: string, limit = 8) {
     limit: String(limit),
   });
 
-  const response = await apiFetch<unknown>(`/competitions/search?${query.toString()}`);
+  const response = await apiFetch<unknown>(
+    `/competitions/search?${query.toString()}`,
+  );
   return normalizeCompetitionSearchResponse(response);
 }
 
@@ -326,7 +386,8 @@ export async function getTopOpportunities(params?: GetTopOpportunitiesParams) {
 }
 
 export async function getCompetition(id: string) {
-  return apiFetch<CompetitionDetail>(`/competitions/${id}`);
+  const response = await apiFetch<CompetitionDetail>(`/competitions/${id}`);
+  return normalizeCompetitionItem(response);
 }
 
 export async function getCompetitionHistory(id: string) {
