@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
     imageSizes: [300, 600],
     remotePatterns: [
       { protocol: "https", hostname: "www.revcomps.com", pathname: "/**" },
+      { protocol: "https", hostname: "prismic.skywind360.com", pathname: "/**" },
       { protocol: "https", hostname: "7days-production.s3.eu-west-2.amazonaws.com", pathname: "/**" },
       { protocol: "https", hostname: "media.dreamcargiveaways.co.uk", pathname: "/**" },
       { protocol: "https", hostname: "mckinneycompetitions.co.uk", pathname: "/**" },

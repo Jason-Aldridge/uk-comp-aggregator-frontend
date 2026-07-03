@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   IconCar,
@@ -8,6 +7,7 @@ import {
   IconDeviceLaptop,
 } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
+import { CompetitionImage } from "@/components/ui/CompetitionImage";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import type { Competition } from "@/types/competition";
 import {
@@ -72,7 +72,7 @@ export function CompetitionCard({ competition, featured }: Props) {
     >
       <div className="relative flex h-[150px] items-center justify-center bg-rr-elevated">
         {imageUrl ? (
-          <Image
+          <CompetitionImage
             src={imageUrl}
             alt={prize}
             fill

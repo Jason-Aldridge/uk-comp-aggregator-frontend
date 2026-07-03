@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -18,6 +17,7 @@ import { TicketCalculator } from "@/components/competitions/ticket-calculator";
 import { DrawCountdown } from "@/components/competitions/draw-countdown";
 import { TicketSalesChart } from "@/components/competitions/ticket-sales-chart";
 import { CompetitionCard } from "@/components/competitions/competition-card";
+import { CompetitionImage } from "@/components/ui/CompetitionImage";
 import {
   getCompetition,
   getCompetitionHistory,
@@ -413,7 +413,7 @@ export default async function Page({
           <div className="order-2 md:order-1 mt-8 md:mt-0 flex flex-col gap-8">
             <div className="relative hidden rounded-[10px] overflow-hidden border border-rr-border bg-rr-elevated h-[300px] md:flex md:h-[350px] items-center justify-center">
               {imageUrl ? (
-                <Image
+                <CompetitionImage
                   src={imageUrl}
                   alt={prize}
                   fill
@@ -472,7 +472,7 @@ export default async function Page({
 
             <div className="relative mb-6 rounded-[10px] overflow-hidden border border-rr-border bg-rr-elevated h-[300px] flex items-center justify-center md:hidden">
               {imageUrl ? (
-                <Image
+                <CompetitionImage
                   src={imageUrl}
                   alt={prize}
                   fill

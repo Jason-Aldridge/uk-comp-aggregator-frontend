@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import { CompetitionImage } from "@/components/ui/CompetitionImage";
 import { RadarLoader } from "@/components/ui/RadarLoader";
 import { getCompetitionSearch, type CompetitionSearchResult } from "@/lib/api";
 
@@ -238,12 +238,13 @@ export function CompetitionSearch() {
                   >
                     <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-rr-elevated">
                       {item.imageUrl ? (
-                        <Image
+                        <CompetitionImage
                           src={item.imageUrl}
                           alt={item.prize}
                           fill
                           sizes="40px"
                           className="object-cover"
+                          unoptimized
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center text-xs font-medium text-rr-muted">
