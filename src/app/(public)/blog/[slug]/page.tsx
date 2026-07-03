@@ -6,6 +6,8 @@ import { ALL_POST_SLUGS, POST_BY_SLUG, RELATED_POSTS } from "@/sanity/queries";
 
 export const revalidate = 60;
 
+const SITE_URL = "https://uk-comp-aggregator-frontend.vercel.app";
+
 type PageParams = {
   slug: string;
 };
@@ -60,6 +62,7 @@ export async function generateMetadata({
 
   const title = post.seo?.seoTitle ?? `${post.title} — RaffleRadar`;
   const description = post.seo?.seoDescription ?? post.excerpt ?? undefined;
+  const pageUrl = `${SITE_URL}/blog/${slug}`;
   const imageSource = post.seo?.seoImage ?? post.heroImage;
   const imageUrl = imageSource
     ? urlFor(imageSource)
@@ -75,10 +78,10 @@ export async function generateMetadata({
   return {
     title,
     description,
-    openGraph: imageUrl ? { title, description, images: [{ url: imageUrl }] } : { title, description },
+    openGraph: imageUrl ? { title, description, url: pageUrl, images: [{ url: imageUrl }] } : { title, description, url: pageUrl },
     twitter: imageUrl
       ? { card: "summary_large_image", title, description, images: [imageUrl] }
-      : { card: "summary", title, description },
+      : { card: "summary_large_image", title, description },
   };
 }
 
@@ -95,6 +98,7 @@ export default async function BlogPostPage({
   }
 
   const relatedPosts = await sanityClient.fetch<PostListItem[]>(RELATED_POSTS, { slug });
+  const shareUrl = `${SITE_URL}/blog/${slug}`;
 
-  return <PostArticle post={post} relatedPosts={relatedPosts} />;
+  return <PostArticle post={post} relatedPosts={relatedPosts} shareUrl={shareUrl} />;
 }

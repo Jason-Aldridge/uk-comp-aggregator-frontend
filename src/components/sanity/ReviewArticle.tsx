@@ -5,6 +5,7 @@ import { urlFor } from "@/sanity/client";
 import { titleColorVar } from "@/lib/titleColor";
 import { RelatedReviews } from "./RelatedReviews";
 import { portableTextComponents } from "./portableTextComponents";
+import { ShareBar } from "@/components/ui/ShareBar";
 
 type ReviewSlug = {
   current: string;
@@ -73,9 +74,11 @@ function Stars({ rating }: { rating: number }) {
 export function ReviewArticle({
   review,
   relatedReviews,
+  shareUrl,
 }: {
   review: ReviewData;
   relatedReviews?: ReviewListItem[];
+  shareUrl: string;
 }) {
   const headingColor = titleColorVar(review.titleColor);
   const imgSrc = review.heroImage
@@ -114,7 +117,8 @@ export function ReviewArticle({
       <section className="py-10">
         <div className="container">
           <div className="mx-auto max-w-[780px] lg:max-w-[860px]">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <ShareBar url={shareUrl} title={review.title} />
+            <div className="mb-4 mt-8 flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-col gap-1">
                 {review.operatorName ? (
                   <p className="text-xs font-medium uppercase tracking-[0.18em] text-rr-green">

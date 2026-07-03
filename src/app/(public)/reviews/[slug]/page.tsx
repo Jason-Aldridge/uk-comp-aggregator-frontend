@@ -6,6 +6,8 @@ import { ReviewArticle } from "@/components/sanity/ReviewArticle";
 
 export const revalidate = 60;
 
+const SITE_URL = "https://uk-comp-aggregator-frontend.vercel.app";
+
 type PageParams = {
   slug: string;
 };
@@ -63,6 +65,7 @@ export async function generateMetadata({
 
   const title = review.seo?.seoTitle ?? `${review.title} — RaffleRadar`;
   const description = review.seo?.seoDescription ?? review.excerpt ?? undefined;
+  const pageUrl = `${SITE_URL}/reviews/${slug}`;
   const imageSource = review.seo?.seoImage ?? review.heroImage;
   const imageUrl = imageSource
     ? urlFor(imageSource)
@@ -78,10 +81,10 @@ export async function generateMetadata({
   return {
     title,
     description,
-    openGraph: imageUrl ? { title, description, images: [{ url: imageUrl }] } : { title, description },
+    openGraph: imageUrl ? { title, description, url: pageUrl, images: [{ url: imageUrl }] } : { title, description, url: pageUrl },
     twitter: imageUrl
       ? { card: "summary_large_image", title, description, images: [imageUrl] }
-      : { card: "summary", title, description },
+      : { card: "summary_large_image", title, description },
   };
 }
 
@@ -98,6 +101,7 @@ export default async function ReviewPage({
   }
 
   const relatedReviews = await sanityClient.fetch<ReviewListItem[]>(RELATED_REVIEWS, { slug });
+  const shareUrl = `${SITE_URL}/reviews/${slug}`;
 
-  return <ReviewArticle review={review} relatedReviews={relatedReviews} />;
+  return <ReviewArticle review={review} relatedReviews={relatedReviews} shareUrl={shareUrl} />;
 }

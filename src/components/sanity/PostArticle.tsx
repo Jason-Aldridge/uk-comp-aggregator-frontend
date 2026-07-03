@@ -4,6 +4,7 @@ import { urlFor } from "@/sanity/client";
 import { titleColorVar } from "@/lib/titleColor";
 import { RelatedPosts } from "./RelatedPosts";
 import { portableTextComponents } from "./portableTextComponents";
+import { ShareBar } from "@/components/ui/ShareBar";
 
 type PostSlug = {
   current: string;
@@ -51,9 +52,11 @@ function formatPublishedDate(value: string) {
 export function PostArticle({
   post,
   relatedPosts,
+  shareUrl,
 }: {
   post: PostData;
   relatedPosts?: PostListItem[];
+  shareUrl: string;
 }) {
   const headingColor = titleColorVar(post.titleColor);
   const imgSrc = post.heroImage
@@ -94,7 +97,8 @@ export function PostArticle({
       <section className="py-10">
         <div className="container">
           <div className="mx-auto max-w-[780px] lg:max-w-[860px]">
-            <div className="mb-4 flex flex-wrap items-center gap-3">
+            <ShareBar url={shareUrl} title={post.title} />
+            <div className="mb-4 mt-8 flex flex-wrap items-center gap-3">
               {post.category ? (
                 <span className="inline-flex rounded-full border border-rr-green-border bg-rr-green-bg px-2.5 py-1 text-[11px] font-medium text-rr-green">
                   {post.category}
