@@ -1,7 +1,7 @@
-import Image from "next/image";
 import { PortableText } from "@portabletext/react";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import { urlFor } from "@/sanity/client";
+import { SanityImage } from "@/components/ui/SanityImage";
 import { titleColorVar } from "@/lib/titleColor";
 import { RelatedReviews } from "./RelatedReviews";
 import { portableTextComponents } from "./portableTextComponents";
@@ -101,7 +101,7 @@ export function ReviewArticle({
                 className="relative overflow-hidden rounded-xl border border-rr-border bg-rr-surface"
                 style={{ aspectRatio: "16 / 9" }}
               >
-                <Image
+                <SanityImage
                   src={imgSrc}
                   alt={review.title}
                   fill

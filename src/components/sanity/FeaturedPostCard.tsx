@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { SanityImage } from "@/components/ui/SanityImage";
 import { urlFor } from "@/sanity/client";
 
 type PostSlug = {
@@ -54,7 +54,7 @@ export function FeaturedPostCard({
             style={{ aspectRatio: "16 / 9" }}
           >
             {imgSrc ? (
-              <Image
+              <SanityImage
                 src={imgSrc}
                 alt={title}
                 fill

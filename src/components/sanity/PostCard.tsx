@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { SanityImage } from "@/components/ui/SanityImage";
 import { urlFor } from "@/sanity/client";
 
 type PostSlug = {
@@ -53,7 +53,7 @@ export function PostCard({
       <article className="h-full overflow-hidden rounded-[10px] border border-rr-border bg-rr-elevated transition group-hover:-translate-y-0.5 group-hover:border-rr-green/40">
         <div className="relative w-full overflow-hidden bg-rr-surface" style={{ aspectRatio: "16 / 9" }}>
           {imgSrc ? (
-            <Image
+            <SanityImage
               src={imgSrc}
               alt={title}
               fill

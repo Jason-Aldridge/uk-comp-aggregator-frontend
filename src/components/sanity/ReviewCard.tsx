@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { IconStarFilled, IconStar } from "@tabler/icons-react";
+import { SanityImage } from "@/components/ui/SanityImage";
 import { urlFor } from "@/sanity/client";
 
 type ReviewSlug = {
@@ -77,7 +77,7 @@ export function ReviewCard({
           style={{ aspectRatio: "16 / 9" }}
         >
           {imgSrc ? (
-            <Image
+            <SanityImage
               src={imgSrc}
               alt={title}
               fill

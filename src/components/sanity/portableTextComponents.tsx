@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { PortableTextComponents } from "@portabletext/react";
+import { SanityImage } from "@/components/ui/SanityImage";
 import { urlFor } from "@/sanity/client";
 
 export const portableTextComponents: PortableTextComponents = {
@@ -94,7 +94,7 @@ export const portableTextComponents: PortableTextComponents = {
 
       return (
         <figure className="my-8 overflow-hidden rounded-xl border border-rr-border bg-rr-surface">
-          <Image
+          <SanityImage
             src={src}
             alt={alt}
             width={1200}

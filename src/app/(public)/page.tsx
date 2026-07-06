@@ -134,18 +134,18 @@ export default async function Page({
         competitions={topOpportunities}
       />
       <CompetitionSection
-        titleStart="Top Prizes"
-        titleAccent="right now"
-        subtitle="The biggest draws right now — cars, homes and bikes worth winning"
-        viewAllHref="/competitions?minPrizeValue=5000&category=cars,houses,bikes&sortBy=prizeValue&sortOrder=desc"
-        competitions={topPrizes}
-      />
-      <CompetitionSection
         titleStart="Most undersold"
         titleAccent="ending soon"
         subtitle="Low ticket sales, closing within 3 days — your best odds right now"
         viewAllHref="/competitions?sortBy=percentSold&sortOrder=asc&closing=today&excludeInstant=true&excludeFree=true"
         competitions={undersold}
+      />
+      <CompetitionSection
+        titleStart="Top Prizes"
+        titleAccent="right now"
+        subtitle="The biggest draws right now — cars, homes and bikes worth winning"
+        viewAllHref="/competitions?minPrizeValue=5000&category=cars,houses,bikes&sortBy=prizeValue&sortOrder=desc"
+        competitions={topPrizes}
       />
       <CompetitionSection
         titleStart="Selling"
