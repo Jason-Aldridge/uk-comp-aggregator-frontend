@@ -6,6 +6,7 @@ import { titleColorVar } from "@/lib/titleColor";
 import { RelatedReviews } from "./RelatedReviews";
 import { portableTextComponents } from "./portableTextComponents";
 import { ShareBar } from "@/components/ui/ShareBar";
+import { RichTitle } from "./RichTitle";
 
 type ReviewSlug = {
   current: string;
@@ -19,6 +20,7 @@ type SeoMeta = {
 
 type ReviewData = {
   title: string;
+  richTitle?: unknown[] | null;
   titleColor?: string | null;
   slug: ReviewSlug;
   operatorName?: string | null;
@@ -81,6 +83,7 @@ export function ReviewArticle({
   shareUrl: string;
 }) {
   const headingColor = titleColorVar(review.titleColor);
+  const hasRichTitle = Array.isArray(review.richTitle) && review.richTitle.length > 0;
   const imgSrc = review.heroImage
     ? urlFor(review.heroImage)
         .width(1400)
@@ -136,12 +139,20 @@ export function ReviewArticle({
               ) : null}
             </div>
 
-            <h1
-              className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl"
-              style={headingColor ? { color: headingColor } : undefined}
-            >
-              {review.title}
-            </h1>
+            {hasRichTitle ? (
+              <RichTitle
+                value={review.richTitle}
+                as="h1"
+                className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl"
+              />
+            ) : (
+              <h1
+                className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl"
+                style={headingColor ? { color: headingColor } : undefined}
+              >
+                {review.title}
+              </h1>
+            )}
 
             {review.excerpt ? (
               <p className="mt-5 text-[17px] italic leading-7 text-rr-secondary">

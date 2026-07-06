@@ -2,6 +2,7 @@ export const PAGE_BY_SLUG = `*[_type == "page" && slug.current == $slug][0]{
   title,
   heroEyebrow,
   heroHeading,
+  richTitle,
   heroHeadingColor,
   heroLead,
   heroCtaPrimary,
@@ -25,6 +26,8 @@ export const ALL_REVIEWS = `*[_type == "review" && defined(slug.current)] | orde
 
 export const REVIEW_BY_SLUG = `*[_type == "review" && slug.current == $slug][0]{
   title,
+  richTtitle,
+  richTitle,
   titleColor,
   slug,
   operatorName,
@@ -103,5 +106,6 @@ export const SITE_SETTINGS = `*[_type == "siteSettings"][0]{
 
 export const HOW_IT_WORKS_PAGE = `*[_type == "howItWorksPage"][0]{
   title,
+  richTitle,
   body
 }`;

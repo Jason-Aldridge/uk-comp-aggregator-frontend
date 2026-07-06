@@ -5,6 +5,7 @@ import { titleColorVar } from "@/lib/titleColor";
 import { RelatedPosts } from "./RelatedPosts";
 import { portableTextComponents } from "./portableTextComponents";
 import { ShareBar } from "@/components/ui/ShareBar";
+import { RichTitle } from "./RichTitle";
 
 type PostSlug = {
   current: string;
@@ -18,6 +19,7 @@ type SeoMeta = {
 
 type PostData = {
   title: string;
+  richTitle?: unknown[] | null;
   titleColor?: string | null;
   slug: PostSlug;
   heroImage?: unknown;
@@ -59,6 +61,7 @@ export function PostArticle({
   shareUrl: string;
 }) {
   const headingColor = titleColorVar(post.titleColor);
+  const hasRichTitle = Array.isArray(post.richTitle) && post.richTitle.length > 0;
   const imgSrc = post.heroImage
     ? urlFor(post.heroImage)
         .width(1400)
@@ -109,12 +112,20 @@ export function PostArticle({
               ) : null}
             </div>
 
-            <h1
-              className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl"
-              style={headingColor ? { color: headingColor } : undefined}
-            >
-              {post.title}
-            </h1>
+            {hasRichTitle ? (
+              <RichTitle
+                value={post.richTitle}
+                as="h1"
+                className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl"
+              />
+            ) : (
+              <h1
+                className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl"
+                style={headingColor ? { color: headingColor } : undefined}
+              >
+                {post.title}
+              </h1>
+            )}
 
             {post.excerpt ? (
               <p className="mt-5 text-[17px] italic leading-7 text-rr-secondary">{post.excerpt}</p>

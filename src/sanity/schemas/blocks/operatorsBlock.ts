@@ -17,6 +17,12 @@ export const operatorsBlock = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "richTitle",
+      title: "Rich Title",
+      type: "richTitle",
+      description: "Optional. Overrides Title with coloured words support.",
+    }),
+    defineField({
       name: "operators",
       title: "Operators",
       type: "array",

@@ -9,6 +9,7 @@ import { OperatorsBlock } from "./blocks/OperatorsBlock";
 import { RichTextBlock } from "./blocks/RichTextBlock";
 import { StatsBlock } from "./blocks/StatsBlock";
 import { StepsBlock } from "./blocks/StepsBlock";
+import { RichTitle } from "./RichTitle";
 
 type CtaLink = {
   label: string;
@@ -24,6 +25,7 @@ type PageData = {
   title: string;
   heroEyebrow?: string;
   heroHeading: string;
+  richTitle?: unknown[] | null;
   heroHeadingColor?: string | null;
   heroLead?: string;
   heroCtaPrimary?: CtaLink;
@@ -55,6 +57,7 @@ function CtaButton({
 export function PageRenderer({ page }: { page: PageData }) {
   const sections = page.sections ?? [];
   const headingColor = titleColorVar(page.heroHeadingColor);
+  const hasRichTitle = Array.isArray(page.richTitle) && page.richTitle.length > 0;
 
   return (
     <main className="bg-rr-bg">
@@ -67,12 +70,20 @@ export function PageRenderer({ page }: { page: PageData }) {
               </p>
             ) : null}
 
-            <h1
-              className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl"
-              style={headingColor ? { color: headingColor } : undefined}
-            >
-              {page.heroHeading}
-            </h1>
+            {hasRichTitle ? (
+              <RichTitle
+                value={page.richTitle}
+                as="h1"
+                className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl"
+              />
+            ) : (
+              <h1
+                className="text-4xl font-medium leading-tight tracking-[-0.03em] text-rr-primary md:text-5xl"
+                style={headingColor ? { color: headingColor } : undefined}
+              >
+                {page.heroHeading}
+              </h1>
+            )}
 
             {page.heroLead ? (
               <p className="mx-auto mt-5 max-w-[680px] text-base leading-7 text-rr-secondary md:text-lg">

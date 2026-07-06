@@ -1,16 +1,20 @@
+import { RichTitle } from "@/components/sanity/RichTitle";
+
 type OperatorsBlockData = {
   _key?: string;
   _type?: string;
   eyebrow?: string;
   heading?: string;
+  richTitle?: unknown[];
   operators?: string[];
   note?: string;
 };
 
 export function OperatorsBlock({ block }: { block: OperatorsBlockData }) {
   const operators = block.operators ?? [];
+  const hasRichTitle = Array.isArray(block.richTitle) && block.richTitle.length > 0;
 
-  if (!block.heading || !operators.length) {
+  if ((!block.heading && !hasRichTitle) || !operators.length) {
     return null;
   }
 
@@ -25,9 +29,17 @@ export function OperatorsBlock({ block }: { block: OperatorsBlockData }) {
             </p>
           ) : null}
 
-          <h2 className="max-w-[680px] text-3xl font-medium leading-tight tracking-[-0.03em] text-rr-primary">
-            {block.heading}
-          </h2>
+          {hasRichTitle ? (
+            <RichTitle
+              value={block.richTitle}
+              as="h2"
+              className="max-w-[680px] text-3xl font-medium leading-tight tracking-[-0.03em] text-rr-primary"
+            />
+          ) : (
+            <h2 className="max-w-[680px] text-3xl font-medium leading-tight tracking-[-0.03em] text-rr-primary">
+              {block.heading}
+            </h2>
+          )}
 
           <div className="mt-9 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
             {operators.map((operator, index) => (

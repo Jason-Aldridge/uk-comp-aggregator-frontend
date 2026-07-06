@@ -9,6 +9,7 @@ import { page } from "./documents/page";
 import { post } from "./documents/post";
 import { review } from "./documents/review";
 import { siteSettings } from "./documents/siteSettings";
+import { richTitle } from "./objects/richTitle";
 import { seoMeta } from "./objects/seoMeta";
 
 export const schemaTypes = [
@@ -23,5 +24,6 @@ export const schemaTypes = [
   stepsBlock,
   calloutBlock,
   operatorsBlock,
+  richTitle,
   seoMeta,
 ];

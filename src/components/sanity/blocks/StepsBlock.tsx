@@ -1,3 +1,5 @@
+import { RichTitle } from "@/components/sanity/RichTitle";
+
 type StepItem = {
   _key?: string;
   title: string;
@@ -9,13 +11,15 @@ type StepsBlockData = {
   _type?: string;
   eyebrow?: string;
   heading?: string;
+  richTitle?: unknown[];
   items?: StepItem[];
 };
 
 export function StepsBlock({ block }: { block: StepsBlockData }) {
   const items = block.items ?? [];
+  const hasRichTitle = Array.isArray(block.richTitle) && block.richTitle.length > 0;
 
-  if (!block.heading || !items.length) {
+  if ((!block.heading && !hasRichTitle) || !items.length) {
     return null;
   }
 
@@ -30,9 +34,17 @@ export function StepsBlock({ block }: { block: StepsBlockData }) {
             </p>
           ) : null}
 
-          <h2 className="max-w-[680px] text-3xl font-medium leading-tight tracking-[-0.03em] text-rr-primary">
-            {block.heading}
-          </h2>
+          {hasRichTitle ? (
+            <RichTitle
+              value={block.richTitle}
+              as="h2"
+              className="max-w-[680px] text-3xl font-medium leading-tight tracking-[-0.03em] text-rr-primary"
+            />
+          ) : (
+            <h2 className="max-w-[680px] text-3xl font-medium leading-tight tracking-[-0.03em] text-rr-primary">
+              {block.heading}
+            </h2>
+          )}
 
           <div className="mt-9">
             {items.map((item, index) => (

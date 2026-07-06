@@ -1,3 +1,4 @@
+import { RichTitle } from "@/components/sanity/RichTitle";
 import {
   IconChartArcs,
   IconCircleDot,
@@ -21,6 +22,7 @@ type CardsBlockData = {
   _type?: string;
   eyebrow?: string;
   heading?: string;
+  richTitle?: unknown[];
   items?: CardItem[];
 };
 
@@ -36,8 +38,9 @@ const iconMap = {
 
 export function CardsBlock({ block }: { block: CardsBlockData }) {
   const items = block.items ?? [];
+  const hasRichTitle = Array.isArray(block.richTitle) && block.richTitle.length > 0;
 
-  if (!block.heading || !items.length) {
+  if ((!block.heading && !hasRichTitle) || !items.length) {
     return null;
   }
 
@@ -52,9 +55,17 @@ export function CardsBlock({ block }: { block: CardsBlockData }) {
             </p>
           ) : null}
 
-          <h2 className="max-w-[680px] text-3xl font-medium leading-tight tracking-[-0.03em] text-rr-primary">
-            {block.heading}
-          </h2>
+          {hasRichTitle ? (
+            <RichTitle
+              value={block.richTitle}
+              as="h2"
+              className="max-w-[680px] text-3xl font-medium leading-tight tracking-[-0.03em] text-rr-primary"
+            />
+          ) : (
+            <h2 className="max-w-[680px] text-3xl font-medium leading-tight tracking-[-0.03em] text-rr-primary">
+              {block.heading}
+            </h2>
+          )}
 
           <div className="mt-9 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {items.map((item, index) => {

@@ -1,4 +1,24 @@
+import type { ReactNode } from "react";
 import { defineArrayMember, defineField, defineType } from "sanity";
+
+function createColorDecorator(title: string, value: string, color: string) {
+  return {
+    title,
+    value,
+    icon: () => <span style={{ color, fontWeight: 700 }}>A</span>,
+    component: (props: { children?: ReactNode }) => (
+      <span style={{ color }}>{props.children}</span>
+    ),
+  };
+}
+
+const colorDecorators = [
+  createColorDecorator("Accent (green)", "colorAccent", "#22C55E"),
+  createColorDecorator("Positive (green)", "colorGood", "#22C55E"),
+  createColorDecorator("Warning (amber)", "colorWarn", "#F59E0B"),
+  createColorDecorator("Danger (red)", "colorDanger", "#EF4444"),
+  createColorDecorator("Muted (grey)", "colorMuted", "#94A3B8"),
+];
 
 export const howItWorksPage = defineType(
   {
@@ -15,6 +35,12 @@ export const howItWorksPage = defineType(
         validation: (rule) => rule.required(),
       }),
       defineField({
+        name: "richTitle",
+        title: "Rich Title",
+        type: "richTitle",
+        description: "Optional. Overrides Title with coloured words support.",
+      }),
+      defineField({
         name: "body",
         title: "Body",
         type: "array",
@@ -27,11 +53,7 @@ export const howItWorksPage = defineType(
                 { title: "Emphasis", value: "em" },
                 { title: "Underline", value: "underline" },
                 { title: "Strike", value: "strike-through" },
-                { title: "Accent (green)", value: "colorAccent" },
-                { title: "Positive (green)", value: "colorGood" },
-                { title: "Warning (amber)", value: "colorWarn" },
-                { title: "Danger (red)", value: "colorDanger" },
-                { title: "Muted (grey)", value: "colorMuted" },
+                ...colorDecorators,
               ],
               annotations: [
                 {
