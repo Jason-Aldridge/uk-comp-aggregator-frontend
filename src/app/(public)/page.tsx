@@ -4,7 +4,7 @@ import { CompetitionSection } from "@/components/home/competition-section";
 import { CommunitySection } from "@/components/home/community-section";
 import { Hero, type HeroStats } from "@/components/home/hero";
 import { FilterBar } from "@/components/layout/filter-bar";
-import { getCompetitions, getRecentlyEnded, getStats } from "@/lib/api";
+import { getCompetitions, getOperators, getRecentlyEnded, getStats } from "@/lib/api";
 import type { Competition } from "@/types/competition";
 
 type HomePageSearchParams = {
@@ -66,6 +66,7 @@ export default async function Page({
       bestValueResult,
       endingTodayResult,
       statsResult,
+      operatorsResult,
     ] = await Promise.all([
       getCompetitions({
         sortBy: "bestValue",
@@ -107,6 +108,7 @@ export default async function Page({
         limit: 4,
       }),
       getStats(),
+      getOperators(),
     ]);
 
     topOpportunities = topOpportunitiesResult as Competition[];
@@ -115,7 +117,12 @@ export default async function Page({
     recentlyEnded = recentlyEndedResult as Competition[];
     bestValue = bestValueResult as Competition[];
     endingToday = endingTodayResult as Competition[];
-    stats = statsResult;
+    stats = {
+      ...statsResult,
+      operatorsCount: operatorsResult.filter(
+        (operator) => (operator.activeCompetitionsCount ?? 0) > 0,
+      ).length,
+    };
   } catch {
     topOpportunities = [];
     topPrizes = [];

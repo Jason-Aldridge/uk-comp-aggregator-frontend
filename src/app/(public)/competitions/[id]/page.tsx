@@ -37,6 +37,18 @@ const MIN_VR_SAMPLE = 5;
 const FAIR_VR = 3;
 const GREEDY_VR = 8;
 
+function operatorNameToSlug(value: string | null | undefined) {
+  if (!value) return null;
+
+  const slug = value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return slug || null;
+}
+
 function PlaceholderIcon({ category }: { category: string | null }) {
   const cls = "text-rr-border";
   const size = 80;
@@ -254,6 +266,7 @@ export default async function Page({
     operator.vrSampleSize >= MIN_VR_SAMPLE
       ? Number(operator.avgVr)
       : null;
+  const operatorSlug = operatorNameToSlug(operator?.name);
   const operatorVrLabel = operator
     ? operatorVrValue !== null
       ? `VR ${operatorVrValue.toFixed(1)}`
@@ -609,10 +622,20 @@ export default async function Page({
 
         {moreFromOperator.length > 0 && (
           <div className="mt-10">
-            <h2 className="text-lg font-semibold text-rr-primary mb-4">
-              More from {operator?.name ?? "Operator"}
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <h2 className="text-lg font-semibold text-rr-primary">
+                More from {operator?.name ?? "Operator"}
+              </h2>
+              {operatorSlug ? (
+                <Link
+                  href={`/operators/${operatorSlug}`}
+                  className="shrink-0 text-sm font-medium text-rr-green no-underline transition-opacity hover:opacity-80"
+                >
+                  View All →
+                </Link>
+              ) : null}
+            </div>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
               {moreFromOperator.map((competition) => (
                 <CompetitionCard
                   key={competition.id}
