@@ -50,6 +50,7 @@ export function Navbar() {
 
   const label = user?.displayName?.trim() || user?.email || "";
   const initials = label ? getInitials(label.includes("@") ? label.split("@")[0] : label) : "";
+  const showAuthButtons = false;
 
   return (
     <div className="relative">
@@ -152,12 +153,12 @@ export function Navbar() {
                 {user.displayName || user.email}
               </span>
             </div>
-          ) : (
+          ) : showAuthButtons ? (
             <div className="hidden md:flex items-center gap-2">
               <Button variant="secondary" className="text-sm">Log in</Button>
               <Button variant="primary" className="text-sm">Sign up</Button>
             </div>
-          )}
+          ) : null}
           </div>
         </nav>
 
@@ -229,7 +230,7 @@ export function Navbar() {
               How it works
             </Link>
 
-            {!user ? (
+            {!user && showAuthButtons ? (
               <div className="mt-2 grid gap-2">
                 <Button
                   variant="secondary"
