@@ -6,10 +6,11 @@ type CompetitionSectionProps = {
   titleStart: string;
   titleAccent: string;
   subtitle: string;
-  viewAllHref: string;
+  viewAllHref?: string;
   competitions: Competition[];
   accentTone?: "green" | "red";
   featuredIds?: string[];
+  cardVariant?: "default" | "ended";
 };
 
 export function CompetitionSection({
@@ -20,6 +21,7 @@ export function CompetitionSection({
   competitions,
   accentTone = "green",
   featuredIds = [],
+  cardVariant = "default",
 }: CompetitionSectionProps) {
   if (competitions.length === 0) return null;
 
@@ -43,6 +45,7 @@ export function CompetitionSection({
                 <CompetitionCard
                   competition={competition}
                   featured={featuredSet.has(competition.id)}
+                  variant={cardVariant}
                 />
               </div>
             </div>

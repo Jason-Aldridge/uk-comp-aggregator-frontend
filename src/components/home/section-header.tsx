@@ -6,7 +6,7 @@ type SectionHeaderProps = {
   titleStart: string;
   titleAccent: string;
   subtitle: string;
-  viewAllHref: string;
+  viewAllHref?: string;
   accentTone?: AccentTone;
 };
 
@@ -32,12 +32,14 @@ export function SectionHeader({
         <p className="mt-1 text-sm text-rr-muted">{subtitle}</p>
       </div>
 
-      <Link
-        href={viewAllHref}
-        className="shrink-0 text-sm font-medium text-rr-green no-underline transition-opacity hover:opacity-80"
-      >
-        View All →
-      </Link>
+      {viewAllHref ? (
+        <Link
+          href={viewAllHref}
+          className="shrink-0 text-sm font-medium text-rr-green no-underline transition-opacity hover:opacity-80"
+        >
+          View All →
+        </Link>
+      ) : null}
     </div>
   );
 }

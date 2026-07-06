@@ -79,6 +79,54 @@ export function getEndsLabel(endsAt: string | null): string | null {
   return `Ends in ${daysLeft} days`;
 }
 
+function getLondonDayKey(date: Date): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
+
+function getValidDate(primary: string | null, fallback?: string | null): Date | null {
+  const primaryDate = primary ? new Date(primary) : null;
+  if (primaryDate && !Number.isNaN(primaryDate.getTime())) return primaryDate;
+
+  const fallbackDate = fallback ? new Date(fallback) : null;
+  if (fallbackDate && !Number.isNaN(fallbackDate.getTime())) return fallbackDate;
+
+  return null;
+}
+
+export function getEndedLabel(endsAt: string | null, closedAt?: string | null): string | null {
+  const endedDate = getValidDate(endsAt, closedAt);
+  if (!endedDate) return null;
+
+  const timeLabel = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: false,
+  }).format(endedDate);
+
+  const now = new Date();
+  const todayKey = getLondonDayKey(now);
+  const yesterdayKey = getLondonDayKey(new Date(now.getTime() - 86400000));
+  const endedDayKey = getLondonDayKey(endedDate);
+
+  if (endedDayKey === todayKey || endedDayKey === yesterdayKey) {
+    return `Ended ${timeLabel}`;
+  }
+
+  const dateLabel = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    day: "numeric",
+    month: "short",
+  }).format(endedDate);
+
+  return `Ended ${dateLabel}, ${timeLabel}`;
+}
+
 export function formatDateInLondon(date: Date | string | null): string {
   if (!date) return "—";
   

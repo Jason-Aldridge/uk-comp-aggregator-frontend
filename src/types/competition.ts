@@ -13,7 +13,9 @@ export type Competition = {
   ticketsTotal: number | null;
   ticketsLeft?: number | null;
   percentSold: number | string | null;
+  finalPercentSold?: number | string | null;
   endsAt: string | null;
+  closedAt?: string | null;
   category: string | null;
   instantPrizes: boolean | null;
   valueRatio: number | string | null;

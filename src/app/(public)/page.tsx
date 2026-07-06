@@ -4,7 +4,7 @@ import { CompetitionSection } from "@/components/home/competition-section";
 import { CommunitySection } from "@/components/home/community-section";
 import { Hero, type HeroStats } from "@/components/home/hero";
 import { FilterBar } from "@/components/layout/filter-bar";
-import { getCompetitions, getStats } from "@/lib/api";
+import { getCompetitions, getRecentlyEnded, getStats } from "@/lib/api";
 import type { Competition } from "@/types/competition";
 
 type HomePageSearchParams = {
@@ -48,6 +48,7 @@ export default async function Page({
   let topOpportunities: Competition[] = [];
   let topPrizes: Competition[] = [];
   let undersold: Competition[] = [];
+  let recentlyEnded: Competition[] = [];
   let bestValue: Competition[] = [];
   let endingToday: Competition[] = [];
   let stats: HeroStats = {
@@ -61,6 +62,7 @@ export default async function Page({
       topOpportunitiesResult,
       topPrizesResult,
       undersoldResult,
+      recentlyEndedResult,
       bestValueResult,
       endingTodayResult,
       statsResult,
@@ -88,6 +90,7 @@ export default async function Page({
         excludeFree: true,
         limit: 4,
       }),
+      getRecentlyEnded(8),
       getCompetitions({
         sortBy: "percentSold",
         sortOrder: "desc",
@@ -109,6 +112,7 @@ export default async function Page({
     topOpportunities = topOpportunitiesResult as Competition[];
     topPrizes = topPrizesResult as Competition[];
     undersold = undersoldResult as Competition[];
+    recentlyEnded = recentlyEndedResult as Competition[];
     bestValue = bestValueResult as Competition[];
     endingToday = endingTodayResult as Competition[];
     stats = statsResult;
@@ -116,6 +120,7 @@ export default async function Page({
     topOpportunities = [];
     topPrizes = [];
     undersold = [];
+    recentlyEnded = [];
     bestValue = [];
     endingToday = [];
   }
@@ -139,6 +144,14 @@ export default async function Page({
         subtitle="Low ticket sales, closing within 3 days — your best odds right now"
         viewAllHref="/competitions?sortBy=percentSold&sortOrder=asc&closing=today&excludeInstant=true&excludeFree=true"
         competitions={undersold}
+      />
+      <CompetitionSection
+        titleStart="Recent"
+        titleAccent="draws"
+        subtitle="Just finished — how they sold before the draw"
+        viewAllHref="/recent-draws"
+        competitions={recentlyEnded}
+        cardVariant="ended"
       />
       <CompetitionSection
         titleStart="Top Prizes"

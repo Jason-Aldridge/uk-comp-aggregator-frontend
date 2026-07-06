@@ -11,6 +11,7 @@ import { CompetitionImage } from "@/components/ui/CompetitionImage";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import type { Competition } from "@/types/competition";
 import {
+  getEndedLabel,
   getStatusBadge,
   getEndsLabel,
 } from "@/lib/competition-display";
@@ -36,11 +37,12 @@ function PlaceholderIcon({ category }: { category: string | null }) {
 interface Props {
   competition: Competition;
   featured?: boolean;
+  variant?: "default" | "ended";
 }
 
 const ticketCountFormatter = new Intl.NumberFormat("en-GB");
 
-export function CompetitionCard({ competition, featured }: Props) {
+export function CompetitionCard({ competition, featured, variant = "default" }: Props) {
   const {
     id,
     prize,
@@ -49,27 +51,31 @@ export function CompetitionCard({ competition, featured }: Props) {
     ticketsTotal,
     ticketsLeft,
     percentSold,
+    finalPercentSold,
     endsAt,
+    closedAt,
     category,
     instantPrizes,
   } = competition;
 
-  const percent = percentSold ? Number(percentSold) : 0;
+  const isEnded = variant === "ended";
+  const percentSource = isEnded ? finalPercentSold ?? percentSold : percentSold;
+  const percent = percentSource ? Number(percentSource) : 0;
   const price = ticketPrice ? Number(ticketPrice) : null;
-  const statusBadge = getStatusBadge(endsAt, featured, null);
-  const endsLabel = getEndsLabel(endsAt);
+  const statusBadge = isEnded ? null : getStatusBadge(endsAt, featured, null);
+  const timingLabel = isEnded ? getEndedLabel(endsAt, closedAt) : getEndsLabel(endsAt);
   const badgeShowsTime =
     statusBadge?.variant === "red" || statusBadge?.variant === "amber";
 
-  return (
-    <Link
-      href={`/competitions/${id}`}
-      className={[
-        "block rounded-[10px] overflow-hidden border cursor-pointer transition-opacity hover:opacity-90",
-        "bg-rr-surface border-rr-border",
-        featured ? "border-rr-green-border" : "",
-      ].join(" ")}
-    >
+  const cardClassName = [
+    "block overflow-hidden rounded-[10px] border",
+    "bg-rr-surface border-rr-border",
+    featured ? "border-rr-green-border" : "",
+    isEnded ? "cursor-default" : "cursor-pointer transition-opacity hover:opacity-90",
+  ].join(" ");
+
+  const cardContent = (
+    <>
       <div className="relative flex h-[150px] items-center justify-center bg-rr-elevated">
         {imageUrl ? (
           <CompetitionImage
@@ -105,26 +111,38 @@ export function CompetitionCard({ competition, featured }: Props) {
             {price === 0 ? "FREE" : price ? `£${price.toFixed(2)}` : "—"}
           </span>
           <span className="text-[10px] text-rr-muted">
-            {typeof ticketsLeft === "number"
-              ? `${ticketCountFormatter.format(ticketsLeft)} left`
-              : typeof ticketsTotal === "number"
-                ? `${ticketCountFormatter.format(ticketsTotal)} tickets`
-                : "— tickets"}
+            {isEnded
+              ? timingLabel ?? "Ended"
+              : typeof ticketsLeft === "number"
+                ? `${ticketCountFormatter.format(ticketsLeft)} left`
+                : typeof ticketsTotal === "number"
+                  ? `${ticketCountFormatter.format(ticketsTotal)} tickets`
+                  : "— tickets"}
           </span>
         </div>
         <ProgressBar value={percent} />
         <div className="flex justify-between mt-1">
           <span className="text-[10px] text-rr-muted">
             {percent.toFixed(0)}% sold
-            {endsLabel && !badgeShowsTime ? ` · ${endsLabel}` : ""}
+            {timingLabel && !isEnded && !badgeShowsTime ? ` · ${timingLabel}` : ""}
           </span>
-          {instantPrizes && (
-            <span className="text-[10px] text-rr-green font-medium">
-              Auto draw
-            </span>
-          )}
+          {isEnded ? (
+            <Badge variant="neutral">Draw complete</Badge>
+          ) : instantPrizes ? (
+            <span className="text-[10px] font-medium text-rr-green">Auto draw</span>
+          ) : null}
         </div>
       </div>
+    </>
+  );
+
+  if (isEnded) {
+    return <div className={cardClassName}>{cardContent}</div>;
+  }
+
+  return (
+    <Link href={`/competitions/${id}`} className={cardClassName}>
+      {cardContent}
     </Link>
   );
 }

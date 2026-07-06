@@ -385,6 +385,16 @@ export async function getTopOpportunities(params?: GetTopOpportunitiesParams) {
   return normalizeCompetitionsResponse(response);
 }
 
+export async function getRecentlyEnded(limit = 8) {
+  const query = new URLSearchParams({
+    limit: String(limit),
+  });
+  const response = await apiFetch<unknown>(
+    `/competitions/recently-ended?${query.toString()}`,
+  );
+  return normalizeCompetitionsResponse(response);
+}
+
 export async function getCompetition(id: string) {
   const response = await apiFetch<CompetitionDetail>(`/competitions/${id}`);
   return normalizeCompetitionItem(response);
