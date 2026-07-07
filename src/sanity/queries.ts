@@ -53,6 +53,22 @@ export const RELATED_REVIEWS = `*[_type == "review" && defined(slug.current) && 
   publishedAt
 }`;
 
+export const OPERATOR_REVIEW_BY_ID = `*[_type == "review" && defined(slug.current) && operatorId == $operatorId] | order(publishedAt desc)[0]{
+  title,
+  slug,
+  operatorName,
+  excerpt,
+  publishedAt
+}`;
+
+export const OPERATOR_REVIEW_BY_NAME = `*[_type == "review" && defined(slug.current) && lower(operatorName) in $operatorNames] | order(publishedAt desc)[0]{
+  title,
+  slug,
+  operatorName,
+  excerpt,
+  publishedAt
+}`;
+
 export const ALL_POSTS = `*[_type == "post" && defined(slug.current)] | order(publishedAt desc){
   _id,
   title,

@@ -10,6 +10,8 @@ import {
   getOperators,
 } from "@/lib/api";
 import { getOperatorFairness } from "@/lib/operator-display";
+import { sanityClient } from "@/sanity/client";
+import { OPERATOR_REVIEW_BY_ID, OPERATOR_REVIEW_BY_NAME } from "@/sanity/queries";
 import type { Competition } from "@/types/competition";
 
 export const revalidate = 60;
@@ -17,6 +19,57 @@ export const revalidate = 60;
 type PageParams = {
   slug: string;
 };
+
+type ReviewSlug = {
+  current: string;
+};
+
+type OperatorReviewCard = {
+  title: string;
+  slug: ReviewSlug;
+  operatorName?: string | null;
+  excerpt?: string | null;
+  publishedAt?: string | null;
+};
+
+function formatPublishedDate(value?: string | null) {
+  if (!value) return null;
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+function normalizeOperatorName(value: string, spacedDigits = false) {
+  const normalized = value
+    .toLowerCase()
+    .replace(/[-_]+/g, " ")
+    .replace(spacedDigits ? /([0-9])([a-z])/g : /$^/, "$1 $2")
+    .replace(spacedDigits ? /([a-z])([0-9])/g : /$^/, "$1 $2")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return normalized;
+}
+
+function getOperatorNameVariants(name: string, slug: string) {
+  const variants = new Set<string>();
+
+  for (const value of [name, slug]) {
+    const basic = normalizeOperatorName(value, false);
+    const spaced = normalizeOperatorName(value, true);
+
+    if (basic) variants.add(basic);
+    if (spaced) variants.add(spaced);
+  }
+
+  return Array.from(variants);
+}
 
 function OperatorLogo({
   name,
@@ -109,6 +162,21 @@ export default async function OperatorPage({
   const fairness = getOperatorFairness(operator.avgVr, operator.vrSampleSize);
   const activeCompetitionsCount =
     operator.activeCompetitionsCount ?? competitionsWithOperator.length;
+  const operatorNameVariants = getOperatorNameVariants(operator.name, slug);
+  const reviewFromOperatorId = await sanityClient.fetch<OperatorReviewCard | null>(
+    OPERATOR_REVIEW_BY_ID,
+    { operatorId: operator.id },
+  );
+  const linkedReview = reviewFromOperatorId
+    ? reviewFromOperatorId
+    : await sanityClient.fetch<OperatorReviewCard | null>(
+        OPERATOR_REVIEW_BY_NAME,
+        { operatorNames: operatorNameVariants },
+      );
+  const reviewHref = linkedReview?.slug?.current
+    ? `/reviews/${linkedReview.slug.current}`
+    : null;
+  const reviewDate = formatPublishedDate(linkedReview?.publishedAt);
 
   return (
     <main className="bg-rr-bg">
@@ -202,20 +270,48 @@ export default async function OperatorPage({
             </div>
 
             <div className="mt-6 rounded-xl border border-rr-border bg-rr-surface p-4 md:p-5">
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <p className="text-lg font-medium text-rr-primary">
-                    Read our review
-                  </p>
-                  <p className="mt-1 text-sm text-rr-secondary">
-                    A dedicated review page for this operator will be linked here in the next stage.
-                  </p>
-                </div>
+              {linkedReview && reviewHref ? (
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-8">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-rr-muted">
+                      Read our review
+                    </p>
+                    <p className="mt-2 text-lg font-medium tracking-[-0.02em] text-rr-primary md:text-xl">
+                      {linkedReview.title}
+                    </p>
+                    {reviewDate ? (
+                      <p className="mt-1 text-xs text-rr-muted">{reviewDate}</p>
+                    ) : null}
+                    {linkedReview.excerpt ? (
+                      <p className="mt-3 max-w-[760px] text-sm leading-6 text-rr-secondary line-clamp-3">
+                        {linkedReview.excerpt}
+                      </p>
+                    ) : null}
+                  </div>
 
-                <span className="inline-flex h-10 shrink-0 items-center justify-center rounded-md border border-rr-border bg-rr-elevated px-4 text-sm font-medium text-rr-muted">
-                  Coming soon
-                </span>
-              </div>
+                  <Link
+                    href={reviewHref}
+                    className="inline-flex h-10 shrink-0 items-center justify-center rounded-md bg-rr-green px-4 text-sm font-medium text-rr-on-accent no-underline transition-opacity hover:opacity-90"
+                  >
+                    Read the full review
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-8">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-rr-muted">
+                      Read our review
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-rr-secondary">
+                      A dedicated review page for this operator will be linked here in the next stage.
+                    </p>
+                  </div>
+
+                  <span className="inline-flex h-10 shrink-0 items-center justify-center rounded-md border border-rr-border bg-rr-elevated px-4 text-sm font-medium text-rr-muted">
+                    Coming soon
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
