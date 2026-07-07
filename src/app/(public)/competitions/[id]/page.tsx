@@ -629,6 +629,7 @@ export default async function Page({
               {operatorSlug ? (
                 <Link
                   href={`/operators/${operatorSlug}`}
+                  scroll
                   className="shrink-0 text-sm font-medium text-rr-green no-underline transition-opacity hover:opacity-80"
                 >
                   View All →

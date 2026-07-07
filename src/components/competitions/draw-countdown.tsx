@@ -40,14 +40,18 @@ export function DrawCountdown({ endsAt }: DrawCountdownProps) {
   }, [targetMs]);
 
   if (!targetMs) {
-    return <span className="text-rr-muted text-sm font-normal">TBC</span>;
+    return <span className="text-rr-muted text-[13px] font-normal whitespace-nowrap md:text-sm">TBC</span>;
   }
 
   const diff = targetMs - nowMs;
 
   if (diff <= 0) {
-    return <span className="text-rr-muted text-sm font-normal">Ended</span>;
+    return <span className="text-rr-muted text-[13px] font-normal whitespace-nowrap md:text-sm">Ended</span>;
   }
 
-  return <>{formatRemaining(diff)}</>;
+  return (
+    <span className="text-[13px] whitespace-nowrap md:text-sm">
+      {formatRemaining(diff)}
+    </span>
+  );
 }

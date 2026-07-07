@@ -35,6 +35,7 @@ export function SectionHeader({
       {viewAllHref ? (
         <Link
           href={viewAllHref}
+          scroll
           className="shrink-0 text-sm font-medium text-rr-green no-underline transition-opacity hover:opacity-80"
         >
           View All →
