@@ -50,7 +50,24 @@ export default async function OperatorsPage() {
       operator,
       fairness: getOperatorFairness(operator.avgVr, operator.vrSampleSize),
     }))
-    .sort((a, b) => a.operator.name.localeCompare(b.operator.name, "en-GB"));
+    .sort((a, b) => {
+      if (a.fairness.value === null && b.fairness.value === null) {
+        return a.operator.name.localeCompare(b.operator.name, "en-GB");
+      }
+
+      if (a.fairness.value === null) {
+        return 1;
+      }
+
+      if (b.fairness.value === null) {
+        return -1;
+      }
+
+      return (
+        Number(a.fairness.value) - Number(b.fairness.value) ||
+        a.operator.name.localeCompare(b.operator.name, "en-GB")
+      );
+    });
 
   const rankedOperators = [...sortedOperators]
     .filter(({ fairness }) => fairness.value !== null)

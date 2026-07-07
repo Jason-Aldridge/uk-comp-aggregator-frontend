@@ -14,6 +14,9 @@ export type SortOption = {
   label: string;
   sortBy: string;
   sortOrder: "asc" | "desc";
+  closing?: string | null;
+  excludeInstant?: boolean;
+  excludeFree?: boolean;
 };
 
 const defaultCategoryOptions: FilterOption[] = [
@@ -36,7 +39,22 @@ const defaultClosingOptions: FilterOption[] = [
 
 const defaultSortOptions: SortOption[] = [
   { label: "Best value", sortBy: "bestValue", sortOrder: "desc" },
-  { label: "Best odds", sortBy: "percentSold", sortOrder: "asc" },
+  {
+    label: "Most Undersold",
+    sortBy: "percentSold",
+    sortOrder: "asc",
+    closing: "today",
+    excludeInstant: true,
+    excludeFree: true,
+  },
+  {
+    label: "Best odds",
+    sortBy: "percentSold",
+    sortOrder: "asc",
+    closing: null,
+    excludeInstant: false,
+    excludeFree: false,
+  },
   { label: "Selling fast", sortBy: "percentSold", sortOrder: "desc" },
   { label: "Top prizes", sortBy: "prizeValue", sortOrder: "desc" },
   { label: "Ending soon", sortBy: "endsAt", sortOrder: "asc" },
@@ -61,6 +79,36 @@ type FilterBarProps = {
   className?: string;
 };
 
+function isSortOptionActive(
+  option: SortOption,
+  state: {
+    sortBy: string;
+    sortOrder: "asc" | "desc";
+    closing: string;
+    excludeInstant: boolean;
+    excludeFree: boolean;
+  },
+) {
+  return (
+    option.sortBy === state.sortBy &&
+    option.sortOrder === state.sortOrder &&
+    (option.closing === undefined || option.closing === state.closing) &&
+    (option.excludeInstant === undefined || option.excludeInstant === state.excludeInstant) &&
+    (option.excludeFree === undefined || option.excludeFree === state.excludeFree)
+  );
+}
+
+function getSortOptionKey(option: SortOption) {
+  return [
+    option.label,
+    option.sortBy,
+    option.sortOrder,
+    option.closing ?? "",
+    option.excludeInstant ? "excludeInstant" : "",
+    option.excludeFree ? "excludeFree" : "",
+  ].join(":");
+}
+
 export function FilterBar({
   categoryOptions,
   closingOptions,
@@ -84,6 +132,8 @@ export function FilterBar({
   const categoryParam = searchParams.get("category");
   const currentClosing = searchParams.get("closing");
   const closing = currentClosing ?? "";
+  const excludeInstant = searchParams.get("excludeInstant") === "true";
+  const excludeFree = searchParams.get("excludeFree") === "true";
   const sortBy = searchParams.get("sortBy") ?? "bestValue";
   const sortOrder = (searchParams.get("sortOrder") ?? "desc") as "asc" | "desc";
 
@@ -134,6 +184,14 @@ export function FilterBar({
   const updateParams = useCallback(
     (updates: Record<string, string | null>) => {
       const params = new URLSearchParams(searchParams.toString());
+      const controlsExcludeInstant = Object.prototype.hasOwnProperty.call(
+        updates,
+        "excludeInstant",
+      );
+      const controlsExcludeFree = Object.prototype.hasOwnProperty.call(
+        updates,
+        "excludeFree",
+      );
 
       Object.entries(updates).forEach(([key, value]) => {
         if (value === null) {
@@ -143,8 +201,14 @@ export function FilterBar({
         }
       });
 
-      params.delete("excludeInstant");
-      params.delete("excludeFree");
+      if (!controlsExcludeInstant) {
+        params.delete("excludeInstant");
+      }
+
+      if (!controlsExcludeFree) {
+        params.delete("excludeFree");
+      }
+
       params.delete("page");
 
       const qs = params.toString();
@@ -170,11 +234,17 @@ export function FilterBar({
 
   const activeSort = useMemo(() => {
     return (
-      sortOpts.find(
-        (opt) => opt.sortBy === sortBy && opt.sortOrder === sortOrder,
+      sortOpts.find((opt) =>
+        isSortOptionActive(opt, {
+          sortBy,
+          sortOrder,
+          closing,
+          excludeInstant,
+          excludeFree,
+        }),
       ) ?? sortOpts[0]
     );
-  }, [sortBy, sortOrder, sortOpts]);
+  }, [closing, excludeFree, excludeInstant, sortBy, sortOrder, sortOpts]);
 
   const sortLabel = activeSort?.label ?? "Best value";
 
@@ -315,12 +385,17 @@ export function FilterBar({
                     aria-label="Sort options"
                   >
                     {sortOpts.map((opt) => {
-                      const isActive =
-                        opt.sortBy === sortBy && opt.sortOrder === sortOrder;
+                      const isActive = isSortOptionActive(opt, {
+                        sortBy,
+                        sortOrder,
+                        closing,
+                        excludeInstant,
+                        excludeFree,
+                      });
 
                       return (
                         <button
-                          key={`${opt.sortBy}:${opt.sortOrder}`}
+                          key={getSortOptionKey(opt)}
                           type="button"
                           role="option"
                           aria-selected={isActive}
@@ -334,6 +409,19 @@ export function FilterBar({
                             updateParams({
                               sortBy: opt.sortBy,
                               sortOrder: opt.sortOrder,
+                              closing: opt.closing === undefined ? currentClosing : opt.closing,
+                              excludeInstant:
+                                opt.excludeInstant === undefined
+                                  ? null
+                                  : opt.excludeInstant
+                                    ? "true"
+                                    : null,
+                              excludeFree:
+                                opt.excludeFree === undefined
+                                  ? null
+                                  : opt.excludeFree
+                                    ? "true"
+                                    : null,
                             });
                             setSortOpen(false);
                           }}
