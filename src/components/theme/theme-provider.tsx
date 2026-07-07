@@ -9,61 +9,32 @@ import {
   useState,
 } from "react";
 
-type Theme = "light" | "dark" | "system";
-type ResolvedTheme = "light" | "dark";
+type Theme = "light" | "dark";
 
 type ThemeContextValue = {
   theme: Theme;
-  resolvedTheme: ResolvedTheme;
+  resolvedTheme: Theme;
   setTheme: (theme: Theme) => void;
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function getSystemTheme(): ResolvedTheme {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") {
+    return "dark";
+  }
+
+  const storedTheme = window.localStorage.getItem("theme");
+
+  return storedTheme === "light" || storedTheme === "dark" ? storedTheme : "dark";
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === "undefined") {
-      return "system";
-    }
-
-    const storedTheme = window.localStorage.getItem("theme");
-
-    return storedTheme === "light" || storedTheme === "dark" || storedTheme === "system"
-      ? storedTheme
-      : "system";
-  });
-  const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(() => {
-    if (typeof window === "undefined") {
-      return "light";
-    }
-
-    return getSystemTheme();
-  });
-  const resolvedTheme = theme === "system" ? systemTheme : theme;
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-
-    const handleChange = () => {
-      setSystemTheme(getSystemTheme());
-    };
-
-    media.addEventListener("change", handleChange);
-
-    return () => {
-      media.removeEventListener("change", handleChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
-  }, [resolvedTheme]);
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
 
   const handleSetTheme = (nextTheme: Theme) => {
     setTheme(nextTheme);
@@ -73,10 +44,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       theme,
-      resolvedTheme,
+      resolvedTheme: theme,
       setTheme: handleSetTheme,
     }),
-    [resolvedTheme, theme],
+    [theme],
   );
 
   return (
