@@ -370,16 +370,41 @@ export async function getOperator(slug: string) {
 
 type GetTopOpportunitiesParams = {
   limit?: number;
+  excludeInstant?: boolean;
+  excludeFree?: boolean;
+};
+
+type GetMostUndersoldParams = {
+  limit?: number;
+  excludeInstant?: boolean;
+  excludeFree?: boolean;
 };
 
 export async function getTopOpportunities(params?: GetTopOpportunitiesParams) {
   const query = new URLSearchParams();
   if (params?.limit) query.set("limit", String(params.limit));
+  if (params?.excludeInstant) query.set("excludeInstant", "true");
+  if (params?.excludeFree) query.set("excludeFree", "true");
 
   const path =
     query.size > 0
       ? `/competitions/top-opportunities?${query.toString()}`
       : "/competitions/top-opportunities";
+
+  const response = await apiFetch<unknown>(path);
+  return normalizeCompetitionsResponse(response);
+}
+
+export async function getMostUndersold(params?: GetMostUndersoldParams) {
+  const query = new URLSearchParams();
+  if (params?.limit) query.set("limit", String(params.limit));
+  if (params?.excludeInstant) query.set("excludeInstant", "true");
+  if (params?.excludeFree) query.set("excludeFree", "true");
+
+  const path =
+    query.size > 0
+      ? `/competitions/most-undersold?${query.toString()}`
+      : "/competitions/most-undersold";
 
   const response = await apiFetch<unknown>(path);
   return normalizeCompetitionsResponse(response);

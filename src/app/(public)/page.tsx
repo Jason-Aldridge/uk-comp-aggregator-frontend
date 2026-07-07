@@ -3,7 +3,14 @@ import { CompetitionGrid } from "@/components/competitions/competition-grid";
 import { CompetitionSection } from "@/components/home/competition-section";
 import { Hero, type HeroStats } from "@/components/home/hero";
 import { FilterBar } from "@/components/layout/filter-bar";
-import { getCompetitions, getOperators, getRecentlyEnded, getStats } from "@/lib/api";
+import {
+  getCompetitions,
+  getMostUndersold,
+  getOperators,
+  getRecentlyEnded,
+  getStats,
+  getTopOpportunities,
+} from "@/lib/api";
 import type { Competition } from "@/types/competition";
 
 type HomePageSearchParams = {
@@ -67,12 +74,7 @@ export default async function Page({
       statsResult,
       operatorsResult,
     ] = await Promise.all([
-      getCompetitions({
-        sortBy: "bestValue",
-        sortOrder: "desc",
-        closing: "today",
-        excludeInstant: true,
-        excludeFree: true,
+      getTopOpportunities({
         limit: 8,
       }),
       getCompetitions({
@@ -82,12 +84,7 @@ export default async function Page({
         sortOrder: "desc",
         limit: 8,
       }),
-      getCompetitions({
-        sortBy: "percentSold",
-        sortOrder: "asc",
-        closing: "today",
-        excludeInstant: true,
-        excludeFree: true,
+      getMostUndersold({
         limit: 4,
       }),
       getRecentlyEnded(8),

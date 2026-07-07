@@ -83,6 +83,20 @@ export default async function OperatorsPage() {
                 they have, and where each operator sits on fairness.
               </p>
             </div>
+            <div className="mt-4 w-full rounded-xl border border-rr-border bg-rr-elevated p-4">
+              <p className="text-sm font-medium text-rr-primary">How Value Ratio works</p>
+              <p className="mt-2 text-sm leading-6 text-rr-muted md:hidden">
+                VR compares full-sellout ticket revenue against prize value. VR 1 is break-even, and lower is better for players.
+              </p>
+              <div className="mt-2 hidden gap-6 md:grid md:grid-cols-2">
+                <p className="text-sm leading-6 text-rr-muted">
+                  Value Ratio (VR) compares the total ticket revenue an operator would collect at full sellout against the value of the prize. VR 1 means ticket sales match the prize value exactly — the lower the VR, the better the deal for players.
+                </p>
+                <p className="text-sm leading-6 text-rr-muted">
+                  An operator&apos;s score is the median VR across competitions with a verifiable prize value, recalculated as competitions open and close, so rankings can shift over time.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -149,9 +163,14 @@ export default async function OperatorsPage() {
 
                         <div className="mt-4 rounded-lg border border-rr-border bg-rr-elevated p-3">
                           <div className="flex items-center justify-between gap-3">
-                            <p className="text-[11px] uppercase tracking-[0.14em] text-rr-muted">
-                              Value ratio
-                            </p>
+                            <div className="flex items-center gap-2">
+                              <p className="text-[11px] uppercase tracking-[0.14em] text-rr-muted">
+                                Value ratio
+                              </p>
+                              <span className="text-[10px] text-rr-muted">
+                                lower is better
+                              </span>
+                            </div>
                             <p className="text-sm font-medium text-rr-primary">
                               {fairness.vrLabel}
                             </p>
@@ -168,7 +187,7 @@ export default async function OperatorsPage() {
                             </p>
                             <p className="mt-1 text-base font-medium text-rr-primary">
                               {operator.vrSampleSize
-                                ? `${operator.vrSampleSize} live draws`
+                                ? `${operator.vrSampleSize} competitions`
                                 : "—"}
                             </p>
                           </div>
