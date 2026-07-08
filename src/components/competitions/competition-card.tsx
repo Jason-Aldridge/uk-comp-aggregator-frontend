@@ -59,9 +59,18 @@ export function CompetitionCard({ competition, featured, variant = "default" }: 
   } = competition;
 
   const isEnded = variant === "ended";
-  const percentSource = isEnded ? finalPercentSold ?? percentSold : percentSold;
-  const percent = percentSource ? Number(percentSource) : 0;
-  const price = ticketPrice ? Number(ticketPrice) : null;
+  const percentRaw = isEnded ? finalPercentSold ?? percentSold : percentSold;
+  const percent =
+    typeof percentRaw === "number"
+      ? Number.isFinite(percentRaw)
+        ? percentRaw
+        : null
+      : typeof percentRaw === "string"
+        ? Number.isFinite(Number.parseFloat(percentRaw))
+          ? Number.parseFloat(percentRaw)
+          : null
+        : null;
+  const price = ticketPrice !== null ? Number(ticketPrice) : null;
   const statusBadge = isEnded ? null : getStatusBadge(endsAt, featured, null);
   const timingLabel = isEnded ? getEndedLabel(endsAt, closedAt) : getEndsLabel(endsAt);
   const badgeShowsTime =
@@ -120,12 +129,18 @@ export function CompetitionCard({ competition, featured, variant = "default" }: 
                   : "— tickets"}
           </span>
         </div>
-        <ProgressBar value={percent} />
+        {percent !== null ? <ProgressBar value={percent} /> : null}
         <div className="flex justify-between mt-1">
-          <span className="text-[10px] text-rr-muted">
-            {percent.toFixed(0)}% sold
-            {timingLabel && !isEnded && !badgeShowsTime ? ` · ${timingLabel}` : ""}
-          </span>
+          {percent !== null ? (
+            <span className="text-[10px] text-rr-muted">
+              {percent.toFixed(0)}% sold
+              {timingLabel && !isEnded && !badgeShowsTime ? ` · ${timingLabel}` : ""}
+            </span>
+          ) : timingLabel && !isEnded && !badgeShowsTime ? (
+            <span className="text-[10px] text-rr-muted">{timingLabel}</span>
+          ) : (
+            <span />
+          )}
           {isEnded ? (
             <Badge variant="neutral">Draw complete</Badge>
           ) : instantPrizes ? (

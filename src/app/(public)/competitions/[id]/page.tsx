@@ -65,6 +65,19 @@ function PlaceholderIcon({ category }: { category: string | null }) {
   }
 }
 
+function toFiniteNumber(value: unknown): number | null {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : null;
+  }
+
+  if (typeof value === "string") {
+    const n = Number.parseFloat(value);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  return null;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -147,15 +160,25 @@ async function fetchCompetitionData(id: string) {
       description,
       sourceUrl,
     } = comp;
-    const totalTicketsValue = ticketsTotal ?? 0;
-    const remainingTickets = ticketsLeft ?? totalTicketsValue;
-    const soldTickets = totalTicketsValue - remainingTickets;
-    const ticketsSoldForOdds =
-      typeof ticketsTotal === "number" && typeof ticketsLeft === "number"
-        ? Math.max(0, ticketsTotal - ticketsLeft)
+    const totalTicketsValue = typeof ticketsTotal === "number" ? ticketsTotal : null;
+    const ticketsLeftValue = typeof ticketsLeft === "number" ? ticketsLeft : null;
+    const percentSoldValue = toFiniteNumber(percentSold);
+
+    const soldTickets =
+      totalTicketsValue !== null && ticketsLeftValue !== null
+        ? Math.max(0, totalTicketsValue - ticketsLeftValue)
         : null;
-    const percentValue = percentSold ? Number(percentSold) : 0;
-    const priceValue = ticketPrice ? Number(ticketPrice) : null;
+    const remainingTickets = ticketsLeftValue;
+    const ticketsSoldForOdds = soldTickets;
+
+    const percentValue =
+      percentSoldValue !== null
+        ? percentSoldValue
+        : soldTickets !== null && totalTicketsValue !== null && totalTicketsValue > 0
+          ? (soldTickets / totalTicketsValue) * 100
+          : null;
+
+    const priceValue = ticketPrice !== null ? toFiniteNumber(ticketPrice) : null;
     let history: CompetitionHistory[] = [];
     if (Array.isArray(historyData)) {
       history = historyData as CompetitionHistory[];
@@ -183,10 +206,13 @@ async function fetchCompetitionData(id: string) {
       description,
       sourceUrl,
       totalTicketsValue,
+      totalTicketsValue,
+      ticketsLeftValue,
       remainingTickets,
       soldTickets,
       ticketsSoldForOdds,
       percentValue,
+      percentSoldValue,
       priceValue,
       history,
       moreFromOperator,
@@ -215,10 +241,12 @@ export default async function Page({
     endsAt,
     priceValue,
     totalTicketsValue,
+    ticketsLeftValue,
     remainingTickets,
     soldTickets,
     ticketsSoldForOdds,
     percentValue,
+    percentSoldValue,
     instantPrizes,
     prizeValue,
     prizeValueEstimated,
@@ -267,7 +295,8 @@ export default async function Page({
     prizeValueNum !== null &&
     prizeValueNum > 0 &&
     priceValue !== null &&
-    priceValue > 0;
+    priceValue > 0 &&
+    soldTickets !== null;
   const salesRevenue = canShowSalesVsPrize ? soldTickets * priceValue : 0;
   const salesCoverage = canShowSalesVsPrize ? salesRevenue / prizeValueNum : 0;
   const salesCoveragePercent = canShowSalesVsPrize
@@ -411,14 +440,16 @@ export default async function Page({
                 <PlaceholderIcon category={category} />
               )}
             </div>
-            <div>
-              <h2 className="text-lg font-semibold text-rr-primary mb-4">
-                Ticket sales history
-              </h2>
-              <div className="rounded-lg border border-rr-border bg-rr-elevated p-4">
-                <TicketSalesChart history={history} />
+            {!(history.length === 0 && percentSoldValue === null) ? (
+              <div>
+                <h2 className="text-lg font-semibold text-rr-primary mb-4">
+                  Ticket sales history
+                </h2>
+                <div className="rounded-lg border border-rr-border bg-rr-elevated p-4">
+                  <TicketSalesChart history={history} />
+                </div>
               </div>
-            </div>
+            ) : null}
             {salesVsPrizeBlock}
             {aboutBlock}
           </div>
@@ -491,7 +522,7 @@ export default async function Page({
               <div className="rounded-lg border border-rr-border bg-rr-elevated p-4">
                 <p className="text-xs text-rr-muted mb-1">Total tickets</p>
                 <p className="text-xl font-semibold text-rr-primary">
-                  {totalTicketsValue
+                  {totalTicketsValue !== null
                     ? totalTicketsValue.toLocaleString("en-GB")
                     : "—"}
                 </p>
@@ -504,47 +535,63 @@ export default async function Page({
               </div>
             </div>
             <div className="rounded-lg border border-rr-border bg-rr-elevated p-4 mb-6">
-              <div className="flex justify-between mb-2">
-                <span className="text-sm text-rr-secondary">
-                  {soldTickets.toLocaleString("en-GB")} sold
-                </span>
-                <span className="text-sm text-rr-secondary">
-                  {remainingTickets.toLocaleString("en-GB")} remaining
-                </span>
-              </div>
-              <ProgressBar value={percentValue} className="mb-2" />
-              <div>
-                <span className="text-sm font-medium text-rr-green">
-                  {percentValue.toFixed(0)}% sold
-                </span>
-              </div>
-              {!instantPrizes && (
-                <div className="mt-3">
-                  <p className="flex items-center gap-1 text-xs text-rr-muted">
-                    <span className="text-rr-muted">
-                      Odds per ticket
-                      <InfoTooltip text="Your chance per ticket based on how many have sold so far. This shortens as more tickets sell before the draw." />
-                    </span>
-                  </p>
-                  <p className="text-sm font-medium text-rr-primary">
-                    {liveOdds
-                      ? `1 in ${liveOdds.toLocaleString("en-GB")}`
-                      : "No tickets sold yet"}
-                  </p>
-                  <p className="text-xs text-rr-muted">
-                    based on tickets sold so far
-                  </p>
-                </div>
+              {totalTicketsValue === null && percentSoldValue === null ? (
+                <p className="text-sm text-rr-muted">
+                  Sales data not published by the operator
+                </p>
+              ) : (
+                <>
+                  {soldTickets !== null && remainingTickets !== null ? (
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm text-rr-secondary">
+                        {soldTickets.toLocaleString("en-GB")} sold
+                      </span>
+                      <span className="text-sm text-rr-secondary">
+                        {remainingTickets.toLocaleString("en-GB")} remaining
+                      </span>
+                    </div>
+                  ) : null}
+
+                  {percentValue !== null ? (
+                    <>
+                      <ProgressBar value={percentValue} className="mb-2" />
+                      <div>
+                        <span className="text-sm font-medium text-rr-green">
+                          {percentValue.toFixed(0)}% sold
+                        </span>
+                      </div>
+                    </>
+                  ) : null}
+
+                  {!instantPrizes && ticketsSoldForOdds !== null ? (
+                    <div className="mt-3">
+                      <p className="flex items-center gap-1 text-xs text-rr-muted">
+                        <span className="text-rr-muted">
+                          Odds per ticket
+                          <InfoTooltip text="Your chance per ticket based on how many have sold so far. This shortens as more tickets sell before the draw." />
+                        </span>
+                      </p>
+                      <p className="text-sm font-medium text-rr-primary">
+                        {liveOdds
+                          ? `1 in ${liveOdds.toLocaleString("en-GB")}`
+                          : "No tickets sold yet"}
+                      </p>
+                      <p className="text-xs text-rr-muted">
+                        based on tickets sold so far
+                      </p>
+                    </div>
+                  ) : null}
+                </>
               )}
             </div>
-            {!instantPrizes && (
+            {!instantPrizes && totalTicketsValue !== null && soldTickets !== null ? (
               <TicketCalculator
                 ticketsSold={soldTickets}
                 ticketsTotal={totalTicketsValue}
                 ticketPrice={priceValue}
                 maxPerPerson={maxPerPerson}
               />
-            )}
+            ) : null}
             <div className="flex gap-3 mt-6 mb-6">
               <EnterButton
                 competitionId={id}
