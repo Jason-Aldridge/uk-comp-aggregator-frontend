@@ -404,7 +404,7 @@ export default async function Page({
   return (
     <main>
       <div className="container py-6 md:py-8">
-        <div className="mb-4">
+        <div className="mb-4 hidden md:block">
           <nav className="flex items-center gap-2 text-sm text-rr-muted">
             <Link href="/" className="hover:text-rr-primary transition-colors">
               Home
