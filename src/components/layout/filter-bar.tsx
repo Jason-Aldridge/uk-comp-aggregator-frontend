@@ -89,10 +89,12 @@ function isSortOptionActive(
     excludeFree: boolean;
   },
 ) {
+  const optionClosing = option.closing ?? "";
+
   return (
     option.sortBy === state.sortBy &&
     option.sortOrder === state.sortOrder &&
-    (option.closing === undefined || option.closing === state.closing) &&
+    (option.closing === undefined || optionClosing === state.closing) &&
     (option.excludeInstant === undefined || option.excludeInstant === state.excludeInstant) &&
     (option.excludeFree === undefined || option.excludeFree === state.excludeFree)
   );
