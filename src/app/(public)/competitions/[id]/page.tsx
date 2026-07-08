@@ -18,6 +18,7 @@ import { DrawCountdown } from "@/components/competitions/draw-countdown";
 import { TicketSalesChart } from "@/components/competitions/ticket-sales-chart";
 import { CompetitionCard } from "@/components/competitions/competition-card";
 import { CompetitionImage } from "@/components/ui/CompetitionImage";
+import { ViewAllLink } from "@/components/ui/view-all-link";
 import {
   getCompetition,
   getCompetitionHistory,
@@ -39,20 +40,17 @@ const GREEDY_VR = 8;
 
 function operatorNameToSlug(value: string | null | undefined) {
   if (!value) return null;
-
   const slug = value
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
-
   return slug || null;
 }
 
 function PlaceholderIcon({ category }: { category: string | null }) {
   const cls = "text-rr-border";
   const size = 80;
-
   switch (category?.toLowerCase()) {
     case "cars":
       return <IconCar size={size} className={cls} />;
@@ -73,21 +71,17 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-
   try {
     const competition = await getCompetition(id);
-
     if (!competition || typeof competition !== "object") {
       return {
         title: "Competition Not Found",
         description: "The requested competition could not be found.",
       };
     }
-
     const comp = competition as CompetitionDetail;
     const { prize } = comp;
     const metaDescription = `Win ${prize} in this UK prize draw competition.`;
-
     return {
       title: prize,
       description: metaDescription,
@@ -115,7 +109,6 @@ async function fetchCompetitionData(id: string) {
       const comp = value as Competition;
       const website = comp.operator?.baseUrl;
       if (!website) return [];
-
       return getCompetitions({
         website,
         sortBy: "valueRatio",
@@ -123,17 +116,14 @@ async function fetchCompetitionData(id: string) {
         limit: 5,
       });
     });
-
     const [competition, historyData, moreFromOperatorData] = await Promise.all([
       competitionPromise,
       historyPromise,
       moreFromOperatorPromise,
     ]);
-
     if (!competition || typeof competition !== "object") {
       notFound();
     }
-
     const comp = competition as CompetitionDetail;
     const {
       prize,
@@ -157,7 +147,6 @@ async function fetchCompetitionData(id: string) {
       description,
       sourceUrl,
     } = comp;
-
     const totalTicketsValue = ticketsTotal ?? 0;
     const remainingTickets = ticketsLeft ?? totalTicketsValue;
     const soldTickets = totalTicketsValue - remainingTickets;
@@ -167,18 +156,15 @@ async function fetchCompetitionData(id: string) {
         : null;
     const percentValue = percentSold ? Number(percentSold) : 0;
     const priceValue = ticketPrice ? Number(ticketPrice) : null;
-
     let history: CompetitionHistory[] = [];
     if (Array.isArray(historyData)) {
       history = historyData as CompetitionHistory[];
     }
-
     const moreFromOperator = Array.isArray(moreFromOperatorData)
       ? (moreFromOperatorData as Competition[])
           .filter((c) => c.id !== id)
           .slice(0, 4)
       : [];
-
     return {
       prize,
       imageUrl,
@@ -217,13 +203,10 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-
   const data = await fetchCompetitionData(id);
-
   if (!data) {
     notFound();
   }
-
   const {
     prize,
     imageUrl,
@@ -249,7 +232,6 @@ export default async function Page({
     history,
     moreFromOperator,
   } = data;
-
   const prizeValueNum = prizeValue ? Number(prizeValue) : null;
   const cashAltNum = cashAlternative ? Number(cashAlternative) : null;
   const makeModel = [prizeMake, prizeModel].filter(Boolean).join(" / ");
@@ -280,35 +262,30 @@ export default async function Page({
         : operatorVrValue < GREEDY_VR
           ? "border-[var(--vr-warn-border)] bg-[var(--vr-warn-bg)] text-[var(--vr-warn-text)]"
           : "border-[var(--vr-danger-border)] bg-[var(--vr-danger-bg)] text-[var(--vr-danger-text)]";
-
   const canShowSalesVsPrize =
     !instantPrizes &&
     prizeValueNum !== null &&
     prizeValueNum > 0 &&
     priceValue !== null &&
     priceValue > 0;
-
   const salesRevenue = canShowSalesVsPrize ? soldTickets * priceValue : 0;
   const salesCoverage = canShowSalesVsPrize ? salesRevenue / prizeValueNum : 0;
   const salesCoveragePercent = canShowSalesVsPrize
     ? Math.round(salesCoverage * 100)
     : 0;
   const salesDifference = canShowSalesVsPrize ? salesRevenue - prizeValueNum : 0;
-
   const salesBadgeClass =
     salesCoverage >= 1
       ? "border-[var(--accent-border)] bg-[var(--accent-bg)] text-[var(--accent)]"
       : salesCoverage >= 0.5
         ? "border-[var(--vr-warn-border)] bg-[var(--vr-warn-bg)] text-[var(--vr-warn-text)]"
         : "border-[var(--vr-danger-border)] bg-[var(--vr-danger-bg)] text-[var(--vr-danger-text)]";
-
   const salesFillColor =
     salesCoverage >= 1
       ? "var(--accent)"
       : salesCoverage >= 0.5
         ? "var(--vr-warn-text)"
         : "var(--vr-danger-text)";
-
   const salesVsPrizeBlock = canShowSalesVsPrize ? (
     <div className="rounded-lg border border-rr-border bg-rr-elevated p-4">
       <div className="flex items-start justify-between gap-3">
@@ -329,7 +306,6 @@ export default async function Page({
           {salesCoveragePercent}%
         </span>
       </div>
-
       <div className="mt-3 space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span className="text-rr-muted">Ticket sales</span>
@@ -355,7 +331,6 @@ export default async function Page({
             £{Math.abs(salesDifference).toLocaleString("en-GB")}
           </span>
         </div>
-
         <div className="h-2 w-full rounded-full bg-rr-border overflow-hidden">
           <div
             className="h-full rounded-full transition-all"
@@ -368,7 +343,6 @@ export default async function Page({
       </div>
     </div>
   ) : null;
-
   const aboutBlock = (
     <div>
       <h2 className="text-lg font-semibold text-rr-primary mb-4">
@@ -401,7 +375,6 @@ export default async function Page({
       </div>
     </div>
   );
-
   return (
     <main>
       <div className="container py-6 md:py-8">
@@ -421,7 +394,6 @@ export default async function Page({
             <span className="text-rr-secondary">{prize}</span>
           </nav>
         </div>
-
         <div className="flex flex-col md:grid md:grid-cols-2 md:gap-8 md:items-start">
           <div className="order-2 md:order-1 mt-8 md:mt-0 flex flex-col gap-8">
             <div className="relative hidden rounded-[10px] overflow-hidden border border-rr-border bg-rr-elevated h-[300px] md:flex md:h-[350px] items-center justify-center">
@@ -439,7 +411,6 @@ export default async function Page({
                 <PlaceholderIcon category={category} />
               )}
             </div>
-
             <div>
               <h2 className="text-lg font-semibold text-rr-primary mb-4">
                 Ticket sales history
@@ -448,12 +419,9 @@ export default async function Page({
                 <TicketSalesChart history={history} />
               </div>
             </div>
-
             {salesVsPrizeBlock}
-
             {aboutBlock}
           </div>
-
           <div className="order-1 md:order-2">
             <div className="flex flex-wrap items-start gap-2 mb-4">
               {operator && (
@@ -478,11 +446,9 @@ export default async function Page({
                 <Badge variant="red">{getEndsTimeLabel(endsAt)}</Badge>
               )}
             </div>
-
             <h1 className="text-2xl md:text-3xl font-semibold text-rr-primary mb-6">
               {prize}
             </h1>
-
             <div className="relative mb-6 rounded-[10px] overflow-hidden border border-rr-border bg-rr-elevated h-[300px] flex items-center justify-center md:hidden">
               {imageUrl ? (
                 <CompetitionImage
@@ -498,7 +464,6 @@ export default async function Page({
                 <PlaceholderIcon category={category} />
               )}
             </div>
-
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="rounded-lg border border-rr-border bg-rr-elevated p-4">
                 <p className="text-xs text-rr-muted mb-1">Ticket price</p>
@@ -538,7 +503,6 @@ export default async function Page({
                 </p>
               </div>
             </div>
-
             <div className="rounded-lg border border-rr-border bg-rr-elevated p-4 mb-6">
               <div className="flex justify-between mb-2">
                 <span className="text-sm text-rr-secondary">
@@ -554,7 +518,6 @@ export default async function Page({
                   {percentValue.toFixed(0)}% sold
                 </span>
               </div>
-
               {!instantPrizes && (
                 <div className="mt-3">
                   <p className="flex items-center gap-1 text-xs text-rr-muted">
@@ -574,7 +537,6 @@ export default async function Page({
                 </div>
               )}
             </div>
-
             {!instantPrizes && (
               <TicketCalculator
                 ticketsSold={soldTickets}
@@ -583,7 +545,6 @@ export default async function Page({
                 maxPerPerson={maxPerPerson}
               />
             )}
-
             <div className="flex gap-3 mt-6 mb-6">
               <EnterButton
                 competitionId={id}
@@ -592,7 +553,6 @@ export default async function Page({
               />
               <SaveActions />
             </div>
-
             {(cashAltNum || endsAt) && (
               <div className="rounded-lg border border-rr-border bg-rr-elevated p-4 mb-6">
                 <div className="flex justify-between">
@@ -619,7 +579,6 @@ export default async function Page({
             )}
           </div>
         </div>
-
         {moreFromOperator.length > 0 && (
           <div className="mt-10">
             <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -627,13 +586,12 @@ export default async function Page({
                 More from {operator?.name ?? "Operator"}
               </h2>
               {operatorSlug ? (
-                <Link
+                <ViewAllLink
                   href={`/operators/${operatorSlug}`}
-                  scroll
                   className="shrink-0 text-sm font-medium text-rr-green no-underline transition-opacity hover:opacity-80"
                 >
                   View All →
-                </Link>
+                </ViewAllLink>
               ) : null}
             </div>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">

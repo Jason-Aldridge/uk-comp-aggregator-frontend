@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ViewAllLink } from "@/components/ui/view-all-link";
 
 type AccentTone = "green" | "red";
 
@@ -33,13 +33,12 @@ export function SectionHeader({
       </div>
 
       {viewAllHref ? (
-        <Link
+        <ViewAllLink
           href={viewAllHref}
-          scroll
           className="shrink-0 text-sm font-medium text-rr-green no-underline transition-opacity hover:opacity-80"
         >
           View All →
-        </Link>
+        </ViewAllLink>
       ) : null}
     </div>
   );
