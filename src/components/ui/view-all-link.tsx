@@ -24,8 +24,7 @@ export function ViewAllLink({
     try {
       window.sessionStorage.setItem(SCROLL_FLAG, "1");
     } catch {}
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   };
 
-  return <Link {...props} scroll onClick={handleClick} />;
+  return <Link {...props} onClick={handleClick} />;
 }

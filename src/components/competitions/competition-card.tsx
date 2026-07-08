@@ -1,4 +1,6 @@
-import Link from "next/link";
+"use client";
+
+import { usePathname } from "next/navigation";
 import {
   IconCar,
   IconCurrencyPound,
@@ -9,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { CompetitionImage } from "@/components/ui/CompetitionImage";
 import { ProgressBar } from "@/components/ui/progress-bar";
+import { ViewAllLink } from "@/components/ui/view-all-link";
 import type { Competition } from "@/types/competition";
 import {
   getEndedLabel,
@@ -43,6 +46,8 @@ interface Props {
 const ticketCountFormatter = new Intl.NumberFormat("en-GB");
 
 export function CompetitionCard({ competition, featured, variant = "default" }: Props) {
+  const pathname = usePathname();
+  const isCompetitionDetailPage = pathname.startsWith("/competitions/");
   const {
     id,
     prize,
@@ -156,8 +161,12 @@ export function CompetitionCard({ competition, featured, variant = "default" }: 
   }
 
   return (
-    <Link href={`/competitions/${id}`} className={cardClassName}>
+    <ViewAllLink
+      href={`/competitions/${id}`}
+      className={cardClassName}
+      scroll={isCompetitionDetailPage ? false : undefined}
+    >
       {cardContent}
-    </Link>
+    </ViewAllLink>
   );
 }
