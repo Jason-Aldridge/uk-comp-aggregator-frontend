@@ -3,9 +3,12 @@
 import Link from "next/link";
 import type { ComponentProps, MouseEvent } from "react";
 
-type ViewAllLinkProps = ComponentProps<typeof Link>;
+const SCROLL_FLAG = "rr-scroll-top-on-nav";
 
-export function ViewAllLink({ onClick, ...props }: ViewAllLinkProps) {
+export function ViewAllLink({
+  onClick,
+  ...props
+}: ComponentProps<typeof Link>) {
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(event);
     if (event.defaultPrevented) return;
@@ -18,6 +21,9 @@ export function ViewAllLink({ onClick, ...props }: ViewAllLinkProps) {
     ) {
       return;
     }
+    try {
+      window.sessionStorage.setItem(SCROLL_FLAG, "1");
+    } catch {}
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   };
 
