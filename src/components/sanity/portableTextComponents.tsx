@@ -46,7 +46,7 @@ export const portableTextComponents: PortableTextComponents = {
     number: ({ children }) => <li>{children}</li>,
   },
   marks: {
-    strong: ({ children }) => <strong className="font-semibold text-rr-primary">{children}</strong>,
+    strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
     em: ({ children }) => <em className="italic">{children}</em>,
     underline: ({ children }) => <span className="underline underline-offset-4">{children}</span>,
     "strike-through": ({ children }) => <span className="line-through">{children}</span>,
