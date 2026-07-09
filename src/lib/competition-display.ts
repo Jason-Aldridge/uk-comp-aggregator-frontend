@@ -57,7 +57,7 @@ export function getStatusBadge(
 
     return {
       variant,
-      label: `Value ${formatValueRatio(valueRatio)}`,
+      label: `Deal ${formatValueRatio(valueRatio)}`,
     };
   }
 
