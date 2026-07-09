@@ -28,6 +28,9 @@ export default async function Page({
 }) {
   const params = await searchParams;
   const hasFilters = !!(params.category || params.closing || params.sortBy || params.freeOnly);
+  const includesGamesCategory =
+    params.category?.split(",").some((value) => value.trim().toLowerCase() === "games") ??
+    false;
 
   if (hasFilters) {
     return (
@@ -43,6 +46,7 @@ export default async function Page({
               sortBy: params.sortBy,
               sortOrder: params.sortOrder,
               freeOnly: params.freeOnly === "true",
+              excludeGames: !includesGamesCategory,
               limit: 500,
             }}
           />
@@ -76,16 +80,19 @@ export default async function Page({
     ] = await Promise.all([
       getTopOpportunities({
         limit: 8,
+        excludeGames: true,
       }),
       getCompetitions({
         minPrizeValue: 5000,
         category: "cars,houses,bikes",
         sortBy: "prizeValue",
         sortOrder: "desc",
+        excludeGames: true,
         limit: 8,
       }),
       getMostUndersold({
         limit: 4,
+        excludeGames: true,
       }),
       getRecentlyEnded(8),
       getCompetitions({
@@ -93,6 +100,7 @@ export default async function Page({
         sortOrder: "desc",
         excludeInstant: true,
         excludeFree: true,
+        excludeGames: true,
         limit: 4,
       }),
       getCompetitions({
@@ -101,6 +109,7 @@ export default async function Page({
         closing: "today",
         excludeInstant: true,
         excludeFree: true,
+        excludeGames: true,
         limit: 4,
       }),
       getStats(),

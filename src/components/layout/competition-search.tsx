@@ -70,7 +70,7 @@ export function CompetitionSearch() {
 
     const timer = window.setTimeout(async () => {
       try {
-        const nextResults = await getCompetitionSearch(trimmedQuery, 8);
+        const nextResults = await getCompetitionSearch(trimmedQuery, 8, true);
 
         if (requestIdRef.current !== currentRequestId) return;
 

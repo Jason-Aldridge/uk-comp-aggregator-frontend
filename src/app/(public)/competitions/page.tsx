@@ -36,6 +36,9 @@ export default async function CompetitionsPage({
   const params = await searchParams;
   const suspenseKey = JSON.stringify(params);
   const operatorSlug = params.operator?.trim() || undefined;
+  const includesGamesCategory =
+    params.category?.split(",").some((value) => value.trim().toLowerCase() === "games") ??
+    false;
 
   const defaultSortOrderBySortBy: Record<string, "asc" | "desc"> = {
     bestValue: "desc",
@@ -85,6 +88,7 @@ export default async function CompetitionsPage({
         freeOnly: params.freeOnly === "true",
         excludeInstant: params.excludeInstant === "true",
         excludeFree: params.excludeFree === "true",
+        excludeGames: !includesGamesCategory,
         limit: 1,
       })) as Competition[];
 
@@ -238,6 +242,7 @@ export default async function CompetitionsPage({
             freeOnly: params.freeOnly === "true",
             excludeInstant: params.excludeInstant === "true",
             excludeFree: params.excludeFree === "true",
+            excludeGames: !includesGamesCategory,
             limit: 500,
           }}
         />

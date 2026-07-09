@@ -27,6 +27,7 @@ const defaultCategoryOptions: FilterOption[] = [
   { value: "watches", label: "Watches" },
   { value: "cash", label: "Cash" },
   { value: "tech", label: "Tech" },
+  { value: "games", label: "Games" },
   { value: "other", label: "Other" },
   { value: "free", label: "Free" },
 ];
@@ -294,7 +295,7 @@ export function FilterBar({
       <div className="container py-3">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-3">
           {showCategory ? (
-            <div className="order-2 flex flex-wrap gap-1.5 lg:order-1 lg:flex-1 lg:gap-[5px]">
+            <div className="order-2 flex flex-wrap gap-1.5 lg:order-1 lg:flex-1 lg:min-w-0 lg:flex-nowrap lg:gap-1">
               {categoryOpts.map((opt) => {
                 const isActive = opt.value === currentMainCategory;
 
@@ -303,7 +304,7 @@ export function FilterBar({
                     key={opt.value}
                     type="button"
                     className={cn(
-                      "inline-flex items-center justify-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-[13px] font-medium transition cursor-pointer lg:px-3 lg:py-1 lg:text-sm",
+                      "inline-flex items-center justify-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-[13px] font-medium transition cursor-pointer lg:px-2 lg:py-0.5 lg:text-[12px] lg:leading-4",
                       isActive
                         ? "bg-rr-green text-rr-on-accent border border-transparent"
                         : "bg-transparent border border-rr-border text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",

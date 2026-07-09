@@ -94,6 +94,7 @@ export type GetCompetitionsParams = {
   freeOnly?: boolean;
   excludeInstant?: boolean;
   excludeFree?: boolean;
+  excludeGames?: boolean;
 };
 
 export type CompetitionDetail = {
@@ -339,6 +340,7 @@ export async function getCompetitions(params?: GetCompetitionsParams) {
   if (params?.freeOnly) query.set("freeOnly", "true");
   if (params?.excludeInstant) query.set("excludeInstant", "true");
   if (params?.excludeFree) query.set("excludeFree", "true");
+  if (params?.excludeGames) query.set("excludeGames", "true");
 
   const path =
     query.size > 0 ? `/competitions?${query.toString()}` : "/competitions";
@@ -346,11 +348,17 @@ export async function getCompetitions(params?: GetCompetitionsParams) {
   return normalizeCompetitionsResponse(response);
 }
 
-export async function getCompetitionSearch(q: string, limit = 8) {
+export async function getCompetitionSearch(
+  q: string,
+  limit = 8,
+  excludeGames = false,
+) {
   const query = new URLSearchParams({
     q,
     limit: String(limit),
   });
+
+  if (excludeGames) query.set("excludeGames", "true");
 
   const response = await apiFetch<unknown>(
     `/competitions/search?${query.toString()}`,
@@ -372,12 +380,14 @@ type GetTopOpportunitiesParams = {
   limit?: number;
   excludeInstant?: boolean;
   excludeFree?: boolean;
+  excludeGames?: boolean;
 };
 
 type GetMostUndersoldParams = {
   limit?: number;
   excludeInstant?: boolean;
   excludeFree?: boolean;
+  excludeGames?: boolean;
 };
 
 export async function getTopOpportunities(params?: GetTopOpportunitiesParams) {
@@ -385,6 +395,8 @@ export async function getTopOpportunities(params?: GetTopOpportunitiesParams) {
   if (params?.limit) query.set("limit", String(params.limit));
   if (params?.excludeInstant) query.set("excludeInstant", "true");
   if (params?.excludeFree) query.set("excludeFree", "true");
+  if (params?.excludeGames) query.set("excludeGames", "true");
+  if (params?.excludeGames) query.set("excludeGames", "true");
 
   const path =
     query.size > 0
