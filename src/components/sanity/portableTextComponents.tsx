@@ -52,6 +52,8 @@ export const portableTextComponents: PortableTextComponents = {
     "strike-through": ({ children }) => <span className="line-through">{children}</span>,
     colorAccent: ({ children }) => <span style={{ color: "var(--accent)" }}>{children}</span>,
     colorGood: ({ children }) => <span style={{ color: "var(--vr-good-text)" }}>{children}</span>,
+    accent: ({ children }) => <span style={{ color: "var(--accent)" }}>{children}</span>,
+    good: ({ children }) => <span style={{ color: "var(--vr-good-text)" }}>{children}</span>,
     colorWarn: ({ children }) => <span style={{ color: "var(--vr-warn-text)" }}>{children}</span>,
     colorDanger: ({ children }) => <span style={{ color: "var(--vr-danger-text)" }}>{children}</span>,
     colorMuted: ({ children }) => <span style={{ color: "var(--text-muted)" }}>{children}</span>,
