@@ -18,6 +18,7 @@ export type Competition = {
   closedAt?: string | null;
   category: string | null;
   instantPrizes: boolean | null;
+  availableToBuy?: boolean | null;
   valueRatio: number | string | null;
   operator?: CompetitionOperator | null;
   prizeValue: number | string | null;
