@@ -104,7 +104,20 @@ function getValidDate(primary: string | null, fallback?: string | null): Date | 
 }
 
 export function getEndedLabel(endsAt: string | null, closedAt?: string | null): string | null {
-  const endedDate = getValidDate(endsAt, closedAt);
+  const now = new Date();
+  const parsedEndsAt = endsAt ? new Date(endsAt) : null;
+  const parsedClosedAt = closedAt ? new Date(closedAt) : null;
+  const hasValidEndsAt = parsedEndsAt && !Number.isNaN(parsedEndsAt.getTime());
+  const hasValidClosedAt = parsedClosedAt && !Number.isNaN(parsedClosedAt.getTime());
+  const endedDate =
+    hasValidEndsAt && parsedEndsAt.getTime() <= now.getTime()
+      ? parsedEndsAt
+      : hasValidClosedAt
+        ? parsedClosedAt
+        : hasValidEndsAt
+          ? parsedEndsAt
+          : null;
+
   if (!endedDate) return null;
 
   const timeLabel = new Intl.DateTimeFormat("en-GB", {
@@ -114,7 +127,6 @@ export function getEndedLabel(endsAt: string | null, closedAt?: string | null): 
     hour12: false,
   }).format(endedDate);
 
-  const now = new Date();
   const todayKey = getLondonDayKey(now);
   const yesterdayKey = getLondonDayKey(new Date(now.getTime() - 86400000));
   const endedDayKey = getLondonDayKey(endedDate);
