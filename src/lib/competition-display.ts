@@ -5,15 +5,20 @@ export function getUtcDateValue(date: Date): number {
 }
 
 export type StatusBadge = {
-  variant: "red" | "amber" | "green";
+  variant: "red" | "amber" | "green" | "neutral";
   label: string;
 } | null;
 
 export function getStatusBadge(
   endsAt: string | null,
+  availableToBuy: boolean | null | undefined,
   featured: boolean | undefined,
   valueRatio: number | string | null,
 ): StatusBadge {
+  if (availableToBuy === false) {
+    return { variant: "neutral", label: "No longer available" };
+  }
+
   if (endsAt) {
     const endDate = new Date(endsAt);
     if (!Number.isNaN(endDate.getTime())) {

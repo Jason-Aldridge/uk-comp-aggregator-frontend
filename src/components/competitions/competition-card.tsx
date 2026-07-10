@@ -61,6 +61,7 @@ export function CompetitionCard({ competition, featured, variant = "default" }: 
     closedAt,
     category,
     instantPrizes,
+    availableToBuy,
   } = competition;
 
   const isEnded = variant === "ended";
@@ -76,7 +77,9 @@ export function CompetitionCard({ competition, featured, variant = "default" }: 
           : null
         : null;
   const price = ticketPrice !== null ? Number(ticketPrice) : null;
-  const statusBadge = isEnded ? null : getStatusBadge(endsAt, featured, null);
+  const statusBadge = isEnded
+    ? null
+    : getStatusBadge(endsAt, availableToBuy, featured, null);
   const timingLabel = isEnded ? getEndedLabel(endsAt, closedAt) : getEndsLabel(endsAt);
   const badgeShowsTime =
     statusBadge?.variant === "red" || statusBadge?.variant === "amber";

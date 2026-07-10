@@ -108,6 +108,7 @@ export type CompetitionDetail = {
   endsAt: string | null;
   category: string | null;
   instantPrizes: boolean | null;
+  availableToBuy: boolean | null;
   valueRatio: number | string | null;
   operator: {
     name: string;
@@ -192,6 +193,12 @@ function normalizeCompetitionItem<T>(item: T): T {
 
   return {
     ...data,
+    availableToBuy:
+      typeof data.availableToBuy === "boolean"
+        ? data.availableToBuy
+        : typeof data.available_to_buy === "boolean"
+          ? data.available_to_buy
+          : null,
     operator: normalizeEmbeddedOperator(data.operator),
   } as T;
 }
