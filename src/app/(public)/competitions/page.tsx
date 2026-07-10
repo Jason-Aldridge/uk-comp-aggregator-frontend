@@ -4,6 +4,7 @@ import { RadarLoader } from "@/components/ui/RadarLoader";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { CompetitionGrid } from "@/components/competitions/competition-grid";
+import { SectionGrid } from "@/components/competitions/section-grid";
 import { FilterBar } from "@/components/layout/filter-bar";
 import { getCompetitions } from "@/lib/api";
 import type { Competition } from "@/types/competition";
@@ -18,6 +19,7 @@ type CompetitionsPageSearchParams = {
   freeOnly?: string;
   excludeInstant?: string;
   excludeFree?: string;
+  section?: string;
 };
 
 function formatOperatorLabel(slug: string) {
@@ -57,7 +59,7 @@ export default async function CompetitionsPage({
     defaultSortOrderBySortBy[sortBy] ??
     "desc";
 
-  if (!params.sortBy || !params.sortOrder) {
+  if ((!params.sortBy || !params.sortOrder) && !params.section) {
     const nextParams = new URLSearchParams();
 
     if (params.category) nextParams.set("category", params.category);
@@ -107,6 +109,7 @@ export default async function CompetitionsPage({
   if (params.freeOnly) resetOperatorParams.set("freeOnly", params.freeOnly);
   if (params.excludeInstant) resetOperatorParams.set("excludeInstant", params.excludeInstant);
   if (params.excludeFree) resetOperatorParams.set("excludeFree", params.excludeFree);
+  if (params.section) resetOperatorParams.set("section", params.section);
   const resetOperatorHref = resetOperatorParams.toString()
     ? `/competitions?${resetOperatorParams.toString()}`
     : "/competitions";
@@ -231,21 +234,28 @@ export default async function CompetitionsPage({
           </div>
         }
       >
-        <CompetitionGrid
-          params={{
-            category: params.category,
-            closing,
-            operator: operatorSlug,
-            sortBy,
-            sortOrder,
-            minPrizeValue: params.minPrizeValue ? Number(params.minPrizeValue) : undefined,
-            freeOnly: params.freeOnly === "true",
-            excludeInstant: params.excludeInstant === "true",
-            excludeFree: params.excludeFree === "true",
-            excludeGames: !includesGamesCategory,
-            limit: 500,
-          }}
-        />
+        {params.section === "most-undersold" ||
+        params.section === "top-opportunities" ? (
+          <SectionGrid section={params.section} />
+        ) : (
+          <CompetitionGrid
+            params={{
+              category: params.category,
+              closing,
+              operator: operatorSlug,
+              sortBy,
+              sortOrder,
+              minPrizeValue: params.minPrizeValue
+                ? Number(params.minPrizeValue)
+                : undefined,
+              freeOnly: params.freeOnly === "true",
+              excludeInstant: params.excludeInstant === "true",
+              excludeFree: params.excludeFree === "true",
+              excludeGames: !includesGamesCategory,
+              limit: 500,
+            }}
+          />
+        )}
       </Suspense>
     </main>
   );

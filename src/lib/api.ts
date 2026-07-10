@@ -396,7 +396,6 @@ export async function getTopOpportunities(params?: GetTopOpportunitiesParams) {
   if (params?.excludeInstant) query.set("excludeInstant", "true");
   if (params?.excludeFree) query.set("excludeFree", "true");
   if (params?.excludeGames) query.set("excludeGames", "true");
-  if (params?.excludeGames) query.set("excludeGames", "true");
 
   const path =
     query.size > 0
@@ -412,6 +411,7 @@ export async function getMostUndersold(params?: GetMostUndersoldParams) {
   if (params?.limit) query.set("limit", String(params.limit));
   if (params?.excludeInstant) query.set("excludeInstant", "true");
   if (params?.excludeFree) query.set("excludeFree", "true");
+  if (params?.excludeGames) query.set("excludeGames", "true");
 
   const path =
     query.size > 0
