@@ -169,21 +169,21 @@ export default async function Page({
         titleStart="Top Prizes"
         titleAccent="right now"
         subtitle="The biggest draws right now — cars, homes and bikes worth winning"
-        viewAllHref="/competitions?minPrizeValue=5000&category=cars,houses,bikes&sortBy=prizeValue&sortOrder=desc"
+        viewAllHref="/competitions?section=top-prizes&minPrizeValue=5000&category=cars,houses,bikes&sortBy=prizeValue&sortOrder=desc"
         competitions={topPrizes}
       />
       <CompetitionSection
         titleStart="Selling"
         titleAccent="fast"
         subtitle="These competitions are almost gone — very few tickets left, so act fast"
-        viewAllHref="/competitions?sortBy=percentSold&sortOrder=desc&excludeInstant=true&excludeFree=true"
+        viewAllHref="/competitions?section=selling-fast&sortBy=percentSold&sortOrder=desc&excludeInstant=true&excludeFree=true"
         competitions={bestValue}
       />
       <CompetitionSection
         titleStart="Ending"
         titleAccent="today"
         subtitle="Last chance — these draws close tonight"
-        viewAllHref="/competitions?sortBy=endsAt&sortOrder=asc&closing=today&excludeInstant=true&excludeFree=true"
+        viewAllHref="/competitions?section=ending-today&sortBy=endsAt&sortOrder=asc&closing=today&excludeInstant=true&excludeFree=true"
         competitions={endingToday}
         accentTone="red"
       />

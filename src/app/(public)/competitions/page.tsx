@@ -30,6 +30,66 @@ function formatOperatorLabel(slug: string) {
     .join(" ");
 }
 
+const sectionBaseTitles: Record<string, string> = {
+  "most-undersold": "Most Undersold",
+  "top-opportunities": "Top Opportunities",
+  "top-prizes": "Top Prizes",
+  "selling-fast": "Selling Fast",
+  "ending-today": "Ending Today",
+};
+
+const sectionDefaultSorts: Record<string, { sortBy: string; sortOrder: "asc" | "desc" }> = {
+  "most-undersold": { sortBy: "percentSold", sortOrder: "asc" },
+  "top-opportunities": { sortBy: "bestValue", sortOrder: "desc" },
+  "top-prizes": { sortBy: "prizeValue", sortOrder: "desc" },
+  "selling-fast": { sortBy: "percentSold", sortOrder: "desc" },
+  "ending-today": { sortBy: "endsAt", sortOrder: "asc" },
+};
+
+const categoryLabelMap: Record<string, string> = {
+  cars: "Cars",
+  houses: "Houses",
+  bikes: "Bikes",
+  watches: "Watches",
+  cash: "Cash",
+  tech: "Tech",
+  other: "Other",
+};
+
+function titleCaseValue(value: string) {
+  return value
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(" ");
+}
+
+function joinTitleLabels(values: string[]) {
+  if (values.length === 0) return null;
+  if (values.length === 1) return values[0];
+  if (values.length === 2) return `${values[0]} & ${values[1]}`;
+  return `${values.slice(0, -1).join(", ")} & ${values[values.length - 1]}`;
+}
+
+function getCategoryTitleLabel(category?: string) {
+  if (!category) return null;
+  const values = category.split(",").map((value) => value.trim()).filter(Boolean);
+  return joinTitleLabels(
+    values.map((value) => categoryLabelMap[value.toLowerCase()] ?? titleCaseValue(value)),
+  );
+}
+
+function getSortSuffix(sortBy?: string, sortOrder?: "asc" | "desc") {
+  if (!sortBy || !sortOrder) return null;
+  if (sortBy === "prizeValue") return "By Prize Value";
+  if (sortBy === "bestValue" || sortBy === "valueRatio") return "By Value";
+  if (sortBy === "percentSold") return sortOrder === "desc" ? "By Selling Fast" : "By Best Odds";
+  if (sortBy === "endsAt") return "By Ending Soon";
+  if (sortBy === "ticketPrice") return "By Price";
+  if (sortBy === "ticketsLeft") return "By Availability";
+  return null;
+}
+
 export default async function CompetitionsPage({
   searchParams,
 }: {
@@ -114,70 +174,30 @@ export default async function CompetitionsPage({
     ? `/competitions?${resetOperatorParams.toString()}`
     : "/competitions";
 
-  const heading = (() => {
-    const isTopPrizes =
-      sortBy === "prizeValue" &&
-      sortOrder === "desc" &&
-      params.minPrizeValue === "5000" &&
-      params.category === "cars,houses,bikes";
-
-    if (isTopPrizes) {
-      return { titleStart: "Top Prizes", titleAccent: "right now", tone: "green" as const };
-    }
-
-    if (
-      sortBy === "bestValue" &&
-      sortOrder === "desc" &&
-      closing === "today" &&
-      params.excludeInstant === "true" &&
-      params.excludeFree === "true"
-    ) {
-      return { titleStart: "Top", titleAccent: "Opportunities", tone: "green" as const };
-    }
-
-    if (
-      sortBy === "percentSold" &&
-      sortOrder === "asc" &&
-      closing === "today" &&
-      params.excludeInstant === "true" &&
-      params.excludeFree === "true"
-    ) {
-      return { titleStart: "Most undersold", titleAccent: "ending soon", tone: "green" as const };
-    }
-
-    if (
-      sortBy === "percentSold" &&
-      sortOrder === "desc" &&
-      params.excludeInstant === "true" &&
-      params.excludeFree === "true"
-    ) {
-      return { titleStart: "Selling", titleAccent: "fast", tone: "green" as const };
-    }
-
-    if (
-      sortBy === "endsAt" &&
-      sortOrder === "asc" &&
-      closing === "today" &&
-      params.excludeInstant === "true" &&
-      params.excludeFree === "true"
-    ) {
-      return { titleStart: "Ending", titleAccent: "today", tone: "red" as const };
-    }
-
-    if (sortBy === "endsAt" && sortOrder === "asc") {
-      return { titleStart: "Ending", titleAccent: "soon", tone: "green" as const };
-    }
-
-    if (sortBy === "percentSold" && sortOrder === "asc") {
-      return { titleStart: "Best", titleAccent: "odds", tone: "green" as const };
-    }
-
-    if ((sortBy === "bestValue" || sortBy === "valueRatio") && sortOrder === "desc") {
-      return { titleStart: "Best", titleAccent: "value", tone: "green" as const };
-    }
-
-    return { titleStart: "All", titleAccent: "competitions", tone: "green" as const };
-  })();
+  const section = params.section?.trim() || "";
+  const baseTitle = sectionBaseTitles[section] ?? "All Competitions";
+  const filterLabels = [
+    getCategoryTitleLabel(params.category),
+    operatorLabel,
+    params.minPrizeValue
+      ? (() => {
+          const value = Number(params.minPrizeValue);
+          return Number.isFinite(value)
+            ? `£${value.toLocaleString("en-GB")}+`
+            : null;
+        })()
+      : null,
+    params.freeOnly === "true" ? "Free" : null,
+  ].filter((value): value is string => Boolean(value));
+  const baseWithFilters = [baseTitle, ...filterLabels].join(" - ");
+  const sectionDefaultSort = sectionDefaultSorts[section];
+  const sortMatchesSectionDefault =
+    sectionDefaultSort !== undefined &&
+    sectionDefaultSort.sortBy === sortBy &&
+    sectionDefaultSort.sortOrder === sortOrder;
+  const sortSuffix = sortMatchesSectionDefault ? null : getSortSuffix(sortBy, sortOrder);
+  const titleToneClass =
+    section === "ending-today" ? "text-[#991b1b] dark:text-[#fca5a5]" : "text-rr-green";
 
   return (
     <main>
@@ -196,16 +216,9 @@ export default async function CompetitionsPage({
               <IconArrowLeft size={18} />
             </Link>
             <h1 className="text-2xl md:text-3xl font-semibold tracking-[-0.02em] text-rr-primary">
-              {heading.titleStart}{" "}
-              <span
-                className={
-                  heading.tone === "red"
-                    ? "text-[#991b1b] dark:text-[#fca5a5]"
-                    : "text-rr-green"
-                }
-              >
-                {heading.titleAccent}
-              </span>
+              <span className={titleToneClass}>{baseTitle}</span>
+              {filterLabels.length > 0 ? ` - ${filterLabels.join(" - ")}` : ""}
+              {sortSuffix ? <span className="hidden sm:inline"> {sortSuffix}</span> : null}
             </h1>
           </div>
 
