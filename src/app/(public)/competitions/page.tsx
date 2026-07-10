@@ -79,11 +79,27 @@ function getCategoryTitleLabel(category?: string) {
   );
 }
 
-function getSortSuffix(sortBy?: string, sortOrder?: "asc" | "desc") {
+function getSortSuffix(
+  sortBy?: string,
+  sortOrder?: "asc" | "desc",
+  closing?: string,
+  excludeInstant?: string,
+  excludeFree?: string,
+) {
   if (!sortBy || !sortOrder) return null;
   if (sortBy === "prizeValue") return "By Prize Value";
   if (sortBy === "bestValue" || sortBy === "valueRatio") return "By Value";
-  if (sortBy === "percentSold") return sortOrder === "desc" ? "By Selling Fast" : "By Best Odds";
+  if (sortBy === "percentSold") {
+    if (
+      sortOrder === "asc" &&
+      closing === "today" &&
+      excludeInstant === "true" &&
+      excludeFree === "true"
+    ) {
+      return "By Most Undersold";
+    }
+    return sortOrder === "desc" ? "By Selling Fast" : "By Best Odds";
+  }
   if (sortBy === "endsAt") return "By Ending Soon";
   if (sortBy === "ticketPrice") return "By Price";
   if (sortBy === "ticketsLeft") return "By Availability";
@@ -194,7 +210,15 @@ export default async function CompetitionsPage({
     sectionDefaultSort !== undefined &&
     sectionDefaultSort.sortBy === sortBy &&
     sectionDefaultSort.sortOrder === sortOrder;
-  const sortSuffix = sortMatchesSectionDefault ? null : getSortSuffix(sortBy, sortOrder);
+  const sortSuffix = sortMatchesSectionDefault
+    ? null
+    : getSortSuffix(
+        sortBy,
+        sortOrder,
+        closing,
+        params.excludeInstant,
+        params.excludeFree,
+      );
   const titleToneClass =
     section === "ending-today" ? "text-[#991b1b] dark:text-[#fca5a5]" : "text-rr-green";
 
