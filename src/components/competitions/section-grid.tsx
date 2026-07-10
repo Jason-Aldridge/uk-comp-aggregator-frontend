@@ -15,8 +15,16 @@ function getFeaturedIds(competitions: Competition[]) {
 
 export async function SectionGrid({
   section,
+  category,
+  freeOnly,
+  operator,
+  minPrizeValue,
 }: {
   section: "most-undersold" | "top-opportunities";
+  category?: string;
+  freeOnly?: boolean;
+  operator?: string;
+  minPrizeValue?: number;
 }) {
   let competitions: Competition[] = [];
 
@@ -25,11 +33,19 @@ export async function SectionGrid({
       competitions = (await getMostUndersold({
         limit: 500,
         excludeGames: true,
+        category,
+        freeOnly,
+        operator,
+        minPrizeValue,
       })) as Competition[];
     } else {
       competitions = (await getTopOpportunities({
         limit: 500,
         excludeGames: true,
+        category,
+        freeOnly,
+        operator,
+        minPrizeValue,
       })) as Competition[];
     }
   } catch {

@@ -189,7 +189,6 @@ export default async function CompetitionsPage({
       : null,
     params.freeOnly === "true" ? "Free" : null,
   ].filter((value): value is string => Boolean(value));
-  const baseWithFilters = [baseTitle, ...filterLabels].join(" - ");
   const sectionDefaultSort = sectionDefaultSorts[section];
   const sortMatchesSectionDefault =
     sectionDefaultSort !== undefined &&
@@ -249,7 +248,15 @@ export default async function CompetitionsPage({
       >
         {params.section === "most-undersold" ||
         params.section === "top-opportunities" ? (
-          <SectionGrid section={params.section} />
+          <SectionGrid
+            section={params.section}
+            category={params.category}
+            freeOnly={params.freeOnly === "true"}
+            operator={operatorSlug}
+            minPrizeValue={
+              params.minPrizeValue ? Number(params.minPrizeValue) : undefined
+            }
+          />
         ) : (
           <CompetitionGrid
             params={{

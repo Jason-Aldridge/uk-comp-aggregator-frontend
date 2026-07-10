@@ -388,6 +388,10 @@ type GetTopOpportunitiesParams = {
   excludeInstant?: boolean;
   excludeFree?: boolean;
   excludeGames?: boolean;
+  category?: string;
+  freeOnly?: boolean;
+  operator?: string;
+  minPrizeValue?: number;
 };
 
 type GetMostUndersoldParams = {
@@ -395,6 +399,10 @@ type GetMostUndersoldParams = {
   excludeInstant?: boolean;
   excludeFree?: boolean;
   excludeGames?: boolean;
+  category?: string;
+  freeOnly?: boolean;
+  operator?: string;
+  minPrizeValue?: number;
 };
 
 export async function getTopOpportunities(params?: GetTopOpportunitiesParams) {
@@ -403,6 +411,11 @@ export async function getTopOpportunities(params?: GetTopOpportunitiesParams) {
   if (params?.excludeInstant) query.set("excludeInstant", "true");
   if (params?.excludeFree) query.set("excludeFree", "true");
   if (params?.excludeGames) query.set("excludeGames", "true");
+  if (params?.category) query.set("category", params.category);
+  if (params?.freeOnly) query.set("freeOnly", "true");
+  if (params?.operator) query.set("operator", params.operator);
+  if (params?.minPrizeValue)
+    query.set("minPrizeValue", String(params.minPrizeValue));
 
   const path =
     query.size > 0
@@ -419,6 +432,11 @@ export async function getMostUndersold(params?: GetMostUndersoldParams) {
   if (params?.excludeInstant) query.set("excludeInstant", "true");
   if (params?.excludeFree) query.set("excludeFree", "true");
   if (params?.excludeGames) query.set("excludeGames", "true");
+  if (params?.category) query.set("category", params.category);
+  if (params?.freeOnly) query.set("freeOnly", "true");
+  if (params?.operator) query.set("operator", params.operator);
+  if (params?.minPrizeValue)
+    query.set("minPrizeValue", String(params.minPrizeValue));
 
   const path =
     query.size > 0
