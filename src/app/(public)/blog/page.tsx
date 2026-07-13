@@ -15,6 +15,8 @@ type PostSlug = {
 type PostListItem = {
   _id: string;
   title: string;
+  richTitle?: unknown[] | null;
+  titleColor?: string | null;
   slug: PostSlug;
   heroImage?: unknown;
   excerpt: string;
@@ -82,6 +84,8 @@ export default async function BlogPage({
                     <PostCard
                       key={post._id}
                       title={post.title}
+                      richTitle={post.richTitle}
+                      titleColor={post.titleColor}
                       slug={post.slug}
                       heroImage={post.heroImage}
                       excerpt={post.excerpt}
@@ -106,6 +110,8 @@ export default async function BlogPage({
                     </p>
                     <FeaturedPostCard
                       title={featuredPost.title}
+                      richTitle={featuredPost.richTitle}
+                      titleColor={featuredPost.titleColor}
                       slug={featuredPost.slug}
                       heroImage={featuredPost.heroImage}
                       excerpt={featuredPost.excerpt}
@@ -125,6 +131,8 @@ export default async function BlogPage({
                         <PostCard
                           key={post._id}
                           title={post.title}
+                          richTitle={post.richTitle}
+                          titleColor={post.titleColor}
                           slug={post.slug}
                           heroImage={post.heroImage}
                           excerpt={post.excerpt}

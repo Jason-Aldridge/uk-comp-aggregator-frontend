@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { RichTitle } from "@/components/sanity/RichTitle";
 import { SanityImage } from "@/components/ui/SanityImage";
+import { titleColorVar } from "@/lib/titleColor";
 import { urlFor } from "@/sanity/client";
 
 type PostSlug = {
@@ -8,6 +10,8 @@ type PostSlug = {
 
 type FeaturedPostCardProps = {
   title: string;
+  richTitle?: unknown[] | null;
+  titleColor?: string | null;
   slug: PostSlug;
   heroImage?: unknown;
   excerpt: string;
@@ -28,6 +32,8 @@ function formatPublishedDate(value: string) {
 
 export function FeaturedPostCard({
   title,
+  richTitle,
+  titleColor,
   slug,
   heroImage,
   excerpt,
@@ -35,6 +41,8 @@ export function FeaturedPostCard({
   publishedAt,
 }: FeaturedPostCardProps) {
   const href = `/blog/${slug.current}`;
+  const hasRichTitle = Array.isArray(richTitle) && richTitle.length > 0;
+  const headingColor = titleColorVar(titleColor);
   const imgSrc = heroImage
     ? urlFor(heroImage)
         .width(1100)
@@ -77,9 +85,20 @@ export function FeaturedPostCard({
               <span>{formatPublishedDate(publishedAt)}</span>
             </div>
 
-            <h2 className="mt-4 text-2xl font-medium leading-[1.15] tracking-[-0.03em] text-rr-primary md:text-[30px]">
-              {title}
-            </h2>
+            {hasRichTitle ? (
+              <RichTitle
+                value={richTitle}
+                as="h2"
+                className="mt-4 text-2xl font-medium leading-[1.15] tracking-[-0.03em] text-rr-primary md:text-[30px]"
+              />
+            ) : (
+              <h2
+                className="mt-4 text-2xl font-medium leading-[1.15] tracking-[-0.03em] text-rr-primary md:text-[30px]"
+                style={headingColor ? { color: headingColor } : undefined}
+              >
+                {title}
+              </h2>
+            )}
 
             <p className="mt-3 line-clamp-5 text-[15px] leading-6 text-rr-secondary">
               {excerpt}

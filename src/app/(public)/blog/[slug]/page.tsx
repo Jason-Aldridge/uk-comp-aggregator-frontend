@@ -24,6 +24,8 @@ type SeoMeta = {
 
 type PostData = {
   title: string;
+  richTitle?: unknown[] | null;
+  titleColor?: string | null;
   slug: PostSlug;
   heroImage?: unknown;
   excerpt?: string | null;
@@ -36,6 +38,8 @@ type PostData = {
 type PostListItem = {
   _id: string;
   title: string;
+  richTitle?: unknown[] | null;
+  titleColor?: string | null;
   slug: PostSlug;
   heroImage?: unknown;
   excerpt: string;

@@ -7,6 +7,8 @@ type PostSlug = {
 type PostListItem = {
   _id: string;
   title: string;
+  richTitle?: unknown[] | null;
+  titleColor?: string | null;
   slug: PostSlug;
   heroImage?: unknown;
   excerpt: string;
@@ -28,6 +30,8 @@ export function RelatedPosts({ posts }: { posts: PostListItem[] }) {
           <PostCard
             key={post._id}
             title={post.title}
+            richTitle={post.richTitle}
+            titleColor={post.titleColor}
             slug={post.slug}
             heroImage={post.heroImage}
             excerpt={post.excerpt}

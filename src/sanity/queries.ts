@@ -72,6 +72,8 @@ export const OPERATOR_REVIEW_BY_NAME = `*[_type == "review" && defined(slug.curr
 export const ALL_POSTS = `*[_type == "post" && defined(slug.current)] | order(publishedAt desc){
   _id,
   title,
+  richTitle,
+  titleColor,
   slug,
   heroImage,
   excerpt,
@@ -81,6 +83,7 @@ export const ALL_POSTS = `*[_type == "post" && defined(slug.current)] | order(pu
 
 export const POST_BY_SLUG = `*[_type == "post" && slug.current == $slug][0]{
   title,
+  richTitle,
   titleColor,
   slug,
   heroImage,
@@ -96,6 +99,8 @@ export const ALL_POST_SLUGS = `*[_type == "post" && defined(slug.current)][].slu
 export const RELATED_POSTS = `*[_type == "post" && defined(slug.current) && slug.current != $slug] | order(publishedAt desc)[0...3]{
   _id,
   title,
+  richTitle,
+  titleColor,
   slug,
   heroImage,
   excerpt,
