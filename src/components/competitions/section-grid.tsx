@@ -16,12 +16,14 @@ function getFeaturedIds(competitions: Competition[]) {
 export async function SectionGrid({
   section,
   category,
+  closing,
   freeOnly,
   operator,
   minPrizeValue,
 }: {
   section: "most-undersold" | "top-opportunities";
   category?: string;
+  closing?: string;
   freeOnly?: boolean;
   operator?: string;
   minPrizeValue?: number;
@@ -34,6 +36,7 @@ export async function SectionGrid({
         limit: 500,
         excludeGames: true,
         category,
+        closing,
         freeOnly,
         operator,
         minPrizeValue,
@@ -43,6 +46,7 @@ export async function SectionGrid({
         limit: 500,
         excludeGames: true,
         category,
+        closing,
         freeOnly,
         operator,
         minPrizeValue,

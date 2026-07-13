@@ -320,6 +320,7 @@ export default async function CompetitionsPage({
           <SectionGrid
             section={params.section}
             category={params.category}
+            closing={closing}
             freeOnly={params.freeOnly === "true"}
             operator={operatorSlug}
             minPrizeValue={
