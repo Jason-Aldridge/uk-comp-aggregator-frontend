@@ -5,6 +5,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { AuthProvider } from "@/contexts/auth-context";
+import { ConsentProvider } from "@/contexts/consent-context";
 
 export const metadata: Metadata = {
   title: "RaffleRadar",
@@ -29,10 +30,12 @@ export default function RootLayout({
           {themeInitScript}
         </Script>
         <ThemeProvider>
-          <AuthProvider>
-            <Navbar />
-            {children}
-          </AuthProvider>
+          <ConsentProvider>
+            <AuthProvider>
+              <Navbar />
+              {children}
+            </AuthProvider>
+          </ConsentProvider>
         </ThemeProvider>
       </body>
     </html>

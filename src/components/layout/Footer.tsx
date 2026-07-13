@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CookiePreferencesLink } from "@/components/layout/CookiePreferencesLink";
 import { sanityClient } from "@/sanity/client";
 import { SITE_SETTINGS } from "@/sanity/queries";
 
@@ -44,6 +45,22 @@ export async function Footer() {
   const footerCopyright =
     settings?.footerCopyright?.trim() || `© ${currentYear} RaffleRadar. All rights reserved.`;
   const footerDisclaimer = settings?.footerDisclaimer?.trim() || "";
+
+  // #region debug-point B:footer-prerender
+  (() => {
+    fetch("http://127.0.0.1:7777/event", {
+      method: "POST",
+      body: JSON.stringify({
+        sessionId: "build-usecontext-prerender",
+        runId: "pre-fix",
+        hypothesisId: "B",
+        location: "src/components/layout/Footer.tsx",
+        msg: "[DEBUG] Footer prerender entry",
+        data: { columnCount: columns.length, hasDisclaimer: Boolean(footerDisclaimer) },
+      }),
+    }).catch(() => {});
+  })();
+  // #endregion
 
   return (
     <footer className="mt-20 border-t border-rr-border bg-rr-bg">
@@ -157,7 +174,10 @@ export async function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col gap-4 border-t border-rr-border pt-6 md:flex-row md:items-start md:justify-between">
-          <p className="text-sm text-rr-muted">{footerCopyright}</p>
+          <div className="flex flex-col gap-3">
+            <p className="text-sm text-rr-muted">{footerCopyright}</p>
+            <CookiePreferencesLink />
+          </div>
           {footerDisclaimer ? (
             <p className="max-w-[560px] text-xs leading-6 text-rr-muted">{footerDisclaimer}</p>
           ) : null}

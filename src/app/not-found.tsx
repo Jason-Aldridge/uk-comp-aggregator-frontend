@@ -1,6 +1,22 @@
 import Link from "next/link";
 
 export default function NotFound() {
+  // #region debug-point C:not-found-prerender
+  (() => {
+    fetch("http://127.0.0.1:7777/event", {
+      method: "POST",
+      body: JSON.stringify({
+        sessionId: "build-usecontext-prerender",
+        runId: "pre-fix",
+        hypothesisId: "C",
+        location: "src/app/not-found.tsx",
+        msg: "[DEBUG] NotFound prerender entry",
+        data: {},
+      }),
+    }).catch(() => {});
+  })();
+  // #endregion
+
   return (
     <main className="container py-12">
       <h1 className="text-2xl font-semibold">Page not found</h1>

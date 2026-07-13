@@ -38,7 +38,10 @@ const sectionBaseTitles: Record<string, string> = {
   "ending-today": "Ending Today",
 };
 
-const sectionDefaultSorts: Record<string, { sortBy: string; sortOrder: "asc" | "desc" }> = {
+const sectionDefaultSorts: Record<
+  string,
+  { sortBy: string; sortOrder: "asc" | "desc" }
+> = {
   "most-undersold": { sortBy: "percentSold", sortOrder: "asc" },
   "top-opportunities": { sortBy: "bestValue", sortOrder: "desc" },
   "top-prizes": { sortBy: "prizeValue", sortOrder: "desc" },
@@ -73,9 +76,14 @@ function joinTitleLabels(values: string[]) {
 
 function getCategoryTitleLabel(category?: string) {
   if (!category) return null;
-  const values = category.split(",").map((value) => value.trim()).filter(Boolean);
+  const values = category
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
   return joinTitleLabels(
-    values.map((value) => categoryLabelMap[value.toLowerCase()] ?? titleCaseValue(value)),
+    values.map(
+      (value) => categoryLabelMap[value.toLowerCase()] ?? titleCaseValue(value),
+    ),
   );
 }
 
@@ -115,8 +123,9 @@ export default async function CompetitionsPage({
   const suspenseKey = JSON.stringify(params);
   const operatorSlug = params.operator?.trim() || undefined;
   const includesGamesCategory =
-    params.category?.split(",").some((value) => value.trim().toLowerCase() === "games") ??
-    false;
+    params.category
+      ?.split(",")
+      .some((value) => value.trim().toLowerCase() === "games") ?? false;
 
   const defaultSortOrderBySortBy: Record<string, "asc" | "desc"> = {
     bestValue: "desc",
@@ -135,14 +144,37 @@ export default async function CompetitionsPage({
     defaultSortOrderBySortBy[sortBy] ??
     "desc";
 
+  // #region debug-point A:competitions-prerender
+  (() => {
+    fetch("http://127.0.0.1:7777/event", {
+      method: "POST",
+      body: JSON.stringify({
+        sessionId: "build-usecontext-prerender",
+        runId: "pre-fix",
+        hypothesisId: "A",
+        location: "src/app/(public)/competitions/page.tsx",
+        msg: "[DEBUG] CompetitionsPage prerender entry",
+        data: {
+          section: params.section ?? null,
+          sortBy,
+          sortOrder,
+          operator: operatorSlug ?? null,
+        },
+      }),
+    }).catch(() => {});
+  })();
+  // #endregion
+
   if ((!params.sortBy || !params.sortOrder) && !params.section) {
     const nextParams = new URLSearchParams();
 
     if (params.category) nextParams.set("category", params.category);
     if (operatorSlug) nextParams.set("operator", operatorSlug);
-    if (params.minPrizeValue) nextParams.set("minPrizeValue", params.minPrizeValue);
+    if (params.minPrizeValue)
+      nextParams.set("minPrizeValue", params.minPrizeValue);
     if (params.freeOnly) nextParams.set("freeOnly", params.freeOnly);
-    if (params.excludeInstant) nextParams.set("excludeInstant", params.excludeInstant);
+    if (params.excludeInstant)
+      nextParams.set("excludeInstant", params.excludeInstant);
     if (params.excludeFree) nextParams.set("excludeFree", params.excludeFree);
 
     nextParams.set("closing", params.closing ?? "3days");
@@ -162,7 +194,9 @@ export default async function CompetitionsPage({
         operator: operatorSlug,
         sortBy,
         sortOrder,
-        minPrizeValue: params.minPrizeValue ? Number(params.minPrizeValue) : undefined,
+        minPrizeValue: params.minPrizeValue
+          ? Number(params.minPrizeValue)
+          : undefined,
         freeOnly: params.freeOnly === "true",
         excludeInstant: params.excludeInstant === "true",
         excludeFree: params.excludeFree === "true",
@@ -181,10 +215,13 @@ export default async function CompetitionsPage({
   if (params.closing) resetOperatorParams.set("closing", params.closing);
   if (params.sortBy) resetOperatorParams.set("sortBy", params.sortBy);
   if (params.sortOrder) resetOperatorParams.set("sortOrder", params.sortOrder);
-  if (params.minPrizeValue) resetOperatorParams.set("minPrizeValue", params.minPrizeValue);
+  if (params.minPrizeValue)
+    resetOperatorParams.set("minPrizeValue", params.minPrizeValue);
   if (params.freeOnly) resetOperatorParams.set("freeOnly", params.freeOnly);
-  if (params.excludeInstant) resetOperatorParams.set("excludeInstant", params.excludeInstant);
-  if (params.excludeFree) resetOperatorParams.set("excludeFree", params.excludeFree);
+  if (params.excludeInstant)
+    resetOperatorParams.set("excludeInstant", params.excludeInstant);
+  if (params.excludeFree)
+    resetOperatorParams.set("excludeFree", params.excludeFree);
   if (params.section) resetOperatorParams.set("section", params.section);
   const resetOperatorHref = resetOperatorParams.toString()
     ? `/competitions?${resetOperatorParams.toString()}`
@@ -220,7 +257,9 @@ export default async function CompetitionsPage({
         params.excludeFree,
       );
   const titleToneClass =
-    section === "ending-today" ? "text-[#991b1b] dark:text-[#fca5a5]" : "text-rr-green";
+    section === "ending-today"
+      ? "text-[#991b1b] dark:text-[#fca5a5]"
+      : "text-rr-green";
 
   return (
     <main>
@@ -241,14 +280,20 @@ export default async function CompetitionsPage({
             <h1 className="text-2xl md:text-3xl font-semibold tracking-[-0.02em] text-rr-primary">
               <span className={titleToneClass}>{baseTitle}</span>
               {filterLabels.length > 0 ? ` - ${filterLabels.join(" - ")}` : ""}
-              {sortSuffix ? <span className="hidden sm:inline"> {sortSuffix}</span> : null}
+              {sortSuffix ? (
+                <span className="hidden sm:inline"> {sortSuffix}</span>
+              ) : null}
             </h1>
           </div>
 
           {operatorSlug && operatorLabel ? (
             <div className="mt-3 flex flex-wrap items-center gap-2 rounded-[10px] border border-rr-border bg-rr-surface px-3 py-2 text-sm text-rr-secondary">
               <span>
-                Showing: <span className="font-medium text-rr-primary">{operatorLabel}</span> competitions
+                Showing:{" "}
+                <span className="font-medium text-rr-primary">
+                  {operatorLabel}
+                </span>{" "}
+                competitions
               </span>
               <Link
                 href={resetOperatorHref}
