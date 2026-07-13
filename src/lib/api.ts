@@ -466,6 +466,32 @@ export async function getCompetitionHistory(id: string) {
   return apiFetch<unknown>(`/competitions/${id}/history`);
 }
 
-export async function trackCompetitionClick(id: string) {
-  return apiFetch<unknown>(`/competitions/${id}/click`, { method: "POST" });
+export type OutboundClickSource = "detail" | "operator_profile";
+
+export async function trackCompetitionClick(
+  id: string,
+  source?: OutboundClickSource,
+) {
+  return fetch(`${BASE_URL}/competitions/${id}/click`, {
+    method: "POST",
+    keepalive: true,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ source }),
+  });
+}
+
+export async function trackOperatorClick(
+  operatorId: string,
+  source?: OutboundClickSource,
+) {
+  return fetch(`${BASE_URL}/operators/${operatorId}/click`, {
+    method: "POST",
+    keepalive: true,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ source }),
+  });
 }

@@ -11,7 +11,7 @@ type Props = {
 
 export function EnterButton({ competitionId, sourceUrl, operatorName }: Props) {
   const handleClick = () => {
-    void trackCompetitionClick(competitionId).catch(() => undefined);
+    void trackCompetitionClick(competitionId, "detail").catch(() => undefined);
   };
 
   return (

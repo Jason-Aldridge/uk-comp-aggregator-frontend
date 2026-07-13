@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CompetitionCard } from "@/components/competitions/competition-card";
+import { TrackedOperatorLink } from "@/components/operators/tracked-operator-link";
 import { Badge } from "@/components/ui/badge";
 import {
   getCompetitions,
@@ -220,14 +221,13 @@ export default async function OperatorPage({
               </div>
 
               {operator.baseUrl ? (
-                <Link
+                <TrackedOperatorLink
+                  operatorId={operator.id}
                   href={operator.baseUrl}
-                  target="_blank"
-                  rel="noreferrer"
                   className="inline-flex h-10 shrink-0 items-center justify-center rounded-md border border-rr-border bg-rr-surface px-4 text-sm font-medium text-rr-secondary no-underline transition-colors hover:bg-rr-elevated hover:text-rr-primary"
                 >
                   Visit operator site
-                </Link>
+                </TrackedOperatorLink>
               ) : null}
             </div>
 
