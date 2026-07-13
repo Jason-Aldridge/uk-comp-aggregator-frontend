@@ -1,4 +1,5 @@
 import { clearTokens, getRefreshToken, setTokens } from "@/lib/auth";
+import { getAnonIdForTracking } from "@/lib/anon-id";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -476,13 +477,15 @@ export async function trackCompetitionClick(
   id: string,
   source?: OutboundClickSource,
 ) {
+  const anonId = getAnonIdForTracking();
+
   return fetch(`${BASE_URL}/competitions/${id}/click`, {
     method: "POST",
     keepalive: true,
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ source }),
+    body: JSON.stringify({ source, ...(anonId ? { anon_id: anonId } : {}) }),
   });
 }
 
@@ -490,12 +493,14 @@ export async function trackOperatorClick(
   operatorId: string,
   source?: OutboundClickSource,
 ) {
+  const anonId = getAnonIdForTracking();
+
   return fetch(`${BASE_URL}/operators/${operatorId}/click`, {
     method: "POST",
     keepalive: true,
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ source }),
+    body: JSON.stringify({ source, ...(anonId ? { anon_id: anonId } : {}) }),
   });
 }

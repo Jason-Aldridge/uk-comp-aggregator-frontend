@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
+import { AnonIdSync } from "@/components/layout/anon-id-sync";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { AuthProvider } from "@/contexts/auth-context";
 import { ConsentProvider } from "@/contexts/consent-context";
@@ -31,6 +32,7 @@ export default function RootLayout({
         </Script>
         <ThemeProvider>
           <ConsentProvider>
+            <AnonIdSync />
             <AuthProvider>
               <Navbar />
               {children}
