@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -56,8 +57,22 @@ export function Navbar() {
     <div className="relative">
       <div className="mt-2 bg-rr-surface">
         <nav className="flex h-[52px] items-center gap-3 px-5">
-          <Link href="/" className="shrink-0 font-medium tracking-[-0.3px] text-rr-primary no-underline">
-            RAFFLE<span className="text-rr-green">RADAR</span>
+          <Link
+            href="/"
+            className="shrink-0 flex items-center gap-2 text-rr-primary no-underline"
+            aria-label="RaffleRadar home"
+          >
+            <Image
+              src="/favnew.svg"
+              alt="RaffleRadar"
+              width={36}
+              height={36}
+              className="h-9 w-9 shrink-0"
+              priority
+            />
+            <span className="text-sm font-semibold tracking-[-0.3px] sm:text-base">
+              RAFFLE<span className="text-rr-green">RADAR</span>
+            </span>
           </Link>
 
           <div className="hidden min-w-0 sm:block sm:flex-1 max-w-[420px] md:max-w-[520px]">

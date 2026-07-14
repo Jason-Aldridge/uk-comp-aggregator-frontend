@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { CookiePreferencesLink } from "@/components/layout/CookiePreferencesLink";
 import { sanityClient } from "@/sanity/client";
@@ -66,12 +67,23 @@ export async function Footer() {
     <footer className="mt-20 border-t border-rr-border bg-rr-bg">
       <div className="container py-14 md:py-16">
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between lg:gap-16">
-          <div className="max-w-[300px]">
+          <div className="max-w-[320px]">
             <Link
               href="/"
-              className="inline-flex items-center text-xl font-semibold tracking-[-0.4px] text-rr-primary no-underline"
+              className="inline-flex items-end gap-3 text-rr-primary no-underline"
+              aria-label="RaffleRadar home"
             >
-              RAFFLE<span className="text-rr-green">RADAR</span>
+              <Image
+                src="/favnew.svg"
+                alt="RaffleRadar"
+                width={52}
+                height={52}
+                className="h-12 w-12 shrink-0 md:h-[52px] md:w-[52px]"
+                priority
+              />
+              <span className="text-lg font-semibold leading-none tracking-[-0.4px] md:text-xl">
+                RAFFLE<span className="text-rr-green">RADAR</span>
+              </span>
             </Link>
             <p className="mt-4 text-sm leading-6 text-rr-muted">
               Track every UK prize competition in one place — real odds, real value, no noise.
