@@ -4,7 +4,6 @@ import { RadarLoader } from "@/components/ui/RadarLoader";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { CompetitionGrid } from "@/components/competitions/competition-grid";
-import { SectionGrid } from "@/components/competitions/section-grid";
 import { FilterBar } from "@/components/layout/filter-bar";
 import { getCompetitions } from "@/lib/api";
 import type { Competition } from "@/types/competition";
@@ -165,7 +164,14 @@ export default async function CompetitionsPage({
   })();
   // #endregion
 
-  if ((!params.sortBy || !params.sortOrder) && !params.section) {
+  const trimmedSection = params.section?.trim() || "";
+  const defaultClosing = trimmedSection === "ending-today" ? "today" : "3days";
+  const needsRedirect =
+    !params.closing ||
+    !params.sortBy ||
+    !params.sortOrder;
+
+  if (needsRedirect) {
     const nextParams = new URLSearchParams();
 
     if (params.category) nextParams.set("category", params.category);
@@ -176,8 +182,9 @@ export default async function CompetitionsPage({
     if (params.excludeInstant)
       nextParams.set("excludeInstant", params.excludeInstant);
     if (params.excludeFree) nextParams.set("excludeFree", params.excludeFree);
+    if (trimmedSection) nextParams.set("section", trimmedSection);
 
-    nextParams.set("closing", params.closing ?? "3days");
+    nextParams.set("closing", params.closing ?? defaultClosing);
     nextParams.set("sortBy", sortBy);
     nextParams.set("sortOrder", sortOrder);
 
@@ -315,37 +322,21 @@ export default async function CompetitionsPage({
           </div>
         }
       >
-        {params.section === "most-undersold" ||
-        params.section === "top-opportunities" ? (
-          <SectionGrid
-            section={params.section}
-            category={params.category}
-            closing={closing}
-            freeOnly={params.freeOnly === "true"}
-            operator={operatorSlug}
-            minPrizeValue={
-              params.minPrizeValue ? Number(params.minPrizeValue) : undefined
-            }
-          />
-        ) : (
-          <CompetitionGrid
-            params={{
-              category: params.category,
-              closing,
-              operator: operatorSlug,
-              sortBy,
-              sortOrder,
-              minPrizeValue: params.minPrizeValue
-                ? Number(params.minPrizeValue)
-                : undefined,
-              freeOnly: params.freeOnly === "true",
-              excludeInstant: params.excludeInstant === "true",
-              excludeFree: params.excludeFree === "true",
-              excludeGames: !includesGamesCategory,
-              limit: 500,
-            }}
-          />
-        )}
+        <CompetitionGrid
+          params={{
+            category: params.category,
+            closing,
+            operator: operatorSlug,
+            sortBy,
+            sortOrder,
+            minPrizeValue: params.minPrizeValue ? Number(params.minPrizeValue) : undefined,
+            freeOnly: params.freeOnly === "true",
+            excludeInstant: params.excludeInstant === "true",
+            excludeFree: params.excludeFree === "true",
+            excludeGames: !includesGamesCategory,
+            limit: 500,
+          }}
+        />
       </Suspense>
     </main>
   );

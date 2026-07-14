@@ -184,6 +184,32 @@ export function FilterBar({
     [pathname, router, searchParams],
   );
 
+  const updateClosing = useCallback(
+    (value: string | null) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (value === null) {
+        params.delete("closing");
+      } else {
+        params.set("closing", value);
+      }
+
+      params.delete("page");
+
+      const qs = params.toString();
+      const nextHref = qs ? `${pathname}?${qs}` : pathname;
+      const currentQs = searchParams.toString();
+      const currentHref = currentQs ? `${pathname}?${currentQs}` : pathname;
+
+      if (nextHref === currentHref) {
+        return;
+      }
+
+      router.push(nextHref);
+    },
+    [pathname, router, searchParams],
+  );
+
   const updateParams = useCallback(
     (updates: Record<string, string | null>) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -230,9 +256,9 @@ export function FilterBar({
 
   const handleClosingClick = useCallback(
     (value: string) => {
-      updateParam("closing", currentClosing === value ? null : value);
+      updateClosing(currentClosing === value ? null : value);
     },
-    [currentClosing, updateParam],
+    [currentClosing, updateClosing],
   );
 
   const activeSort = useMemo(() => {
@@ -481,7 +507,7 @@ export function FilterBar({
                             : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
                         )}
                         onClick={() => {
-                          updateParam("closing", null);
+                          updateClosing(null);
                           setClosingOpen(false);
                         }}
                       >
@@ -504,7 +530,7 @@ export function FilterBar({
                                 : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
                             )}
                             onClick={() => {
-                              updateParam("closing", opt.value);
+                              updateClosing(opt.value);
                               setClosingOpen(false);
                             }}
                           >
