@@ -89,6 +89,7 @@ export type GetCompetitionsParams = {
   sortOrder?: string;
   category?: string;
   closing?: string;
+  search?: string;
   operator?: string;
   minPrizeValue?: number;
   website?: string;
@@ -341,6 +342,7 @@ export async function getCompetitions(params?: GetCompetitionsParams) {
   if (params?.sortOrder) query.set("sortOrder", params.sortOrder);
   if (params?.category) query.set("category", params.category);
   if (params?.closing) query.set("closing", params.closing);
+  if (params?.search) query.set("search", params.search);
   if (params?.operator) query.set("operator", params.operator);
   if (params?.minPrizeValue)
     query.set("minPrizeValue", String(params.minPrizeValue));

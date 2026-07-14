@@ -75,7 +75,7 @@ export function CompetitionSearch() {
         if (requestIdRef.current !== currentRequestId) return;
 
         setResults(nextResults);
-        setActiveIndex(nextResults.length > 0 ? 0 : -1);
+        setActiveIndex(-1);
       } catch {
         if (requestIdRef.current !== currentRequestId) return;
 
@@ -134,14 +134,23 @@ export function CompetitionSearch() {
       return;
     }
 
-    if (
-      event.key === "Enter" &&
-      open &&
-      activeIndex >= 0 &&
-      results[activeIndex]
-    ) {
-      event.preventDefault();
-      handleSelect(results[activeIndex]);
+    if (event.key === "Enter") {
+      const hasHighlightedResult =
+        open && activeIndex >= 0 && Boolean(results[activeIndex]);
+
+      if (hasHighlightedResult) {
+        event.preventDefault();
+        handleSelect(results[activeIndex]);
+        return;
+      }
+
+      if (trimmedQuery.length > 0) {
+        event.preventDefault();
+        setOpen(false);
+        setResults([]);
+        setActiveIndex(-1);
+        router.push(`/competitions?search=${encodeURIComponent(trimmedQuery)}`);
+      }
     }
   }
 

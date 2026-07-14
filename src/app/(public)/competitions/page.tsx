@@ -5,12 +5,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { CompetitionGrid } from "@/components/competitions/competition-grid";
 import { FilterBar } from "@/components/layout/filter-bar";
-import { getCompetitions } from "@/lib/api";
+import { getCompetitions, type GetCompetitionsParams } from "@/lib/api";
 import type { Competition } from "@/types/competition";
 
 type CompetitionsPageSearchParams = {
   category?: string;
   closing?: string;
+  search?: string;
   sortBy?: string;
   sortOrder?: string;
   operator?: string;
@@ -137,6 +138,7 @@ export default async function CompetitionsPage({
   };
 
   const closing = params.closing ?? "";
+  const searchTerm = params.search?.trim() || undefined;
   const sortBy = params.sortBy ?? "bestValue";
   const sortOrder =
     (params.sortOrder as "asc" | "desc" | undefined) ??
@@ -175,6 +177,7 @@ export default async function CompetitionsPage({
     const nextParams = new URLSearchParams();
 
     if (params.category) nextParams.set("category", params.category);
+    if (searchTerm) nextParams.set("search", searchTerm);
     if (operatorSlug) nextParams.set("operator", operatorSlug);
     if (params.minPrizeValue)
       nextParams.set("minPrizeValue", params.minPrizeValue);
@@ -220,6 +223,7 @@ export default async function CompetitionsPage({
   const resetOperatorParams = new URLSearchParams();
   if (params.category) resetOperatorParams.set("category", params.category);
   if (params.closing) resetOperatorParams.set("closing", params.closing);
+  if (searchTerm) resetOperatorParams.set("search", searchTerm);
   if (params.sortBy) resetOperatorParams.set("sortBy", params.sortBy);
   if (params.sortOrder) resetOperatorParams.set("sortOrder", params.sortOrder);
   if (params.minPrizeValue)
@@ -235,7 +239,9 @@ export default async function CompetitionsPage({
     : "/competitions";
 
   const section = params.section?.trim() || "";
-  const baseTitle = sectionBaseTitles[section] ?? "All Competitions";
+  const baseTitle = searchTerm
+    ? `Search results for "${searchTerm}"`
+    : (sectionBaseTitles[section] ?? "All Competitions");
   const filterLabels = [
     getCategoryTitleLabel(params.category),
     operatorLabel,
@@ -326,10 +332,13 @@ export default async function CompetitionsPage({
           params={{
             category: params.category,
             closing,
+            search: searchTerm,
             operator: operatorSlug,
             sortBy,
             sortOrder,
-            minPrizeValue: params.minPrizeValue ? Number(params.minPrizeValue) : undefined,
+            minPrizeValue: params.minPrizeValue
+              ? Number(params.minPrizeValue)
+              : undefined,
             freeOnly: params.freeOnly === "true",
             excludeInstant: params.excludeInstant === "true",
             excludeFree: params.excludeFree === "true",
