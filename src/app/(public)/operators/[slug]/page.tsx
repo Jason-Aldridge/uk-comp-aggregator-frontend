@@ -223,6 +223,7 @@ export default async function OperatorPage({
               {operator.baseUrl ? (
                 <TrackedOperatorLink
                   operatorId={operator.id}
+                  operator={operator.slug}
                   href={operator.baseUrl}
                   className="inline-flex h-10 shrink-0 items-center justify-center rounded-md border border-rr-border bg-rr-surface px-4 text-sm font-medium text-rr-secondary no-underline transition-colors hover:bg-rr-elevated hover:text-rr-primary"
                 >

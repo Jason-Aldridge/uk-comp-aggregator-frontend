@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { EnterButton } from "@/components/competitions/enter-button";
+import { CompetitionViewTracker } from "@/components/competitions/competition-view-tracker";
 import { SaveActions } from "@/components/competitions/save-actions";
 import { TicketCalculator } from "@/components/competitions/ticket-calculator";
 import { DrawCountdown } from "@/components/competitions/draw-countdown";
@@ -403,6 +404,10 @@ export default async function Page({
   );
   return (
     <main>
+      <CompetitionViewTracker
+        competition={id}
+        operator={operator?.name ?? undefined}
+      />
       <div className="container py-6 md:py-8">
         <div className="mb-4 hidden md:block">
           <nav className="flex items-center gap-2 text-sm text-rr-muted">

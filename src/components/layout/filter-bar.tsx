@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { IconChartBar, IconChevronDown, IconClock } from "@tabler/icons-react";
 import { cn } from "@/lib/cn";
+import { pushEvent } from "@/lib/analytics";
 
 export type FilterOption = {
   value: string;
@@ -78,6 +79,11 @@ type FilterBarProps = {
   closingOptions?: FilterOption[];
   sortOptions?: SortOption[];
   className?: string;
+};
+
+type FilterEventMeta = {
+  filterType: string;
+  filterValue: string;
 };
 
 function isSortOptionActive(
@@ -157,7 +163,7 @@ export function FilterBar({
   const isSortOpen = showSort && sortOpen;
 
   const updateParam = useCallback(
-    (key: string, value: string | null) => {
+    (key: string, value: string | null, eventMeta?: FilterEventMeta) => {
       const params = new URLSearchParams(searchParams.toString());
 
       if (value === null) {
@@ -179,13 +185,20 @@ export function FilterBar({
         return;
       }
 
+      if (eventMeta) {
+        pushEvent("filter_applied", {
+          filter_type: eventMeta.filterType,
+          filter_value: eventMeta.filterValue,
+        });
+      }
+
       router.push(nextHref);
     },
     [pathname, router, searchParams],
   );
 
   const updateClosing = useCallback(
-    (value: string | null) => {
+    (value: string | null, eventMeta?: FilterEventMeta) => {
       const params = new URLSearchParams(searchParams.toString());
 
       if (value === null) {
@@ -205,13 +218,20 @@ export function FilterBar({
         return;
       }
 
+      if (eventMeta) {
+        pushEvent("filter_applied", {
+          filter_type: eventMeta.filterType,
+          filter_value: eventMeta.filterValue,
+        });
+      }
+
       router.push(nextHref);
     },
     [pathname, router, searchParams],
   );
 
   const updateParams = useCallback(
-    (updates: Record<string, string | null>) => {
+    (updates: Record<string, string | null>, eventMeta?: FilterEventMeta) => {
       const params = new URLSearchParams(searchParams.toString());
       const controlsExcludeInstant = Object.prototype.hasOwnProperty.call(
         updates,
@@ -237,7 +257,6 @@ export function FilterBar({
       if (!controlsExcludeFree) {
         params.delete("excludeFree");
       }
-
       params.delete("page");
 
       const qs = params.toString();
@@ -249,6 +268,13 @@ export function FilterBar({
         return;
       }
 
+      if (eventMeta) {
+        pushEvent("filter_applied", {
+          filter_type: eventMeta.filterType,
+          filter_value: eventMeta.filterValue,
+        });
+      }
+
       router.push(nextHref);
     },
     [pathname, router, searchParams],
@@ -256,7 +282,10 @@ export function FilterBar({
 
   const handleClosingClick = useCallback(
     (value: string) => {
-      updateClosing(currentClosing === value ? null : value);
+      updateClosing(currentClosing === value ? null : value, {
+        filterType: "closing",
+        filterValue: currentClosing === value ? "any" : value,
+      });
     },
     [currentClosing, updateClosing],
   );
@@ -338,35 +367,59 @@ export function FilterBar({
                     aria-pressed={isActive}
                     onClick={() => {
                       if (opt.value === "all") {
-                        updateParams({ category: null, freeOnly: null });
+                        updateParams(
+                          { category: null, freeOnly: null },
+                          { filterType: "category", filterValue: "all" },
+                        );
                         return;
                       }
 
                       if (opt.value === "free") {
-                        updateParams({
-                          category: null,
-                          freeOnly: isActive ? null : "true",
-                          excludeInstant: null,
-                          excludeFree: null,
-                        });
+                        updateParams(
+                          {
+                            category: null,
+                            freeOnly: isActive ? null : "true",
+                            excludeInstant: null,
+                            excludeFree: null,
+                          },
+                          {
+                            filterType: "free",
+                            filterValue: isActive ? "false" : "true",
+                          },
+                        );
                         return;
                       }
 
                       if (opt.value === "other") {
-                        updateParams({
-                          category:
-                            currentMainCategory === "other" && categoryParam === "other"
-                              ? null
-                              : "other",
-                          freeOnly: null,
-                        });
+                        updateParams(
+                          {
+                            category:
+                              currentMainCategory === "other" && categoryParam === "other"
+                                ? null
+                                : "other",
+                            freeOnly: null,
+                          },
+                          {
+                            filterType: "category",
+                            filterValue:
+                              currentMainCategory === "other" && categoryParam === "other"
+                                ? "all"
+                                : "other",
+                          },
+                        );
                         return;
                       }
 
-                      updateParams({
-                        category: isActive ? null : opt.value,
-                        freeOnly: null,
-                      });
+                      updateParams(
+                        {
+                          category: isActive ? null : opt.value,
+                          freeOnly: null,
+                        },
+                        {
+                          filterType: "category",
+                          filterValue: isActive ? "all" : opt.value,
+                        },
+                      );
                     }}
                   >
                     {opt.label}
@@ -507,7 +560,10 @@ export function FilterBar({
                             : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
                         )}
                         onClick={() => {
-                          updateClosing(null);
+                          updateClosing(null, {
+                            filterType: "closing",
+                            filterValue: "any",
+                          });
                           setClosingOpen(false);
                         }}
                       >
@@ -530,7 +586,10 @@ export function FilterBar({
                                 : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
                             )}
                             onClick={() => {
-                              updateClosing(opt.value);
+                              updateClosing(opt.value, {
+                                filterType: "closing",
+                                filterValue: opt.value,
+                              });
                               setClosingOpen(false);
                             }}
                           >
@@ -586,7 +645,12 @@ export function FilterBar({
                       : "bg-rr-surface text-rr-muted hover:bg-rr-elevated hover:text-rr-primary",
                   )}
                   aria-pressed={isActive}
-                  onClick={() => updateParam("category", opt.value)}
+                  onClick={() =>
+                    updateParam("category", opt.value, {
+                      filterType: "category",
+                      filterValue: opt.value,
+                    })
+                  }
                 >
                   {opt.label}
                 </button>

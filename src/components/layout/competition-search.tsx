@@ -5,6 +5,7 @@ import { IconSearch, IconX } from "@tabler/icons-react";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 import { CompetitionImage } from "@/components/ui/CompetitionImage";
 import { RadarLoader } from "@/components/ui/RadarLoader";
+import { pushEvent } from "@/lib/analytics";
 import { getCompetitionSearch, type CompetitionSearchResult } from "@/lib/api";
 
 const priceFormatter = new Intl.NumberFormat("en-GB", {
@@ -149,6 +150,7 @@ export function CompetitionSearch() {
         setOpen(false);
         setResults([]);
         setActiveIndex(-1);
+        pushEvent("search", { query: trimmedQuery });
         router.push(`/competitions?search=${encodeURIComponent(trimmedQuery)}`);
       }
     }
