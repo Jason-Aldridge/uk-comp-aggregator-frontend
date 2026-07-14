@@ -168,7 +168,8 @@ export default async function CompetitionsPage({
 
   const trimmedSection = params.section?.trim() || "";
   const defaultClosing = trimmedSection === "ending-today" ? "today" : "3days";
-  const shouldApplyDefaultClosing = !searchTerm || Boolean(trimmedSection);
+  const shouldApplyDefaultClosing =
+    !searchTerm && (!trimmedSection || trimmedSection === "ending-today");
   const needsRedirect =
     !params.sortBy ||
     !params.sortOrder ||

@@ -307,10 +307,10 @@ export function FilterBar({
   const sortLabel = activeSort?.label ?? "Best value";
 
   const closingLabel = useMemo(() => {
-    if (!closing) return "Closing: Any";
+    if (!closing) return "Closing: All";
 
     const match = closingOpts.find((opt) => opt.value === closing);
-    return match ? `Closing: ${match.label}` : "Closing: Any";
+    return match ? `Closing: ${match.label}` : "Closing: All";
   }, [closing, closingOpts]);
 
   useEffect(() => {
@@ -567,7 +567,7 @@ export function FilterBar({
                           setClosingOpen(false);
                         }}
                       >
-                        Closing: Any
+                        Closing: All
                       </button>
 
                       {closingOpts.map((opt) => {
@@ -603,6 +603,19 @@ export function FilterBar({
 
                 <div className="hidden flex-wrap items-center gap-[5px] lg:flex">
                   <span className="text-sm text-rr-muted">Closing:</span>
+                  <button
+                    type="button"
+                    className={cn(
+                      "inline-flex items-center justify-center whitespace-nowrap rounded-full px-2.5 py-1 text-sm font-medium transition cursor-pointer",
+                      !closing
+                        ? "bg-rr-green text-rr-on-accent border border-transparent"
+                        : "bg-transparent border border-rr-border text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
+                    )}
+                    aria-pressed={!closing}
+                    onClick={() => updateClosing(null, { filterType: "closing", filterValue: "all" })}
+                  >
+                    All
+                  </button>
                   {closingOpts.map((opt) => {
                     const isActive = opt.value === closing;
 

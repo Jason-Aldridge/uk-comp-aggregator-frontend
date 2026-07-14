@@ -147,14 +147,14 @@ export default async function Page({
         titleStart="Top"
         titleAccent="Opportunities"
         subtitle="Best chances to win right now"
-        viewAllHref="/competitions?section=top-opportunities&sortBy=bestValue&sortOrder=desc&closing=today&excludeInstant=true&excludeFree=true"
+        viewAllHref="/competitions?section=top-opportunities&sortBy=bestValue&sortOrder=desc&excludeInstant=true&excludeFree=true"
         competitions={topOpportunities}
       />
       <CompetitionSection
         titleStart="Most undersold"
         titleAccent="ending soon"
         subtitle="Low ticket sales, closing within 3 days — your best odds right now"
-        viewAllHref="/competitions?section=most-undersold&sortBy=percentSold&sortOrder=asc&closing=today&excludeInstant=true&excludeFree=true"
+        viewAllHref="/competitions?section=most-undersold&sortBy=percentSold&sortOrder=asc&excludeInstant=true&excludeFree=true"
         competitions={undersold}
       />
       <CompetitionSection
