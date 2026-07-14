@@ -168,10 +168,11 @@ export default async function CompetitionsPage({
 
   const trimmedSection = params.section?.trim() || "";
   const defaultClosing = trimmedSection === "ending-today" ? "today" : "3days";
+  const shouldApplyDefaultClosing = !searchTerm || Boolean(trimmedSection);
   const needsRedirect =
-    !params.closing ||
     !params.sortBy ||
-    !params.sortOrder;
+    !params.sortOrder ||
+    (shouldApplyDefaultClosing && !params.closing);
 
   if (needsRedirect) {
     const nextParams = new URLSearchParams();
@@ -186,8 +187,9 @@ export default async function CompetitionsPage({
       nextParams.set("excludeInstant", params.excludeInstant);
     if (params.excludeFree) nextParams.set("excludeFree", params.excludeFree);
     if (trimmedSection) nextParams.set("section", trimmedSection);
+    if (params.closing) nextParams.set("closing", params.closing);
+    else if (shouldApplyDefaultClosing) nextParams.set("closing", defaultClosing);
 
-    nextParams.set("closing", params.closing ?? defaultClosing);
     nextParams.set("sortBy", sortBy);
     nextParams.set("sortOrder", sortOrder);
 
