@@ -148,8 +148,7 @@ export function ContactForm() {
     intro.classList.add("hidden");
 
     requestAnimationFrame(() => {
-      const top = Math.max((successRef.current?.getBoundingClientRect().top ?? 0) + window.scrollY - 88, 0);
-      window.scrollTo({ top, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
     return () => {
