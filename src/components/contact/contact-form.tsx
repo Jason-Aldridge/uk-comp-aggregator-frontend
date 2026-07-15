@@ -129,17 +129,32 @@ export function ContactForm() {
   }, []);
 
   useEffect(() => {
-    if (!isSubmitted || typeof window === "undefined") {
+    if (typeof window === "undefined") {
       return;
     }
 
-    if (!window.matchMedia("(max-width: 639px)").matches) {
+    const intro = document.getElementById("contact-page-intro");
+    const isMobile = window.matchMedia("(max-width: 639px)").matches;
+
+    if (!intro || !isMobile) {
       return;
     }
+
+    if (!isSubmitted) {
+      intro.classList.remove("hidden");
+      return;
+    }
+
+    intro.classList.add("hidden");
 
     requestAnimationFrame(() => {
-      successRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const top = Math.max((successRef.current?.getBoundingClientRect().top ?? 0) + window.scrollY - 88, 0);
+      window.scrollTo({ top, behavior: "smooth" });
     });
+
+    return () => {
+      intro.classList.remove("hidden");
+    };
   }, [isSubmitted]);
 
   function handleChange<K extends keyof FormValues>(field: K, value: FormValues[K]) {
@@ -220,10 +235,13 @@ export function ContactForm() {
         <p className="text-sm font-medium uppercase tracking-[0.14em] text-rr-green">
           Message sent
         </p>
-        <h2 className="mt-2 text-2xl font-medium tracking-[-0.03em] text-rr-primary">
+        <h2 className="mt-2 text-xl font-medium tracking-[-0.03em] text-rr-primary sm:hidden">
+          Thanks, your email has been sent.
+        </h2>
+        <h2 className="mt-2 hidden text-2xl font-medium tracking-[-0.03em] text-rr-primary sm:block">
           Thanks, your enquiry is on its way.
         </h2>
-        <p className="mt-2 text-[15.5px] leading-7 text-rr-secondary">
+        <p className="mt-2 hidden text-[15.5px] leading-7 text-rr-secondary sm:block">
           We have received your message and will reply by email as soon as we can.
         </p>
       </div>
