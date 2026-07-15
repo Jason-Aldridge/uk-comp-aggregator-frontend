@@ -59,27 +59,17 @@ export function Navbar() {
         <nav className="flex h-[52px] items-center gap-3 px-5">
           <Link
             href="/"
-            className="shrink-0 flex items-center gap-3 text-rr-primary no-underline"
+            className="shrink-0 flex items-center gap-2.5 text-rr-primary no-underline"
             aria-label="RaffleRadar home"
           >
-            <span className="relative block h-12 w-12 shrink-0">
-              <Image
-                src="/logo-dark.svg"
-                alt="RaffleRadar"
-                width={48}
-                height={48}
-                className="h-12 w-12 shrink-0 dark:hidden"
-                priority
-              />
-              <Image
-                src="/logo-light.svg"
-                alt="RaffleRadar"
-                width={48}
-                height={48}
-                className="hidden h-12 w-12 shrink-0 dark:block"
-                priority
-              />
-            </span>
+            <Image
+              src="/favnew.svg"
+              alt="RaffleRadar"
+              width={40}
+              height={40}
+              className="h-10 w-10 shrink-0"
+              priority
+            />
             <span className="text-sm font-semibold tracking-[-0.3px] sm:text-base">
               RAFFLE<span className="text-rr-green">RADAR</span>
             </span>

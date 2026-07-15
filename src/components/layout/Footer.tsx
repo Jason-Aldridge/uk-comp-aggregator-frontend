@@ -73,24 +73,14 @@ export async function Footer() {
               className="inline-flex items-end gap-3.5 text-rr-primary no-underline"
               aria-label="RaffleRadar home"
             >
-              <span className="relative block h-16 w-16 shrink-0 md:h-[68px] md:w-[68px]">
-                <Image
-                  src="/logo-dark.svg"
-                  alt="RaffleRadar"
-                  width={68}
-                  height={68}
-                  className="h-16 w-16 shrink-0 dark:hidden md:h-[68px] md:w-[68px]"
-                  priority
-                />
-                <Image
-                  src="/logo-light.svg"
-                  alt="RaffleRadar"
-                  width={68}
-                  height={68}
-                  className="hidden h-16 w-16 shrink-0 dark:block md:h-[68px] md:w-[68px]"
-                  priority
-                />
-              </span>
+              <Image
+                src="/favnew.svg"
+                alt="RaffleRadar"
+                width={68}
+                height={68}
+                className="h-16 w-16 shrink-0 md:h-[68px] md:w-[68px]"
+                priority
+              />
               <span className="text-lg font-semibold leading-none tracking-[-0.4px] md:text-xl">
                 RAFFLE<span className="text-rr-green">RADAR</span>
               </span>
