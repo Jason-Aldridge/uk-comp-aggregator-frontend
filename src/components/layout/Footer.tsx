@@ -188,7 +188,15 @@ export async function Footer() {
         <div className="mt-12 flex flex-col gap-4 border-t border-rr-border pt-6 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-3">
             <p className="text-sm text-rr-muted">{footerCopyright}</p>
-            <CookiePreferencesLink />
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <Link
+                href="/contact"
+                className="text-sm text-rr-secondary no-underline transition-colors hover:text-rr-primary"
+              >
+                Contact
+              </Link>
+              <CookiePreferencesLink />
+            </div>
           </div>
           {footerDisclaimer ? (
             <p className="max-w-[560px] text-xs leading-6 text-rr-muted">{footerDisclaimer}</p>
