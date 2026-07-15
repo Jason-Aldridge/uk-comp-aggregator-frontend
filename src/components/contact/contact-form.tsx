@@ -104,6 +104,7 @@ export function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isReasonOpen, setIsReasonOpen] = useState(false);
   const reasonRef = useRef<HTMLDivElement | null>(null);
+  const successRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
@@ -126,6 +127,20 @@ export function ContactForm() {
       document.removeEventListener("keydown", handleEscape);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isSubmitted || typeof window === "undefined") {
+      return;
+    }
+
+    if (!window.matchMedia("(max-width: 639px)").matches) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      successRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, [isSubmitted]);
 
   function handleChange<K extends keyof FormValues>(field: K, value: FormValues[K]) {
     setValues((current) => ({ ...current, [field]: value }));
@@ -200,7 +215,7 @@ export function ContactForm() {
 
   if (isSubmitted) {
     return (
-      <div className={cardClass}>
+      <div ref={successRef} className={cardClass}>
         <ContactBadge />
         <p className="text-sm font-medium uppercase tracking-[0.14em] text-rr-green">
           Message sent
