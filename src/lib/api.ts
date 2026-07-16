@@ -480,6 +480,20 @@ export async function subscribeToNewsletter(email: string) {
   });
 }
 
+export async function confirmNewsletterSubscription(token: string) {
+  return apiFetch<unknown>("/newsletter/confirm", {
+    method: "POST",
+    body: { token },
+  });
+}
+
+export async function unsubscribeFromNewsletter(token: string) {
+  return apiFetch<unknown>("/newsletter/unsubscribe", {
+    method: "POST",
+    body: { token },
+  });
+}
+
 export type OutboundClickSource = "detail" | "operator_profile";
 
 export async function trackCompetitionClick(
