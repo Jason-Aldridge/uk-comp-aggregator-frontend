@@ -82,7 +82,7 @@ export function NewsletterSignupBanner() {
             className="w-full rounded-xl bg-rr-elevated px-4 py-3 text-sm text-rr-primary lg:max-w-[560px]"
             aria-live="polite"
           >
-            Check your email and click the link to confirm your signup.
+            If your email can be subscribed, check your inbox and click the confirmation link.
           </div>
         ) : (
           <form
