@@ -191,7 +191,7 @@ export async function Footer() {
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <Link
                 href="/contact"
-                className="text-sm text-rr-secondary no-underline transition-colors hover:text-rr-primary"
+                className="text-sm text-rr-secondary underline underline-offset-4 transition-colors hover:text-rr-primary"
               >
                 Contact
               </Link>
