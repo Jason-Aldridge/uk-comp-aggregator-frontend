@@ -4,8 +4,9 @@ import { RadarLoader } from "@/components/ui/RadarLoader";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { CompetitionGrid } from "@/components/competitions/competition-grid";
+import { NewsletterSignupBanner } from "@/components/competitions/newsletter-signup-banner";
 import { FilterBar } from "@/components/layout/filter-bar";
-import { getCompetitions, type GetCompetitionsParams } from "@/lib/api";
+import { getCompetitions } from "@/lib/api";
 import type { Competition } from "@/types/competition";
 
 type CompetitionsPageSearchParams = {
@@ -320,6 +321,12 @@ export default async function CompetitionsPage({
               </Link>
             </div>
           ) : null}
+        </div>
+      </section>
+
+      <section className="pt-4">
+        <div className="container">
+          <NewsletterSignupBanner />
         </div>
       </section>
 

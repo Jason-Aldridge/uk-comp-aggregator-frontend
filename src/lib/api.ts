@@ -473,6 +473,13 @@ export async function getCompetitionHistory(id: string) {
   return apiFetch<unknown>(`/competitions/${id}/history`);
 }
 
+export async function subscribeToNewsletter(email: string) {
+  return apiFetch<unknown>("/newsletter/subscribe", {
+    method: "POST",
+    body: { email },
+  });
+}
+
 export type OutboundClickSource = "detail" | "operator_profile";
 
 export async function trackCompetitionClick(
