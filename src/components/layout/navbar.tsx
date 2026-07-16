@@ -36,6 +36,7 @@ export function Navbar() {
   const isOperatorsActive = pathname === "/operators" || pathname.startsWith("/operators/");
   const isReviewsActive = pathname === "/reviews" || pathname.startsWith("/reviews/");
   const isBlogActive = pathname === "/blog" || pathname.startsWith("/blog/");
+  const isContactActive = pathname === "/contact";
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 768px)");
@@ -133,6 +134,18 @@ export function Navbar() {
             className="text-sm px-3 py-2 rounded-md text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary no-underline whitespace-nowrap"
           >
             How it works
+          </Link>
+          <Link
+            href="/contact"
+            aria-current={isContactActive ? "page" : undefined}
+            className={cn(
+              "text-sm px-3 py-2 rounded-md no-underline whitespace-nowrap",
+              isContactActive
+                ? "bg-rr-green text-rr-on-accent"
+                : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
+            )}
+          >
+            Contact
           </Link>
         </div>
 
@@ -243,6 +256,19 @@ export function Navbar() {
               onClick={() => setMenuOpen(false)}
             >
               How it works
+            </Link>
+            <Link
+              href="/contact"
+              aria-current={isContactActive ? "page" : undefined}
+              className={cn(
+                "text-sm px-3 py-2 rounded-md no-underline",
+                isContactActive
+                  ? "bg-rr-green text-rr-on-accent"
+                  : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
+              )}
+              onClick={() => setMenuOpen(false)}
+            >
+              Contact
             </Link>
 
             {!user && showAuthButtons ? (
