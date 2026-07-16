@@ -23,8 +23,7 @@ function isValidEmail(value: string) {
 export function NewsletterSignupBanner() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
 
   function handleChange(value: string) {
     setEmail(value);
@@ -48,20 +47,20 @@ export function NewsletterSignupBanner() {
       return;
     }
 
-    setIsSubmitting(true);
+    setStatus("submitting");
     setError("");
 
     try {
       await subscribeToNewsletter(trimmedEmail);
-      setIsSubmitted(true);
+      setEmail("");
+      setStatus("success");
     } catch (submitError) {
+      setStatus("idle");
       setError(
         submitError instanceof Error
           ? submitError.message
           : "We couldn't sign you up right now. Try again.",
       );
-    } finally {
-      setIsSubmitting(false);
     }
   }
 
@@ -77,12 +76,12 @@ export function NewsletterSignupBanner() {
           </p>
         </div>
 
-        {isSubmitted ? (
+        {status === "success" ? (
           <div
             className="w-full rounded-xl bg-rr-elevated px-4 py-3 text-sm text-rr-primary lg:max-w-[560px]"
             aria-live="polite"
           >
-            If your email can be subscribed, check your inbox and click the confirmation link.
+            Check your email and click the link to confirm your signup. The email can take a little longer to arrive.
           </div>
         ) : (
           <form
@@ -111,9 +110,9 @@ export function NewsletterSignupBanner() {
               <Button
                 type="submit"
                 className="h-11 shrink-0 px-5 sm:min-w-[132px]"
-                disabled={isSubmitting}
+                disabled={status === "submitting"}
               >
-                {isSubmitting ? "Joining..." : "Sign up"}
+                {status === "submitting" ? "Joining..." : "Sign up"}
               </Button>
             </div>
             {error ? (
