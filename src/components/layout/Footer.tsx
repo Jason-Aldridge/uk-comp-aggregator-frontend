@@ -47,22 +47,6 @@ export async function Footer() {
     settings?.footerCopyright?.trim() || `© ${currentYear} RaffleRadar. All rights reserved.`;
   const footerDisclaimer = settings?.footerDisclaimer?.trim() || "";
 
-  // #region debug-point B:footer-prerender
-  (() => {
-    fetch("http://127.0.0.1:7777/event", {
-      method: "POST",
-      body: JSON.stringify({
-        sessionId: "build-usecontext-prerender",
-        runId: "pre-fix",
-        hypothesisId: "B",
-        location: "src/components/layout/Footer.tsx",
-        msg: "[DEBUG] Footer prerender entry",
-        data: { columnCount: columns.length, hasDisclaimer: Boolean(footerDisclaimer) },
-      }),
-    }).catch(() => {});
-  })();
-  // #endregion
-
   return (
     <footer className="mt-20 border-t border-rr-border bg-rr-bg">
       <div className="container py-14 md:py-16">

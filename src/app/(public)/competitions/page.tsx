@@ -7,6 +7,7 @@ import { CompetitionGrid } from "@/components/competitions/competition-grid";
 import { NewsletterSignupBanner } from "@/components/competitions/newsletter-signup-banner";
 import { FilterBar } from "@/components/layout/filter-bar";
 import { getCompetitions } from "@/lib/api";
+import { getCompetitionSortPresentation } from "@/lib/competition-sort";
 import type { Competition } from "@/types/competition";
 
 type CompetitionsPageSearchParams = {
@@ -88,33 +89,6 @@ function getCategoryTitleLabel(category?: string) {
   );
 }
 
-function getSortSuffix(
-  sortBy?: string,
-  sortOrder?: "asc" | "desc",
-  closing?: string,
-  excludeInstant?: string,
-  excludeFree?: string,
-) {
-  if (!sortBy || !sortOrder) return null;
-  if (sortBy === "prizeValue") return "By Prize Value";
-  if (sortBy === "bestValue" || sortBy === "valueRatio") return "By Value";
-  if (sortBy === "percentSold") {
-    if (
-      sortOrder === "asc" &&
-      closing === "today" &&
-      excludeInstant === "true" &&
-      excludeFree === "true"
-    ) {
-      return "By Most Undersold";
-    }
-    return sortOrder === "desc" ? "By Selling Fast" : "By Best Odds";
-  }
-  if (sortBy === "endsAt") return "By Ending Soon";
-  if (sortBy === "ticketPrice") return "By Price";
-  if (sortBy === "ticketsLeft") return "By Availability";
-  return null;
-}
-
 export default async function CompetitionsPage({
   searchParams,
 }: {
@@ -146,31 +120,13 @@ export default async function CompetitionsPage({
     defaultSortOrderBySortBy[sortBy] ??
     "desc";
 
-  // #region debug-point A:competitions-prerender
-  (() => {
-    fetch("http://127.0.0.1:7777/event", {
-      method: "POST",
-      body: JSON.stringify({
-        sessionId: "build-usecontext-prerender",
-        runId: "pre-fix",
-        hypothesisId: "A",
-        location: "src/app/(public)/competitions/page.tsx",
-        msg: "[DEBUG] CompetitionsPage prerender entry",
-        data: {
-          section: params.section ?? null,
-          sortBy,
-          sortOrder,
-          operator: operatorSlug ?? null,
-        },
-      }),
-    }).catch(() => {});
-  })();
-  // #endregion
-
   const trimmedSection = params.section?.trim() || "";
-  const defaultClosing = trimmedSection === "ending-today" ? "today" : "3days";
-  const shouldApplyDefaultClosing =
-    !searchTerm && (!trimmedSection || trimmedSection === "ending-today");
+  const defaultClosingBySection: Record<string, string> = {
+    "ending-today": "today",
+    "most-undersold": "today",
+  };
+  const defaultClosing = defaultClosingBySection[trimmedSection];
+  const shouldApplyDefaultClosing = !searchTerm && Boolean(defaultClosing);
   const needsRedirect =
     !params.sortBy ||
     !params.sortOrder ||
@@ -264,15 +220,15 @@ export default async function CompetitionsPage({
     sectionDefaultSort !== undefined &&
     sectionDefaultSort.sortBy === sortBy &&
     sectionDefaultSort.sortOrder === sortOrder;
+  const sortPresentation = getCompetitionSortPresentation({
+    sortBy,
+    sortOrder,
+    excludeInstant: params.excludeInstant === "true",
+    excludeFree: params.excludeFree === "true",
+  });
   const sortSuffix = sortMatchesSectionDefault
     ? null
-    : getSortSuffix(
-        sortBy,
-        sortOrder,
-        closing,
-        params.excludeInstant,
-        params.excludeFree,
-      );
+    : sortPresentation?.headingSuffix ?? null;
   const titleToneClass =
     section === "ending-today"
       ? "text-[#991b1b] dark:text-[#fca5a5]"

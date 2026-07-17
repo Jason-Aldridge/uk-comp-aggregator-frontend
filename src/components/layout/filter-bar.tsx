@@ -5,6 +5,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { IconChartBar, IconChevronDown, IconClock } from "@tabler/icons-react";
 import { cn } from "@/lib/cn";
 import { pushEvent } from "@/lib/analytics";
+import {
+  getCompetitionSortIdentity,
+  getCompetitionSortPresentation,
+} from "@/lib/competition-sort";
 
 export type FilterOption = {
   value: string;
@@ -91,19 +95,23 @@ function isSortOptionActive(
   state: {
     sortBy: string;
     sortOrder: "asc" | "desc";
-    closing: string;
     excludeInstant: boolean;
     excludeFree: boolean;
   },
 ) {
-  const optionClosing = option.closing ?? "";
-
   return (
-    option.sortBy === state.sortBy &&
-    option.sortOrder === state.sortOrder &&
-    (option.closing === undefined || optionClosing === state.closing) &&
-    (option.excludeInstant === undefined || option.excludeInstant === state.excludeInstant) &&
-    (option.excludeFree === undefined || option.excludeFree === state.excludeFree)
+    getCompetitionSortIdentity({
+      sortBy: option.sortBy,
+      sortOrder: option.sortOrder,
+      excludeInstant: option.excludeInstant ?? false,
+      excludeFree: option.excludeFree ?? false,
+    }) ===
+    getCompetitionSortIdentity({
+      sortBy: state.sortBy,
+      sortOrder: state.sortOrder,
+      excludeInstant: state.excludeInstant,
+      excludeFree: state.excludeFree,
+    })
   );
 }
 
@@ -291,20 +299,25 @@ export function FilterBar({
   );
 
   const activeSort = useMemo(() => {
-    return (
-      sortOpts.find((opt) =>
-        isSortOptionActive(opt, {
-          sortBy,
-          sortOrder,
-          closing,
-          excludeInstant,
-          excludeFree,
-        }),
-      ) ?? sortOpts[0]
+    return sortOpts.find((opt) =>
+      isSortOptionActive(opt, {
+        sortBy,
+        sortOrder,
+        excludeInstant,
+        excludeFree,
+      }),
     );
-  }, [closing, excludeFree, excludeInstant, sortBy, sortOrder, sortOpts]);
+  }, [excludeFree, excludeInstant, sortBy, sortOrder, sortOpts]);
 
-  const sortLabel = activeSort?.label ?? "Best value";
+  const sortLabel =
+    activeSort?.label ??
+    getCompetitionSortPresentation({
+      sortBy,
+      sortOrder,
+      excludeInstant,
+      excludeFree,
+    })?.label ??
+    "Sort";
 
   const closingLabel = useMemo(() => {
     if (!closing) return "Closing: All";
@@ -470,7 +483,6 @@ export function FilterBar({
                       const isActive = isSortOptionActive(opt, {
                         sortBy,
                         sortOrder,
-                        closing,
                         excludeInstant,
                         excludeFree,
                       });
