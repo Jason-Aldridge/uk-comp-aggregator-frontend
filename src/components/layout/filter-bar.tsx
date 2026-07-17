@@ -180,8 +180,6 @@ export function FilterBar({
         params.set(key, value);
       }
 
-      params.delete("excludeInstant");
-      params.delete("excludeFree");
       params.delete("page");
 
       const qs = params.toString();
@@ -241,14 +239,6 @@ export function FilterBar({
   const updateParams = useCallback(
     (updates: Record<string, string | null>, eventMeta?: FilterEventMeta) => {
       const params = new URLSearchParams(searchParams.toString());
-      const controlsExcludeInstant = Object.prototype.hasOwnProperty.call(
-        updates,
-        "excludeInstant",
-      );
-      const controlsExcludeFree = Object.prototype.hasOwnProperty.call(
-        updates,
-        "excludeFree",
-      );
 
       Object.entries(updates).forEach(([key, value]) => {
         if (value === null) {
@@ -258,13 +248,6 @@ export function FilterBar({
         }
       });
 
-      if (!controlsExcludeInstant) {
-        params.delete("excludeInstant");
-      }
-
-      if (!controlsExcludeFree) {
-        params.delete("excludeFree");
-      }
       params.delete("page");
 
       const qs = params.toString();
@@ -296,6 +279,22 @@ export function FilterBar({
       });
     },
     [currentClosing, updateClosing],
+  );
+
+  const handleSortOptionClick = useCallback(
+    (opt: SortOption) => {
+      updateParams({
+        sortBy: opt.sortBy,
+        sortOrder: opt.sortOrder,
+        closing: opt.closing === undefined ? currentClosing : opt.closing,
+        excludeInstant:
+          opt.excludeInstant === undefined ? null : opt.excludeInstant ? "true" : null,
+        excludeFree:
+          opt.excludeFree === undefined ? null : opt.excludeFree ? "true" : null,
+      });
+      setSortOpen(false);
+    },
+    [currentClosing, updateParams],
   );
 
   const activeSort = useMemo(() => {
@@ -499,26 +498,7 @@ export function FilterBar({
                               ? "bg-rr-elevated text-rr-primary"
                               : "text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary",
                           )}
-                          onClick={() => {
-                            updateParams({
-                              sortBy: opt.sortBy,
-                              sortOrder: opt.sortOrder,
-                              closing: opt.closing === undefined ? currentClosing : opt.closing,
-                              excludeInstant:
-                                opt.excludeInstant === undefined
-                                  ? null
-                                  : opt.excludeInstant
-                                    ? "true"
-                                    : null,
-                              excludeFree:
-                                opt.excludeFree === undefined
-                                  ? null
-                                  : opt.excludeFree
-                                    ? "true"
-                                    : null,
-                            });
-                            setSortOpen(false);
-                          }}
+                          onClick={() => handleSortOptionClick(opt)}
                         >
                           {opt.label}
                         </button>
