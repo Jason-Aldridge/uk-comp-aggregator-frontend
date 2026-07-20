@@ -1,13 +1,6 @@
 import "@fontsource/inter/latin.css";
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
-import { Navbar } from "@/components/layout/navbar";
-import { AnonIdSync } from "@/components/layout/anon-id-sync";
-import { GtmLoader } from "@/components/layout/gtm-loader";
-import { ThemeProvider } from "@/components/theme/theme-provider";
-import { AuthProvider } from "@/contexts/auth-context";
-import { ConsentProvider } from "@/contexts/consent-context";
 
 export const metadata: Metadata = {
   title: "RaffleRadar",
@@ -28,19 +21,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="font-sans dark" suppressHydrationWarning>
       <body>
-        <Script id="theme-init" strategy="beforeInteractive">
-          {themeInitScript}
-        </Script>
-        <ThemeProvider>
-          <ConsentProvider>
-            <AnonIdSync />
-            <GtmLoader />
-            <AuthProvider>
-              <Navbar />
-              {children}
-            </AuthProvider>
-          </ConsentProvider>
-        </ThemeProvider>
+        <script id="theme-init" dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {children}
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 import { clearTokens, getRefreshToken, setTokens } from "@/lib/auth";
 import { getAnonIdForTracking } from "@/lib/anon-id";
+import type { Competition } from "@/types/competition";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -205,7 +206,7 @@ function normalizeCompetitionItem<T>(item: T): T {
   } as T;
 }
 
-function normalizeCompetitionsResponse(value: unknown) {
+function normalizeCompetitionsResponse<T>(value: unknown): T[] {
   let list: unknown[] = [];
 
   if (Array.isArray(value)) {
@@ -222,13 +223,13 @@ function normalizeCompetitionsResponse(value: unknown) {
     else if (Array.isArray(data.competitions)) list = data.competitions;
   }
 
-  return list.map((item) => normalizeCompetitionItem(item));
+  return list.map((item) => normalizeCompetitionItem(item as T));
 }
 
 function normalizeCompetitionSearchResponse(
   value: unknown,
 ): CompetitionSearchResult[] {
-  return normalizeCompetitionsResponse(value).flatMap((item) => {
+  return normalizeCompetitionsResponse<Record<string, unknown>>(value).flatMap((item) => {
     if (!item || typeof item !== "object") return [];
 
     const data = item as {
@@ -327,13 +328,15 @@ function normalizeOperatorDetail(value: unknown): OperatorDetail | null {
         : typeof data.base_url === "string"
           ? data.base_url
           : null,
-    competitions: normalizeCompetitionsResponse(
+    competitions: normalizeCompetitionsResponse<CompetitionDetail>(
       data.competitions,
-    ) as CompetitionDetail[],
+    ),
   };
 }
 
-export async function getCompetitions(params?: GetCompetitionsParams) {
+export async function getCompetitions(
+  params?: GetCompetitionsParams,
+): Promise<Competition[]> {
   const query = new URLSearchParams();
 
   if (params?.limit) query.set("limit", String(params.limit));
@@ -355,7 +358,7 @@ export async function getCompetitions(params?: GetCompetitionsParams) {
   const path =
     query.size > 0 ? `/competitions?${query.toString()}` : "/competitions";
   const response = await apiFetch<unknown>(path);
-  return normalizeCompetitionsResponse(response);
+  return normalizeCompetitionsResponse<Competition>(response);
 }
 
 export async function getCompetitionSearch(
@@ -410,7 +413,9 @@ type GetMostUndersoldParams = {
   minPrizeValue?: number;
 };
 
-export async function getTopOpportunities(params?: GetTopOpportunitiesParams) {
+export async function getTopOpportunities(
+  params?: GetTopOpportunitiesParams,
+): Promise<Competition[]> {
   const query = new URLSearchParams();
   if (params?.limit) query.set("limit", String(params.limit));
   if (params?.excludeInstant) query.set("excludeInstant", "true");
@@ -429,10 +434,12 @@ export async function getTopOpportunities(params?: GetTopOpportunitiesParams) {
       : "/competitions/top-opportunities";
 
   const response = await apiFetch<unknown>(path);
-  return normalizeCompetitionsResponse(response);
+  return normalizeCompetitionsResponse<Competition>(response);
 }
 
-export async function getMostUndersold(params?: GetMostUndersoldParams) {
+export async function getMostUndersold(
+  params?: GetMostUndersoldParams,
+): Promise<Competition[]> {
   const query = new URLSearchParams();
   if (params?.limit) query.set("limit", String(params.limit));
   if (params?.excludeInstant) query.set("excludeInstant", "true");
@@ -451,17 +458,17 @@ export async function getMostUndersold(params?: GetMostUndersoldParams) {
       : "/competitions/most-undersold";
 
   const response = await apiFetch<unknown>(path);
-  return normalizeCompetitionsResponse(response);
+  return normalizeCompetitionsResponse<Competition>(response);
 }
 
-export async function getRecentlyEnded(limit = 8) {
+export async function getRecentlyEnded(limit = 8): Promise<Competition[]> {
   const query = new URLSearchParams({
     limit: String(limit),
   });
   const response = await apiFetch<unknown>(
     `/competitions/recently-ended?${query.toString()}`,
   );
-  return normalizeCompetitionsResponse(response);
+  return normalizeCompetitionsResponse<Competition>(response);
 }
 
 export async function getCompetition(id: string) {

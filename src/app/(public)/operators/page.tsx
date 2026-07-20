@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { VrScale } from "@/components/operators/VrScale";
 import { Badge } from "@/components/ui/badge";
 import { getOperators } from "@/lib/api";
+import type { OperatorSummary } from "@/lib/api";
 import { getOperatorFairness } from "@/lib/operator-display";
 
 export const revalidate = 60;
@@ -44,7 +45,14 @@ function OperatorLogo({
 }
 
 export default async function OperatorsPage() {
-  const operators = await getOperators();
+  let operators: OperatorSummary[] = [];
+
+  try {
+    operators = await getOperators();
+  } catch {
+    operators = [];
+  }
+
   const sortedOperators = [...operators]
     .map((operator) => ({
       operator,

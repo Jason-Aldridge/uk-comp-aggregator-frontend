@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CookiePreferencesLink } from "@/components/layout/CookiePreferencesLink";
 import { sanityClient } from "@/sanity/client";
 import { SITE_SETTINGS } from "@/sanity/queries";
 
@@ -179,7 +178,6 @@ export async function Footer() {
               >
                 Contact
               </Link>
-              <CookiePreferencesLink />
             </div>
           </div>
           {footerDisclaimer ? (

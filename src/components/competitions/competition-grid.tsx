@@ -98,7 +98,7 @@ export async function resolveCompetitionOperatorLabel(
   const fallbackLabel = formatOperatorLabel(operatorSlug);
 
   try {
-    const matches = (await getCompetitions({
+    const matchesResponse = await getCompetitions({
       category: params.category,
       closing: params.closing,
       search: params.search,
@@ -113,7 +113,8 @@ export async function resolveCompetitionOperatorLabel(
       excludeFree: params.excludeFree === "true",
       excludeGames: !includesGamesCategory,
       limit: 1,
-    })) as Competition[];
+    });
+    const matches = Array.isArray(matchesResponse) ? matchesResponse : [];
 
     return matches[0]?.operator?.name ?? fallbackLabel;
   } catch {
@@ -228,10 +229,11 @@ export async function CompetitionGrid({
   let competitions: Competition[] = [];
 
   try {
-    competitions = (await getCompetitions({
+    const competitionsResponse = await getCompetitions({
       limit: 500,
       ...params,
-    })) as Competition[];
+    });
+    competitions = Array.isArray(competitionsResponse) ? competitionsResponse : [];
   } catch {
     competitions = [];
   }

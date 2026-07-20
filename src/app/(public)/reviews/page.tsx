@@ -43,7 +43,8 @@ export default async function ReviewsPage({
 }) {
   const sp = await searchParams;
   const page = Number(sp?.page) || 1;
-  const reviews = await sanityClient.fetch<ReviewListItem[]>(ALL_REVIEWS);
+  const reviewsResponse = await sanityClient.fetch<ReviewListItem[] | null>(ALL_REVIEWS);
+  const reviews = Array.isArray(reviewsResponse) ? reviewsResponse : [];
   const pagination = paginate(reviews, page, PAGE_SIZE);
 
   return (
