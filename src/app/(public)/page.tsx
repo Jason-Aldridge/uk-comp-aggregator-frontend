@@ -1,5 +1,9 @@
 import { Suspense } from "react";
-import { CompetitionGrid } from "@/components/competitions/competition-grid";
+import {
+  CompetitionGrid,
+  CompetitionResultsHeading,
+  resolveCompetitionOperatorLabel,
+} from "@/components/competitions/competition-grid";
 import { CompetitionSection } from "@/components/home/competition-section";
 import { Hero, type HeroStats } from "@/components/home/hero";
 import { FilterBar } from "@/components/layout/filter-bar";
@@ -16,9 +20,15 @@ import type { Competition } from "@/types/competition";
 type HomePageSearchParams = {
   category?: string;
   closing?: string;
+  search?: string;
   sortBy?: string;
   sortOrder?: string;
+  operator?: string;
+  minPrizeValue?: string;
   freeOnly?: string;
+  excludeInstant?: string;
+  excludeFree?: string;
+  section?: string;
 };
 
 export default async function Page({
@@ -27,25 +37,50 @@ export default async function Page({
   searchParams: Promise<HomePageSearchParams>;
 }) {
   const params = await searchParams;
-  const hasFilters = !!(params.category || params.closing || params.sortBy || params.freeOnly);
+  const hasFilters = !!(
+    params.category ||
+    params.closing ||
+    params.search ||
+    params.sortBy ||
+    params.sortOrder ||
+    params.operator ||
+    params.minPrizeValue ||
+    params.freeOnly ||
+    params.excludeInstant ||
+    params.excludeFree ||
+    params.section
+  );
   const includesGamesCategory =
     params.category?.split(",").some((value) => value.trim().toLowerCase() === "games") ??
     false;
 
   if (hasFilters) {
+    const operatorLabel = await resolveCompetitionOperatorLabel(params);
+
     return (
       <main>
         <Suspense fallback={null}>
           <FilterBar />
         </Suspense>
+        <CompetitionResultsHeading
+          params={params}
+          operatorLabel={operatorLabel}
+        />
         <Suspense fallback={null}>
           <CompetitionGrid
             params={{
               category: params.category,
               closing: params.closing,
+              search: params.search,
               sortBy: params.sortBy,
               sortOrder: params.sortOrder,
+              operator: params.operator,
+              minPrizeValue: params.minPrizeValue
+                ? Number(params.minPrizeValue)
+                : undefined,
               freeOnly: params.freeOnly === "true",
+              excludeInstant: params.excludeInstant === "true",
+              excludeFree: params.excludeFree === "true",
               excludeGames: !includesGamesCategory,
               limit: 500,
             }}
