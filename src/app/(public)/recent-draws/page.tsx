@@ -28,9 +28,10 @@ export default async function RecentDrawsPage() {
           <Link
             href="/"
             aria-label="Back to home"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-rr-border bg-rr-surface text-rr-secondary transition-colors hover:bg-rr-elevated hover:text-rr-primary"
+            className="inline-flex items-center gap-2 text-sm font-medium text-rr-green no-underline transition-opacity hover:opacity-80"
           >
-            <IconArrowLeft size={18} />
+            <IconArrowLeft size={16} />
+            Back
           </Link>
         </div>
       </section>

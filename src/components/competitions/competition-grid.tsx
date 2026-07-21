@@ -187,7 +187,7 @@ export function CompetitionResultsHeading({
               <IconArrowLeft size={18} />
             </Link>
           ) : null}
-          <h1 className="text-2xl md:text-3xl font-semibold tracking-[-0.02em] text-rr-primary">
+          <h1 className="min-w-0 break-words text-2xl md:text-3xl font-semibold tracking-[-0.02em] text-rr-primary">
             <span className={titleToneClass}>{baseTitle}</span>
             {filterLabels.length > 0 ? ` - ${filterLabels.join(" - ")}` : ""}
             {sortSuffix ? <span className="hidden sm:inline"> {sortSuffix}</span> : null}
