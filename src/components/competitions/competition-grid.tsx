@@ -26,6 +26,7 @@ const sectionBaseTitles: Record<string, string> = {
   "top-prizes": "Top Prizes",
   "selling-fast": "Selling Fast",
   "ending-today": "Ending Today",
+  "recent-draws": "Recent Draws",
 };
 
 const sectionDefaultSorts: Record<string, { sortBy: string; sortOrder: "asc" | "desc" }> = {
@@ -34,6 +35,7 @@ const sectionDefaultSorts: Record<string, { sortBy: string; sortOrder: "asc" | "
   "top-prizes": { sortBy: "prizeValue", sortOrder: "desc" },
   "selling-fast": { sortBy: "percentSold", sortOrder: "desc" },
   "ending-today": { sortBy: "endsAt", sortOrder: "asc" },
+  "recent-draws": { sortBy: "bestValue", sortOrder: "desc" },
 };
 
 const categoryLabelMap: Record<string, string> = {
