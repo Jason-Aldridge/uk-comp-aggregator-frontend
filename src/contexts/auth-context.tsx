@@ -9,38 +9,21 @@ import {
   useReducer,
   type ReactNode,
 } from "react";
-import { apiFetch } from "@/lib/api";
-import { clearTokens, getAccessToken, setTokens } from "@/lib/auth";
+import {
+  AuthClientError,
+  authFetchJson,
+  authRequest,
+  authRequestJson,
+  type AuthUser,
+  type LoginInput,
+  type RegisterInput,
+} from "@/lib/auth-client";
 
-type AuthUser = {
-  id: string;
-  email: string;
-  displayName: string | null;
-  avatarUrl: string | null;
-  role: string;
-  createdAt: string | Date;
-};
-
-type LoginInput = {
-  email: string;
-  password: string;
-};
-
-type RegisterInput = {
-  email: string;
-  password: string;
-  displayName?: string;
-};
-
-type AuthResponse = {
-  accessToken: string;
-  refreshToken: string;
-  user: AuthUser;
-};
+type AuthStatus = "loading" | "authenticated" | "unauthenticated";
 
 type AuthState = {
   user: AuthUser | null;
-  status: "idle" | "loading" | "ready";
+  status: AuthStatus;
   error: string | null;
 };
 
@@ -57,8 +40,8 @@ type AuthContextValue = {
 
 type Action =
   | { type: "loading" }
-  | { type: "ready" }
-  | { type: "setUser"; user: AuthUser | null }
+  | { type: "authenticated"; user: AuthUser }
+  | { type: "unauthenticated"; error: string | null }
   | { type: "setError"; error: string | null };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -67,12 +50,12 @@ function reducer(state: AuthState, action: Action): AuthState {
   switch (action.type) {
     case "loading":
       return { ...state, status: "loading", error: null };
-    case "ready":
-      return { ...state, status: "ready" };
-    case "setUser":
-      return { ...state, user: action.user, error: null, status: "ready" };
+    case "authenticated":
+      return { user: action.user, status: "authenticated", error: null };
+    case "unauthenticated":
+      return { user: null, status: "unauthenticated", error: action.error };
     case "setError":
-      return { ...state, error: action.error, status: "ready" };
+      return { ...state, error: action.error };
     default:
       return state;
   }
@@ -80,33 +63,32 @@ function reducer(state: AuthState, action: Action): AuthState {
 
 const initialState: AuthState = {
   user: null,
-  status: "idle",
+  status: "loading",
   error: null,
 };
+
+function getErrorMessage(error: unknown, fallback: string) {
+  return error instanceof Error ? error.message : fallback;
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const refreshMe = useCallback(async () => {
-    const token = getAccessToken();
-
-    if (!token) {
-      dispatch({ type: "setUser", user: null });
-      return;
-    }
-
-    dispatch({ type: "loading" });
-
     try {
-      const user = await apiFetch<AuthUser>("/auth/me", { token });
-      dispatch({ type: "setUser", user });
-    } catch (e) {
-      clearTokens();
+      const user = await authFetchJson<AuthUser>("/me");
+      dispatch({ type: "authenticated", user });
+    } catch (error) {
+      if (error instanceof AuthClientError && error.status === 401) {
+        dispatch({ type: "unauthenticated", error: null });
+        return;
+      }
+
       dispatch({
         type: "setError",
-        error: e instanceof Error ? e.message : "Failed to load user",
+        error: getErrorMessage(error, "Failed to load user"),
       });
-      dispatch({ type: "setUser", user: null });
+      throw error;
     }
   }, []);
 
@@ -114,19 +96,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "loading" });
 
     try {
-      const res = await apiFetch<AuthResponse>("/auth/login", {
+      const response = await authRequestJson<{ user: AuthUser }>("/login", {
         method: "POST",
         body: input,
       });
-
-      setTokens(res.accessToken, res.refreshToken);
-      dispatch({ type: "setUser", user: res.user });
-    } catch (e) {
+      dispatch({ type: "authenticated", user: response.user });
+    } catch (error) {
       dispatch({
-        type: "setError",
-        error: e instanceof Error ? e.message : "Login failed",
+        type: "unauthenticated",
+        error: getErrorMessage(error, "Login failed"),
       });
-      throw e;
+      throw error;
     }
   }, []);
 
@@ -134,47 +114,67 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "loading" });
 
     try {
-      const res = await apiFetch<AuthResponse>("/auth/register", {
+      const response = await authRequestJson<{ user: AuthUser }>("/register", {
         method: "POST",
         body: input,
       });
-
-      setTokens(res.accessToken, res.refreshToken);
-      dispatch({ type: "setUser", user: res.user });
-    } catch (e) {
+      dispatch({ type: "authenticated", user: response.user });
+    } catch (error) {
       dispatch({
-        type: "setError",
-        error: e instanceof Error ? e.message : "Register failed",
+        type: "unauthenticated",
+        error: getErrorMessage(error, "Register failed"),
       });
-      throw e;
+      throw error;
     }
   }, []);
 
   const logout = useCallback(async () => {
-    const token = getAccessToken();
-
     dispatch({ type: "loading" });
 
     try {
-      if (token) {
-        await apiFetch<unknown>("/auth/logout", { method: "POST", token });
-      }
-    } finally {
-      clearTokens();
-      dispatch({ type: "setUser", user: null });
-    }
+      await authRequest("/logout", { method: "POST" });
+    } catch {}
+
+    dispatch({ type: "unauthenticated", error: null });
   }, []);
 
   useEffect(() => {
-    void refreshMe();
-  }, [refreshMe]);
+    let cancelled = false;
+
+    async function bootstrap() {
+      try {
+        const user = await authRequestJson<AuthUser>("/me");
+        if (!cancelled) {
+          dispatch({ type: "authenticated", user });
+        }
+      } catch (error) {
+        if (cancelled) {
+          return;
+        }
+        if (error instanceof AuthClientError && error.status === 401) {
+          dispatch({ type: "unauthenticated", error: null });
+          return;
+        }
+        dispatch({
+          type: "unauthenticated",
+          error: getErrorMessage(error, "Failed to load user"),
+        });
+      }
+    }
+
+    void bootstrap();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const value: AuthContextValue = useMemo(
     () => ({
       user: state.user,
       status: state.status,
       error: state.error,
-      isAuthenticated: !!state.user,
+      isAuthenticated: state.status === "authenticated",
       login,
       register,
       logout,
