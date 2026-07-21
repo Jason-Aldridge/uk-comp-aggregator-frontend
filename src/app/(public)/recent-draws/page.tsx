@@ -1,6 +1,5 @@
-import Link from "next/link";
-import { IconArrowLeft } from "@tabler/icons-react";
-import { CompetitionSection } from "@/components/home/competition-section";
+import { CompetitionCard } from "@/components/competitions/competition-card";
+import { CompetitionResultsHeading } from "@/components/competitions/competition-grid";
 import { getRecentlyEnded } from "@/lib/api";
 import type { Competition } from "@/types/competition";
 
@@ -22,27 +21,31 @@ export default async function RecentDrawsPage() {
   }
 
   return (
-    <main className="bg-rr-bg">
-      <section className="pt-6">
+    <main>
+      <CompetitionResultsHeading
+        params={{ section: "recent-draws" }}
+        showBackButton
+        backHref="/"
+      />
+      <section className="py-8 md:py-10">
         <div className="container">
-          <Link
-            href="/"
-            aria-label="Back to home"
-            className="inline-flex items-center gap-2 text-sm font-medium text-rr-green no-underline transition-opacity hover:opacity-80"
-          >
-            <IconArrowLeft size={16} />
-            Back
-          </Link>
+          {competitions.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+              {competitions.map((competition) => (
+                <CompetitionCard
+                  key={competition.id}
+                  competition={competition}
+                  variant="ended"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-rr-border bg-rr-surface px-4 py-8 text-center text-sm text-rr-muted">
+              No competitions available right now.
+            </div>
+          )}
         </div>
       </section>
-      <CompetitionSection
-        titleStart="Recent"
-        titleAccent="draws"
-        subtitle="Just finished — how they sold before the draw"
-        competitions={competitions}
-        cardVariant="ended"
-        mobileLayout="grid"
-      />
     </main>
   );
 }
