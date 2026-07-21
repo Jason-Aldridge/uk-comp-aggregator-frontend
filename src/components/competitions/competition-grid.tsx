@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CompetitionGridClient } from "@/components/competitions/competition-grid-client";
 import { getCompetitions } from "@/lib/api";
 import type { GetCompetitionsParams } from "@/lib/api";
+import { cn } from "@/lib/cn";
 import { getCompetitionSortPresentation } from "@/lib/competition-sort";
 import type { Competition } from "@/types/competition";
 
@@ -29,7 +30,10 @@ const sectionBaseTitles: Record<string, string> = {
   "recent-draws": "Recent Draws",
 };
 
-const sectionDefaultSorts: Record<string, { sortBy: string; sortOrder: "asc" | "desc" }> = {
+const sectionDefaultSorts: Record<
+  string,
+  { sortBy: string; sortOrder: "asc" | "desc" }
+> = {
   "most-undersold": { sortBy: "percentSold", sortOrder: "asc" },
   "top-opportunities": { sortBy: "bestValue", sortOrder: "desc" },
   "top-prizes": { sortBy: "prizeValue", sortOrder: "desc" },
@@ -170,7 +174,7 @@ export function CompetitionResultsHeading({
   });
   const sortSuffix = sortMatchesSectionDefault
     ? null
-    : sortPresentation?.headingSuffix ?? null;
+    : (sortPresentation?.headingSuffix ?? null);
   const titleToneClass =
     section === "ending-today"
       ? "text-[#991b1b] dark:text-[#fca5a5]"
@@ -179,7 +183,7 @@ export function CompetitionResultsHeading({
   return (
     <section className="pt-6">
       <div className="container">
-        <div className="flex items-center gap-3">
+        <div className="flex w-full min-w-0 items-start gap-3">
           {showBackButton ? (
             <Link
               href={backHref}
@@ -189,17 +193,25 @@ export function CompetitionResultsHeading({
               <IconArrowLeft size={18} />
             </Link>
           ) : null}
-          <h1 className="min-w-0 break-words text-2xl md:text-3xl font-semibold tracking-[-0.02em] text-rr-primary">
-            <span className={titleToneClass}>{baseTitle}</span>
+          <h1 className="min-w-0 flex-1 break-words text-2xl md:text-3xl font-semibold tracking-[-0.02em] text-rr-primary">
+            <span className={cn("min-w-0 break-words", titleToneClass)}>
+              {baseTitle}
+            </span>
             {filterLabels.length > 0 ? ` - ${filterLabels.join(" - ")}` : ""}
-            {sortSuffix ? <span className="hidden sm:inline"> {sortSuffix}</span> : null}
+            {sortSuffix ? (
+              <span className="hidden sm:inline"> {sortSuffix}</span>
+            ) : null}
           </h1>
         </div>
 
         {operatorLabel && resetOperatorHref ? (
           <div className="mt-3 flex flex-wrap items-center gap-2 rounded-[10px] border border-rr-border bg-rr-surface px-3 py-2 text-sm text-rr-secondary">
             <span>
-              Showing: <span className="font-medium text-rr-primary">{operatorLabel}</span> competitions
+              Showing:{" "}
+              <span className="font-medium text-rr-primary">
+                {operatorLabel}
+              </span>{" "}
+              competitions
             </span>
             <Link
               href={resetOperatorHref}
@@ -217,7 +229,10 @@ export function CompetitionResultsHeading({
 
 function getFeaturedIds(competitions: Competition[]) {
   return competitions
-    .filter((competition) => competition.valueRatio !== null && competition.valueRatio !== undefined)
+    .filter(
+      (competition) =>
+        competition.valueRatio !== null && competition.valueRatio !== undefined,
+    )
     .sort((a, b) => Number(b.valueRatio ?? 0) - Number(a.valueRatio ?? 0))
     .slice(0, 3)
     .map((competition) => competition.id);
@@ -235,7 +250,9 @@ export async function CompetitionGrid({
       limit: 500,
       ...params,
     });
-    competitions = Array.isArray(competitionsResponse) ? competitionsResponse : [];
+    competitions = Array.isArray(competitionsResponse)
+      ? competitionsResponse
+      : [];
   } catch {
     competitions = [];
   }

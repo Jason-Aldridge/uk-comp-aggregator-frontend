@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IconMenu2, IconMoon, IconSun, IconX } from "@tabler/icons-react";
 import { cn } from "@/lib/cn";
@@ -29,6 +29,7 @@ export function Navbar() {
   const { user } = useAuth();
   const { resolvedTheme, setTheme } = useTheme();
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const isCompetitionsActive =
@@ -52,7 +53,7 @@ export function Navbar() {
 
   const label = user?.displayName?.trim() || user?.email || "";
   const initials = label ? getInitials(label.includes("@") ? label.split("@")[0] : label) : "";
-  const showAuthButtons = false;
+  const showAuthButtons = true;
 
   return (
     <div className="relative">
@@ -183,8 +184,20 @@ export function Navbar() {
             </div>
           ) : showAuthButtons ? (
             <div className="hidden md:flex items-center gap-2">
-              <Button variant="secondary" className="text-sm">Log in</Button>
-              <Button variant="primary" className="text-sm">Sign up</Button>
+              <Button
+                variant="secondary"
+                className="text-sm"
+                onClick={() => router.push("/login")}
+              >
+                Log in
+              </Button>
+              <Button
+                variant="primary"
+                className="text-sm"
+                onClick={() => router.push("/register")}
+              >
+                Sign up
+              </Button>
             </div>
           ) : null}
           </div>
@@ -276,14 +289,20 @@ export function Navbar() {
                 <Button
                   variant="secondary"
                   className="w-full justify-start text-sm"
-                  onClick={() => setMenuOpen(false)}
+                  onClick={() => {
+                    setMenuOpen(false);
+                    router.push("/login");
+                  }}
                 >
                   Log in
                 </Button>
                 <Button
                   variant="primary"
                   className="w-full justify-start text-sm"
-                  onClick={() => setMenuOpen(false)}
+                  onClick={() => {
+                    setMenuOpen(false);
+                    router.push("/register");
+                  }}
                 >
                   Sign up
                 </Button>
