@@ -1,24 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { AuthClientError, authRequest } from "@/lib/auth-client";
+import { AuthClientError, authRequest, authFetchJson } from "@/lib/auth-client";
 import { cn } from "@/lib/cn";
+import type { AuthUser } from "@/lib/auth-client";
 
 type VerifyEmailFormProps = {
   token: string | null;
 };
 
-type Status = "idle" | "submitting" | "success" | "invalid";
+type Status = "loading" | "idle" | "submitting" | "success" | "invalid" | "already-verified";
 
 const cardClass =
   "rounded-[24px] bg-rr-surface px-5 py-5 shadow-sm sm:px-7 sm:py-6";
 
 export function VerifyEmailForm({ token }: VerifyEmailFormProps) {
   const router = useRouter();
-  const [status, setStatus] = useState<Status>(token ? "idle" : "invalid");
+  const [status, setStatus] = useState<Status>("loading");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function checkStatus() {
+      try {
+        const user = await authFetchJson<AuthUser>("/me");
+        if (user.emailVerified) {
+          setStatus("already-verified");
+        } else if (!token) {
+          setStatus("invalid");
+        } else {
+          setStatus("idle");
+        }
+      } catch {
+        if (!token) {
+          setStatus("invalid");
+        } else {
+          setStatus("idle");
+        }
+      }
+    }
+    checkStatus();
+  }, [token]);
 
   async function handleVerify() {
     if (!token) {
@@ -54,6 +77,15 @@ export function VerifyEmailForm({ token }: VerifyEmailFormProps) {
     }
   }
 
+  if (status === "loading") {
+    return (
+      <div className={cn(cardClass, "space-y-4")}>
+        <div className="h-6 w-48 animate-pulse rounded bg-rr-elevated" />
+        <div className="h-4 w-full animate-pulse rounded bg-rr-elevated" />
+      </div>
+    );
+  }
+
   if (status === "success") {
     return (
       <div className={cn(cardClass, "space-y-4")}>
@@ -65,6 +97,27 @@ export function VerifyEmailForm({ token }: VerifyEmailFormProps) {
         </p>
         <Button type="button" disabled className="w-full">
           Redirecting...
+        </Button>
+      </div>
+    );
+  }
+
+  if (status === "already-verified") {
+    return (
+      <div className={cn(cardClass, "space-y-4")}>
+        <h2 className="text-xl font-medium tracking-[-0.03em] text-rr-primary">
+          Email already verified
+        </h2>
+        <p className="text-sm leading-6 text-rr-secondary">
+          Your email address has already been verified.
+        </p>
+        <Button
+          type="button"
+          variant="secondary"
+          className="w-full"
+          onClick={() => router.push("/")}
+        >
+          Go to home
         </Button>
       </div>
     );

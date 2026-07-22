@@ -57,8 +57,12 @@ export function VerifyEmailBanner() {
   return (
     <div
       className={cn(
-        "w-full border-b px-4 py-3",
-        "border-rr-border bg-rr-elevated",
+        "w-full border-b-2 px-4 py-3",
+        "border-amber-300 bg-amber-50",
+        "dark:border-amber-600/40 dark:bg-amber-900/20",
+        "relative overflow-hidden",
+        "before:absolute before:left-0 before:top-0 before:h-full before:w-1.5 before:bg-amber-500",
+        "shadow-sm",
       )}
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
@@ -68,29 +72,35 @@ export function VerifyEmailBanner() {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
-              className="h-5 w-5 text-rr-primary"
+              className="h-5 w-5 text-amber-700 dark:text-amber-300"
             >
               <path
                 fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.25-7.25a.75.75 0 000-1.5H8.5a.75.75 0 000 1.5h4.75z"
+                d="M2.5 4a1 1 0 011-1h13a1 1 0 011 1v12a1 1 0 01-1 1h-13a1 1 0 01-1-1V4zm2 2v8h11V6h-11z"
                 clipRule="evenodd"
               />
+              <path d="M3.293 6.293a1 1 0 011.414 0L10 11.586l5.293-5.293a1 1 0 111.414 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414z" />
             </svg>
           </div>
-          <p className="text-sm text-rr-primary">
-            Please verify your email address to access all features.
-          </p>
+          <div className="flex flex-col">
+            <p className="text-sm font-semibold text-amber-900 dark:text-amber-100">
+              Please verify your email to access all features.
+            </p>
+            <p className="text-xs text-amber-800/80 dark:text-amber-200/80">
+              {user.email}
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-3 pl-8 sm:pl-0">
           {resendSuccess && !resendError ? (
-            <span className="text-sm text-green-600 dark:text-green-400">
+            <span className="text-sm font-medium text-green-700 dark:text-green-400">
               Email sent!
             </span>
           ) : null}
 
           {resendError ? (
-            <span className="text-sm text-red-600 dark:text-red-400">
+            <span className="text-sm font-medium text-red-700 dark:text-red-400">
               {resendError}
             </span>
           ) : null}
@@ -101,7 +111,7 @@ export function VerifyEmailBanner() {
             disabled={isResending || cooldown > 0}
             className={cn(
               "text-sm font-medium underline-offset-2 hover:underline",
-              "text-rr-secondary hover:text-rr-primary",
+              "text-amber-800 hover:text-amber-950 dark:text-amber-200 dark:hover:text-amber-100",
               "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:no-underline",
             )}
           >
@@ -114,7 +124,7 @@ export function VerifyEmailBanner() {
 
           <Link
             href="/settings"
-            className="text-sm font-medium text-rr-secondary underline-offset-2 hover:text-rr-primary hover:underline"
+            className="text-sm font-medium text-amber-800 underline-offset-2 hover:text-amber-950 hover:underline dark:text-amber-200 dark:hover:text-amber-100"
           >
             Settings
           </Link>
