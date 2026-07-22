@@ -143,7 +143,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     async function bootstrap() {
       try {
-        const user = await authRequestJson<AuthUser>("/me");
+        const user = await authFetchJson<AuthUser>("/me");
         if (!cancelled) {
           dispatch({ type: "authenticated", user });
         }

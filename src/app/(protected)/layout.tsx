@@ -8,8 +8,8 @@ export default function ProtectedLayout({
   children: ReactNode;
 }) {
   return (
-    <RequireAuth>
-      <AppShell>{children}</AppShell>
-    </RequireAuth>
+    <AppShell>
+      <RequireAuth>{children}</RequireAuth>
+    </AppShell>
   );
 }
