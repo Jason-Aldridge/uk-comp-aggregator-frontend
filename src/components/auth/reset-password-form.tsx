@@ -76,7 +76,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     try {
       await authRequest("/reset-password", {
         method: "POST",
-        body: { token, password },
+        body: { token, newPassword: password },
       });
       setIsSuccess(true);
     } catch (error) {
