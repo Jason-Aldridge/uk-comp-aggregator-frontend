@@ -176,7 +176,7 @@ export function Navbar() {
             </Button>
 
             {status === "authenticated" && user ? (
-              <div className="relative hidden md:block">
+              <div className="relative">
                 <button
                   ref={userMenuButtonRef}
                   type="button"
@@ -184,13 +184,18 @@ export function Navbar() {
                   aria-expanded={userMenuOpen}
                   onClick={() => setUserMenuOpen((v) => !v)}
                   onKeyDown={handleUserMenuTriggerKeyDown}
-                  className="flex items-center gap-2 rounded-md px-1.5 py-1 text-rr-secondary transition hover:bg-rr-elevated hover:text-rr-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rr-green/20"
+                  className="flex items-center gap-2 rounded-md px-2 py-1 text-rr-secondary transition hover:bg-rr-elevated hover:text-rr-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rr-green/20"
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-rr-green bg-rr-green-bg text-xs font-medium text-rr-green">
                     {initials}
                   </div>
-                  <span className="hidden whitespace-nowrap text-sm sm:inline">{user.displayName || user.email}</span>
-                  <IconChevronDown size={16} className={cn("transition", userMenuOpen && "rotate-180")} />
+                  <span className="max-w-[120px] truncate whitespace-nowrap text-sm text-rr-secondary sm:max-w-[180px]">
+                    {user.displayName || user.email}
+                  </span>
+                  <IconChevronDown
+                    size={16}
+                    className={cn("transition", userMenuOpen && "rotate-180")}
+                  />
                 </button>
                 {userMenuOpen ? (
                   <div
