@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { AuthProvider } from "@/contexts/auth-context";
 import { ConsentProvider } from "@/contexts/consent-context";
 import { AnonIdSync } from "@/components/layout/anon-id-sync";
+import { VerifyEmailBanner } from "@/components/auth/verify-email-banner";
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
@@ -16,6 +17,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <GtmLoader />
         <AuthProvider>
           <Navbar />
+          <VerifyEmailBanner />
           {children}
         </AuthProvider>
       </ConsentProvider>
