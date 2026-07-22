@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
-import { AuthClientError, authRequest, authFetchJson } from "@/lib/auth-client";
+import {
+  AuthClientError,
+  authRequestJson,
+  authFetchJson,
+} from "@/lib/auth-client";
 import type { AuthUser } from "@/lib/auth-client";
 import { cn } from "@/lib/cn";
 
@@ -29,11 +32,21 @@ export function VerifyEmailBanner() {
 
     try {
       const user = await authFetchJson<AuthUser>("/me");
-      await authRequest("/resend-verification", {
+      const result = await authRequestJson<{ sent: boolean; reason?: string }>("/resend-verification", {
         method: "POST",
         body: { email: user.email },
       });
-      setResendSuccess(true);
+
+      if (result.sent) {
+        setResendSuccess(true);
+      } else if (result.reason === "cooldown") {
+        setResendError("Please wait a moment before requesting another email.");
+      } else if (result.reason === "already_verified") {
+        setResendError("Your email is already verified.");
+      } else {
+        setResendError("We could not send the email. Please try again.");
+      }
+
       setCooldown(RESEND_COOLDOWN_SECONDS);
 
       const interval = window.setInterval(() => {
