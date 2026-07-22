@@ -171,10 +171,6 @@ export function Navbar() {
               <IconMoon size={18} className="block dark:hidden" />
             </Button>
 
-            <Button variant="icon" className="shrink-0 md:hidden" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen((v) => !v)}>
-              {menuOpen ? <IconX size={18} /> : <IconMenu2 size={18} />}
-            </Button>
-
             {status === "authenticated" && user ? (
               <div className="relative">
                 <button
@@ -184,17 +180,17 @@ export function Navbar() {
                   aria-expanded={userMenuOpen}
                   onClick={() => setUserMenuOpen((v) => !v)}
                   onKeyDown={handleUserMenuTriggerKeyDown}
-                  className="flex items-center gap-2 rounded-md px-2 py-1 text-rr-secondary transition hover:bg-rr-elevated hover:text-rr-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rr-green/20"
+                  className="flex items-center gap-2 rounded-md px-1 py-1 text-rr-secondary transition hover:bg-rr-elevated hover:text-rr-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rr-green/20"
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-rr-green bg-rr-green-bg text-xs font-medium text-rr-green">
                     {initials}
                   </div>
-                  <span className="max-w-[120px] truncate whitespace-nowrap text-sm text-rr-secondary sm:max-w-[180px]">
+                  <span className="hidden whitespace-nowrap text-sm text-rr-secondary md:inline">
                     {user.displayName || user.email}
                   </span>
                   <IconChevronDown
                     size={16}
-                    className={cn("transition", userMenuOpen && "rotate-180")}
+                    className={cn("hidden transition md:block", userMenuOpen && "rotate-180")}
                   />
                 </button>
                 {userMenuOpen ? (
@@ -202,14 +198,14 @@ export function Navbar() {
                     ref={userMenuRef}
                     role="menu"
                     onKeyDown={handleUserMenuPanelKeyDown}
-                    className="absolute right-0 top-full z-50 mt-2 w-52 rounded-xl border border-rr-border bg-rr-surface p-1.5 shadow-lg"
+                    className="absolute right-0 top-full z-50 mt-2 w-40 max-w-[calc(100vw-1.5rem)] rounded-xl border border-rr-border bg-rr-surface p-1.5 shadow-lg md:w-52"
                   >
                     <Link
                       href="/profile"
                       role="menuitem"
                       ref={(el) => { accountLinkRef.current = el; }}
                       onClick={() => setUserMenuOpen(false)}
-                      className="flex w-full items-center rounded-lg px-3 py-2 text-sm text-rr-secondary no-underline transition hover:bg-rr-elevated hover:text-rr-primary"
+                      className="flex w-full min-w-0 items-center rounded-lg px-3 py-2 text-sm text-rr-secondary no-underline transition hover:bg-rr-elevated hover:text-rr-primary"
                     >
                       Account
                     </Link>
@@ -218,7 +214,7 @@ export function Navbar() {
                       role="menuitem"
                       ref={(el) => { signOutButtonRef.current = el; }}
                       onClick={() => { void handleSignOut(false); }}
-                      className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-rr-secondary transition hover:bg-rr-elevated hover:text-rr-primary"
+                      className="flex w-full min-w-0 items-center rounded-lg px-3 py-2 text-left text-sm text-rr-secondary transition hover:bg-rr-elevated hover:text-rr-primary"
                     >
                       Sign out
                     </button>
@@ -231,6 +227,10 @@ export function Navbar() {
                 <Button variant="primary" className="text-sm" onClick={() => router.push("/register")}>Sign up</Button>
               </div>
             ) : null}
+
+            <Button variant="icon" className="shrink-0 md:hidden" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen((v) => !v)}>
+              {menuOpen ? <IconX size={18} /> : <IconMenu2 size={18} />}
+            </Button>
           </div>
         </nav>
 
