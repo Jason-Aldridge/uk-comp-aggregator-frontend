@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { authFetchJson, type AuthUser } from "@/lib/auth-client";
 import { ChangePasswordForm } from "@/components/account/change-password-form";
@@ -75,9 +76,6 @@ export function SettingsSection() {
     <div className="space-y-6">
       <section className={cardClass}>
         <h3 className={titleClass}>Sign-in details</h3>
-        <p className={subtitleClass}>
-          Email is read-only. Connecting and disconnecting sign-in methods is not implemented.
-        </p>
 
         <div className="mt-4 space-y-4">
           <div className="space-y-1.5">
@@ -131,6 +129,14 @@ export function SettingsSection() {
       <SessionsList />
 
       <DeleteAccount />
+
+      <p className="text-sm leading-6 text-rr-secondary">
+        For what is stored about your account and how long it is kept, see our{" "}
+        <Link href="/privacy" className="text-rr-green underline underline-offset-4">
+          privacy policy
+        </Link>
+        .
+      </p>
     </div>
   );
 }

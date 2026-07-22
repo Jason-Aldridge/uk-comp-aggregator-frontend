@@ -246,6 +246,13 @@ export function RegisterForm() {
         <Button type="submit" disabled={isSubmitting} className="w-full">
           {isSubmitting ? "Creating..." : "Create account"}
         </Button>
+        <p className="text-xs leading-5 text-rr-secondary">
+          Creating an account means your details are handled as described in our{" "}
+          <Link href="/privacy" className="text-rr-green underline underline-offset-4">
+            privacy policy
+          </Link>
+          .
+        </p>
         <div className="text-sm text-rr-secondary">
           <Link
             href="/login"

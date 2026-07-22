@@ -96,7 +96,7 @@ export function DeleteAccount() {
           <Button
             onClick={handleDelete}
             disabled={!canDelete || isDeleting}
-            className="border border-transparent bg-[var(--vr-danger-text)] text-white hover:opacity-90"
+            className="border border-[var(--vr-danger-border)] bg-rr-surface text-[var(--vr-danger-text)] hover:bg-[var(--vr-danger-bg)]"
           >
             {isDeleting ? "Deleting..." : "Delete account"}
           </Button>
