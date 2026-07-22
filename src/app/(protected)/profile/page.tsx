@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AccountGreeting } from "@/components/account/account-greeting";
 import { AccountNav, type AccountSection } from "@/components/account/account-nav";
+import { NewsletterBanner } from "@/components/account/newsletter-banner";
 import { SettingsSection } from "@/components/account/settings-section";
 
 function WishlistPlaceholder() {
@@ -55,6 +56,10 @@ export default function ProfilePage() {
     <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <div className="mb-6">
         <AccountGreeting />
+      </div>
+
+      <div className="mb-6">
+        <NewsletterBanner />
       </div>
 
       <div className="grid gap-6 md:grid-cols-[14rem_1fr]">

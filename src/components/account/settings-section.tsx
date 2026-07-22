@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { authFetchJson, type AuthUser } from "@/lib/auth-client";
 import { ChangePasswordForm } from "@/components/account/change-password-form";
 import { DeleteAccount } from "@/components/account/delete-account";
+import { NewsletterSettings } from "@/components/account/newsletter-settings";
 import { SessionsList } from "@/components/account/sessions-list";
 
 type MeResponse = AuthUser & {
@@ -124,6 +125,8 @@ export function SettingsSection() {
       </section>
 
       <ChangePasswordForm isAvailable={methods.passwordSet} />
+
+      <NewsletterSettings />
 
       <SessionsList />
 
