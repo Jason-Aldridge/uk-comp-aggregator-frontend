@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import {
   AuthClientError,
@@ -13,11 +14,24 @@ import { cn } from "@/lib/cn";
 const RESEND_COOLDOWN_SECONDS = 60;
 
 export function VerifyEmailBanner() {
+  const pathname = usePathname();
   const { user, status } = useAuth();
   const [isResending, setIsResending] = useState(false);
   const [resendError, setResendError] = useState("");
   const [resendSuccess, setResendSuccess] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+
+  const hideOnAuthRoutes =
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password" ||
+    pathname === "/verify-email" ||
+    pathname === "/oauth/callback";
+
+  if (hideOnAuthRoutes) {
+    return null;
+  }
 
   if (status === "loading" || !user || user.emailVerified) {
     return null;
