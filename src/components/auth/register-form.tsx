@@ -4,6 +4,7 @@ import type { ComponentProps } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { SocialButtons } from "@/components/auth/social-buttons";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth-context";
 import { AuthClientError } from "@/lib/auth-client";
@@ -253,6 +254,7 @@ export function RegisterForm() {
             Already have an account? Log in
           </Link>
         </div>
+        <SocialButtons />
       </div>
     </form>
   );

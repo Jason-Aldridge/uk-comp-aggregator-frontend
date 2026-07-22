@@ -4,6 +4,7 @@ import type { ComponentProps } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { SocialButtons } from "@/components/auth/social-buttons";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth-context";
 import { AuthClientError } from "@/lib/auth-client";
@@ -62,10 +63,25 @@ function getSafeRedirectTarget(value: string | null) {
   return "/";
 }
 
+function getOauthErrorMessage(error: string | null): string {
+  if (!error) return "";
+
+  if (error === "account_exists") {
+    return "An account with this email already exists. Sign in with your password, then you can link your social account later.";
+  }
+
+  if (error === "oauth_failed") {
+    return "Sign-in failed. Please try again.";
+  }
+
+  return "Sign-in failed. Please try again.";
+}
+
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
+  const oauthError = getOauthErrorMessage(searchParams.get("error"));
   const [values, setValues] = useState<FormValues>(initialValues);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitError, setSubmitError] = useState("");
@@ -163,6 +179,15 @@ export function LoginForm() {
         ) : null}
       </div>
 
+      {oauthError ? (
+        <div
+          role="alert"
+          className="rounded-xl border border-red-300 bg-red-50 px-4 py-2.5 text-sm text-red-700 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-300"
+        >
+          {getOauthErrorMessage(oauthError)}
+        </div>
+      ) : null}
+
       {submitError ? (
         <div
           role="alert"
@@ -190,6 +215,7 @@ export function LoginForm() {
             Forgot your password?
           </Link>
         </div>
+        <SocialButtons />
       </div>
     </form>
   );
