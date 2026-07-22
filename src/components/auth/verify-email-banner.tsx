@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
-import { AuthClientError, authRequest } from "@/lib/auth-client";
+import { AuthClientError, authRequest, authFetchJson } from "@/lib/auth-client";
+import type { AuthUser } from "@/lib/auth-client";
 import { cn } from "@/lib/cn";
 
 const RESEND_COOLDOWN_SECONDS = 60;
@@ -27,9 +28,10 @@ export function VerifyEmailBanner() {
     setResendSuccess(false);
 
     try {
+      const user = await authFetchJson<AuthUser>("/me");
       await authRequest("/resend-verification", {
         method: "POST",
-        body: {},
+        body: { email: user.email },
       });
       setResendSuccess(true);
       setCooldown(RESEND_COOLDOWN_SECONDS);
@@ -122,12 +124,6 @@ export function VerifyEmailBanner() {
                 : "Resend email"}
           </button>
 
-          <Link
-            href="/settings"
-            className="text-sm font-medium text-amber-800 underline-offset-2 hover:text-amber-950 hover:underline dark:text-amber-200 dark:hover:text-amber-100"
-          >
-            Settings
-          </Link>
         </div>
       </div>
     </div>
