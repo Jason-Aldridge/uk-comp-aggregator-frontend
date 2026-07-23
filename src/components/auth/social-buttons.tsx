@@ -11,6 +11,8 @@ function getProviderUrl(provider: Provider) {
 }
 
 export function SocialButtons() {
+  const showFacebook = false;
+
   function handleClick(provider: Provider) {
     if (!apiUrl) {
       return;
@@ -29,7 +31,7 @@ export function SocialButtons() {
         <div className="h-px flex-1 bg-rr-border" />
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className={showFacebook ? "grid gap-2 sm:grid-cols-2" : "grid gap-2"}>
         <Button
           type="button"
           variant="secondary"
@@ -50,25 +52,27 @@ export function SocialButtons() {
           Continue with Google
         </Button>
 
-        <Button
-          type="button"
-          variant="secondary"
-          className="h-11 w-full justify-center"
-          onClick={() => handleClick("facebook")}
-          disabled={!apiUrl}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            className="h-5 w-5"
-            aria-hidden="true"
+        {showFacebook ? (
+          <Button
+            type="button"
+            variant="secondary"
+            className="h-11 w-full justify-center"
+            onClick={() => handleClick("facebook")}
+            disabled={!apiUrl}
           >
-            <path
-              fill="currentColor"
-              d="M13.5 22v-8h2.6l.4-3h-3V9.1c0-.9.3-1.6 1.7-1.6H16.6V4.8c-.3 0-1.4-.1-2.7-.1-2.7 0-4.5 1.6-4.5 4.6V11H7v3h2.4v8h4.1Z"
-            />
-          </svg>
-          Continue with Facebook
-        </Button>
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              aria-hidden="true"
+            >
+              <path
+                fill="currentColor"
+                d="M13.5 22v-8h2.6l.4-3h-3V9.1c0-.9.3-1.6 1.7-1.6H16.6V4.8c-.3 0-1.4-.1-2.7-.1-2.7 0-4.5 1.6-4.5 4.6V11H7v3h2.4v8h4.1Z"
+              />
+            </svg>
+            Continue with Facebook
+          </Button>
+        ) : null}
       </div>
     </div>
   );
