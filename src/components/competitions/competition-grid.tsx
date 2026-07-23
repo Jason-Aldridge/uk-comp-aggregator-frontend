@@ -198,9 +198,7 @@ export function CompetitionResultsHeading({
               {baseTitle}
             </span>
             {filterLabels.length > 0 ? ` - ${filterLabels.join(" - ")}` : ""}
-            {sortSuffix ? (
-              <span className="hidden sm:inline"> {sortSuffix}</span>
-            ) : null}
+            {sortSuffix ? <span> {sortSuffix}</span> : null}
           </h1>
         </div>
 

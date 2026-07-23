@@ -10,11 +10,8 @@ export async function GET(request: NextRequest) {
   const accessToken = await readAccessToken();
 
   if (!accessToken) {
-    console.log("[DEBUG /api/auth/me] No access token in cookie");
     return createUnauthorizedResponse();
   }
-
-  console.log("[DEBUG /api/auth/me] Token present, forwarding to backend");
 
   const response = await backendAuthFetch("/auth/me", {
     method: "GET",
@@ -22,10 +19,6 @@ export async function GET(request: NextRequest) {
     attachAccessToken: true,
     accessToken,
   });
-
-  console.log(
-    `[DEBUG /api/auth/me] Backend response status: ${response.status}`
-  );
 
   return createProxyResponse(response);
 }

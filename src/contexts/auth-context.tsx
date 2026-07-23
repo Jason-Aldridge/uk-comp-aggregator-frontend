@@ -47,19 +47,12 @@ type Action =
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 function reducer(state: AuthState, action: Action): AuthState {
-  console.log(
-    `[AuthContext] Action: ${action.type}, current status: ${state.status}`
-  );
   switch (action.type) {
     case "loading":
       return { ...state, status: "loading", error: null };
     case "authenticated":
-      console.log("[AuthContext] Setting authenticated, user:",
-        action.user.email);
       return { user: action.user, status: "authenticated", error: null };
     case "unauthenticated":
-      console.log("[AuthContext] Setting unauthenticated, error:",
-        action.error);
       return { user: null, status: "unauthenticated", error: action.error };
     case "setError":
       return { ...state, error: action.error };

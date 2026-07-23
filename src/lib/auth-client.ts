@@ -119,11 +119,8 @@ async function readJson<T>(response: Response): Promise<T> {
 
 export function ensureRefreshed() {
   if (refreshPromise) {
-    console.log("[ensureRefreshed] Reusing existing refresh promise");
     return refreshPromise;
   }
-
-  console.log("[ensureRefreshed] Starting new refresh request");
 
   refreshPromise = (async () => {
     try {
@@ -132,13 +129,8 @@ export function ensureRefreshed() {
         credentials: "same-origin",
       });
 
-      console.log(
-        `[ensureRefreshed] Refresh response status: ${response.status}`
-      );
-
       return response.ok;
-    } catch (err) {
-      console.error("[ensureRefreshed] Refresh request failed:", err);
+    } catch {
       return false;
     } finally {
       refreshPromise = null;
