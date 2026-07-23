@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useNewsletter } from "@/contexts/newsletter-context";
 import { AuthClientError } from "@/lib/auth-client";
 
 const cardClass = "rounded-2xl border border-rr-border bg-rr-surface p-6";
@@ -40,6 +41,7 @@ async function newsletterRequest<T>(path: string, init?: RequestInit): Promise<T
 }
 
 export function NewsletterSettings() {
+  const { refetch } = useNewsletter();
   const [state, setState] = useState<NewsletterState | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [actionError, setActionError] = useState("");
@@ -87,6 +89,7 @@ export function NewsletterSettings() {
       });
       const response = await newsletterRequest<{ state: NewsletterState }>("/me");
       setState(response.state);
+      refetch();
     } catch (error) {
       setActionError(getErrorMessage(error, "Failed to subscribe."));
     } finally {
@@ -103,6 +106,7 @@ export function NewsletterSettings() {
       });
       const response = await newsletterRequest<{ state: NewsletterState }>("/me");
       setState(response.state);
+      refetch();
     } catch (error) {
       setActionError(getErrorMessage(error, "Failed to unsubscribe."));
     } finally {

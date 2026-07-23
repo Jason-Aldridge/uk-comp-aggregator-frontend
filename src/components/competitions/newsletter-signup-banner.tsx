@@ -3,6 +3,7 @@
 import type { ComponentProps } from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useNewsletter } from "@/contexts/newsletter-context";
 import { subscribeToNewsletter } from "@/lib/api";
 import { cn } from "@/lib/cn";
 
@@ -21,9 +22,18 @@ function isValidEmail(value: string) {
 }
 
 export function NewsletterSignupBanner() {
+  const { state, isLoading, markSubscribedLocally } = useNewsletter();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
+
+  if (isLoading || state === null) {
+    return null;
+  }
+
+  if (state === "subscribed" || state === "pending") {
+    return null;
+  }
 
   function handleChange(value: string) {
     setEmail(value);
@@ -54,6 +64,7 @@ export function NewsletterSignupBanner() {
       await subscribeToNewsletter(trimmedEmail);
       setEmail("");
       setStatus("success");
+      markSubscribedLocally();
     } catch (submitError) {
       setStatus("idle");
       setError(
