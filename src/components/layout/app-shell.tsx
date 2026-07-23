@@ -9,6 +9,7 @@ import { ConsentProvider } from "@/contexts/consent-context";
 import { AnonIdSync } from "@/components/layout/anon-id-sync";
 import { VerifyEmailBanner } from "@/components/auth/verify-email-banner";
 import { NewsletterProvider } from "@/contexts/newsletter-context";
+import { WishlistProvider } from "@/contexts/wishlist-context";
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
@@ -17,11 +18,13 @@ export function AppShell({ children }: { children: ReactNode }) {
         <AnonIdSync />
         <GtmLoader />
         <AuthProvider>
-          <NewsletterProvider>
-            <Navbar />
-            <VerifyEmailBanner />
-            {children}
-          </NewsletterProvider>
+          <WishlistProvider>
+            <NewsletterProvider>
+              <Navbar />
+              <VerifyEmailBanner />
+              {children}
+            </NewsletterProvider>
+          </WishlistProvider>
         </AuthProvider>
       </ConsentProvider>
     </ThemeProvider>

@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { CompetitionImage } from "@/components/ui/CompetitionImage";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { ViewAllLink } from "@/components/ui/view-all-link";
+import { SaveHeart } from "@/components/competitions/save-heart";
 import type { Competition } from "@/types/competition";
 import {
   getEndedLabel,
@@ -164,12 +165,19 @@ export function CompetitionCard({ competition, featured, variant = "default" }: 
   }
 
   return (
-    <ViewAllLink
-      href={`/competitions/${id}`}
-      className={cardClassName}
-      scroll={isCompetitionDetailPage ? false : undefined}
-    >
-      {cardContent}
-    </ViewAllLink>
+    <div className="relative">
+      <SaveHeart
+        competitionId={id}
+        className="absolute right-2 top-1/2 z-10 h-8 w-8 -translate-y-1/2"
+        iconSize={18}
+      />
+      <ViewAllLink
+        href={`/competitions/${id}`}
+        className={cardClassName}
+        scroll={isCompetitionDetailPage ? false : undefined}
+      >
+        {cardContent}
+      </ViewAllLink>
+    </div>
   );
 }
