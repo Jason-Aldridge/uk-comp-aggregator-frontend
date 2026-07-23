@@ -27,12 +27,12 @@ export function AccountGreeting() {
     : "?";
 
   return (
-    <div className="flex items-center gap-4">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-rr-green bg-rr-green-bg text-base font-medium text-rr-green">
+    <div className="flex items-start gap-4 sm:items-center">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-rr-green bg-rr-green-bg text-base font-medium text-rr-green">
         {initials}
       </div>
-      <div className="min-w-0">
-        <h2 className="text-lg font-medium text-rr-primary">
+      <div className="min-w-0 flex-1">
+        <h2 className="break-words text-lg font-medium text-rr-primary">
           Hi, {user?.displayName || user?.email || "Guest"}
         </h2>
         <p className="text-sm text-rr-secondary">

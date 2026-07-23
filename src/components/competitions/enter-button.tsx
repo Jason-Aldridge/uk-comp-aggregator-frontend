@@ -3,6 +3,7 @@
 import { IconExternalLink } from "@tabler/icons-react";
 import { trackCompetitionClick } from "@/lib/api";
 import { pushEvent } from "@/lib/analytics";
+import { getAnonIdForTracking } from "@/lib/anon-id";
 
 type Props = {
   competitionId: string;
@@ -12,6 +13,7 @@ type Props = {
 
 export function EnterButton({ competitionId, sourceUrl, operatorName }: Props) {
   const handleClick = () => {
+    getAnonIdForTracking();
     pushEvent("outbound_click", {
       operator: operatorName,
       source: "detail",

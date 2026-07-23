@@ -25,7 +25,7 @@ const sections: { id: AccountSection; label: string; icon: typeof IconHeart }[] 
 export function AccountNav({ active, onChange }: AccountNavProps) {
   return (
     <nav className="rounded-2xl border border-rr-border bg-rr-surface md:w-52">
-      <div className="flex overflow-x-auto md:flex-col">
+      <div className="flex flex-wrap gap-2 p-2 md:flex-col md:gap-0 md:p-0">
         {sections.map((section) => {
           const Icon = section.icon;
           const isActive = active === section.id;
@@ -35,14 +35,14 @@ export function AccountNav({ active, onChange }: AccountNavProps) {
               type="button"
               onClick={() => onChange(section.id)}
               className={cn(
-                "flex min-w-0 shrink-0 items-center gap-2 border-l-2 px-4 py-3 text-left text-sm transition md:w-full md:px-3",
+                "flex min-w-0 basis-[calc(50%-0.25rem)] items-center gap-2 rounded-xl border px-4 py-3 text-left text-sm transition md:w-full md:basis-auto md:rounded-none md:border-x-0 md:border-y-0 md:border-l-2 md:px-3",
                 isActive
-                  ? "border-l-rr-green bg-rr-elevated font-medium text-rr-primary"
-                  : "border-l-transparent text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary"
+                  ? "border-rr-green bg-rr-elevated font-medium text-rr-primary md:border-l-rr-green"
+                  : "border-rr-border text-rr-secondary hover:bg-rr-elevated hover:text-rr-primary md:border-l-transparent"
               )}
             >
               <Icon size={18} className="shrink-0" />
-              <span className="truncate">{section.label}</span>
+              <span className="min-w-0 break-words md:truncate">{section.label}</span>
             </button>
           );
         })}

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { setAuthCookies } from "@/lib/auth-cookies";
+import { readAnonId, setAuthCookies } from "@/lib/auth-cookies";
 import {
   backendAuthFetch,
   createProxyResponse,
@@ -13,9 +13,11 @@ type OauthExchangeResponse = {
 
 export async function POST(request: NextRequest) {
   const body = (await request.json()) as { code?: string };
+  const anonId = await readAnonId();
+
   const response = await backendAuthFetch("/auth/oauth/exchange", {
     method: "POST",
-    body,
+    body: anonId ? { code: body.code, anonId } : { code: body.code },
     requestHeaders: request.headers,
   });
 

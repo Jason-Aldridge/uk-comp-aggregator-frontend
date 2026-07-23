@@ -1,4 +1,3 @@
-import { getAnonIdForTracking } from "@/lib/anon-id";
 import type { Competition } from "@/types/competition";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
@@ -462,43 +461,41 @@ export async function confirmNewsletterSubscription(token: string) {
   });
 }
 
-export async function unsubscribeFromNewsletter(token: string) {
-  return apiFetch<unknown>("/newsletter/unsubscribe", {
-    method: "POST",
-    body: { token },
-  });
-}
-
 export type OutboundClickSource = "detail" | "operator_profile";
 
 export async function trackCompetitionClick(
   id: string,
   source?: OutboundClickSource,
 ) {
-  const anonId = getAnonIdForTracking();
-
-  return fetch(`${BASE_URL}/competitions/${id}/click`, {
+  return fetch(`/api/competitions/${encodeURIComponent(id)}/click`, {
     method: "POST",
     keepalive: true,
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ source, ...(anonId ? { anon_id: anonId } : {}) }),
-  });
+    body: JSON.stringify({ source }),
+    credentials: "same-origin",
+  }).catch(() => {});
 }
 
 export async function trackOperatorClick(
   operatorId: string,
   source?: OutboundClickSource,
 ) {
-  const anonId = getAnonIdForTracking();
-
-  return fetch(`${BASE_URL}/operators/${operatorId}/click`, {
+  return fetch(`/api/operators/${encodeURIComponent(operatorId)}/click`, {
     method: "POST",
     keepalive: true,
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ source, ...(anonId ? { anon_id: anonId } : {}) }),
+    body: JSON.stringify({ source }),
+    credentials: "same-origin",
+  }).catch(() => {});
+}
+
+export async function unsubscribeFromNewsletter(token: string) {
+  return apiFetch<unknown>("/newsletter/unsubscribe", {
+    method: "POST",
+    body: { token },
   });
 }

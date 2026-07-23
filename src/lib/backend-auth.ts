@@ -10,6 +10,7 @@ type BackendAuthFetchOptions = {
   attachAccessToken?: boolean;
   accessToken?: string | null;
   authorizationToken?: string | null;
+  anonId?: string | null;
 };
 
 function getBackendUrl() {
@@ -59,6 +60,7 @@ export async function backendAuthFetch(
     attachAccessToken = false,
     accessToken,
     authorizationToken,
+    anonId,
   }: BackendAuthFetchOptions = {},
 ) {
   const headers = new Headers();
@@ -73,6 +75,10 @@ export async function backendAuthFetch(
 
   if (clientIp) {
     headers.set("x-client-ip", clientIp);
+  }
+
+  if (anonId) {
+    headers.set("x-anon-id", anonId);
   }
 
   const bearerToken =

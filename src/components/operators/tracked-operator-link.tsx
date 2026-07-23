@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { trackOperatorClick } from "@/lib/api";
 import { pushEvent } from "@/lib/analytics";
+import { getAnonIdForTracking } from "@/lib/anon-id";
 
 type Props = {
   operatorId: string;
@@ -20,6 +21,7 @@ export function TrackedOperatorLink({
   children,
 }: Props) {
   const handleClick = () => {
+    getAnonIdForTracking();
     pushEvent("outbound_click", {
       operator,
       source: "operator_profile",

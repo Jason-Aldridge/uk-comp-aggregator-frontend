@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { setAuthCookies } from "@/lib/auth-cookies";
+import { readAnonId, setAuthCookies } from "@/lib/auth-cookies";
 import {
   backendAuthFetch,
   createProxyResponse,
@@ -14,10 +14,13 @@ type LoginResponse = {
 
 export async function POST(request: NextRequest) {
   const body = (await request.json()) as Record<string, unknown>;
+  const anonId = await readAnonId();
+
   const response = await backendAuthFetch("/auth/login", {
     method: "POST",
     body,
     requestHeaders: request.headers,
+    anonId,
   });
 
   if (!response.ok) {

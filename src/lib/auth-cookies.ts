@@ -7,6 +7,7 @@ type AuthTokenPair = {
 
 export const ACCESS_COOKIE_NAME = "rr_access";
 export const REFRESH_COOKIE_NAME = "rr_refresh";
+export const ANON_COOKIE_NAME = "rr_anon";
 
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 const ACCESS_COOKIE_MAX_AGE = 60 * 15;
@@ -58,4 +59,15 @@ export async function clearAuthCookies() {
 export async function readAccessToken() {
   const cookieStore = await cookies();
   return cookieStore.get(ACCESS_COOKIE_NAME)?.value ?? null;
+}
+
+export async function readAnonId() {
+  const cookieStore = await cookies();
+  const value = cookieStore.get(ANON_COOKIE_NAME)?.value?.trim();
+
+  if (!value) {
+    return null;
+  }
+
+  return value.slice(0, 128);
 }

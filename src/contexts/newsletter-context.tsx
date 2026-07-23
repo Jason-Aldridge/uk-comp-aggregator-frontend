@@ -82,17 +82,7 @@ export function NewsletterProvider({
   const [serverState, setServerState] = useState<NewsletterState | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [localSubscribed, setLocalSubscribed] = useState<boolean | null>(() => {
-    if (typeof window === "undefined") {
-      return null;
-    }
-
-    try {
-      return localStorage.getItem(LOCAL_STORAGE_KEY) === "1";
-    } catch {
-      return false;
-    }
-  });
+  const [localSubscribed, setLocalSubscribed] = useState<boolean | null>(null);
 
   const fetchState = useCallback(async () => {
     if (!isAuthenticated) {
@@ -117,6 +107,20 @@ export function NewsletterProvider({
       setIsLoading(false);
     }
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      try {
+        setLocalSubscribed(localStorage.getItem(LOCAL_STORAGE_KEY) === "1");
+      } catch {
+        setLocalSubscribed(false);
+      }
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
