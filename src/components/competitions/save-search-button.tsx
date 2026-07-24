@@ -121,7 +121,7 @@ export function SaveSearchButton() {
   );
   const canSave = useMemo(() => hasMeaningfulFilters(payload), [payload]);
   const isSignedIn = status === "authenticated";
-  const isDisabled = isSignedIn && !canSave;
+  const isDisabled = !canSave;
 
   const closeSignInModal = useCallback(
     (options?: { restoreFocus?: boolean }) => {
@@ -218,12 +218,12 @@ export function SaveSearchButton() {
                 : "",
             )}
             onClick={(event) => {
-              if (!isSignedIn) {
-                openSignInModal(event.currentTarget);
+              if (!canSave || isSubmitting) {
                 return;
               }
 
-              if (!canSave || isSubmitting) {
+              if (!isSignedIn) {
+                openSignInModal(event.currentTarget);
                 return;
               }
 
