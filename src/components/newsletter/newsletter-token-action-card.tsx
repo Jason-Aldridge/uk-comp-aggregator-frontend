@@ -6,6 +6,28 @@ import { Button } from "@/components/ui/button";
 import { confirmNewsletterSubscription, unsubscribeFromNewsletter } from "@/lib/api";
 import { cn } from "@/lib/cn";
 
+type TokenActionCardCopy = {
+  badge: string;
+  idle: string;
+  pending: string;
+  title: string;
+  description: string;
+  successTitle: string;
+  successMessage: string;
+  missingTitle: string;
+  missingMessage: string;
+  errorMessage: string;
+  buttonVariant: "primary" | "secondary";
+};
+
+type TokenActionCardProps = {
+  token?: string;
+  copy: TokenActionCardCopy;
+  onAction: (token: string) => Promise<unknown>;
+  backHref?: string;
+  backLabel?: string;
+};
+
 type NewsletterAction = "confirm" | "unsubscribe";
 
 type NewsletterTokenActionCardProps = {
@@ -18,6 +40,7 @@ const errorBoxClass =
 
 const buttonCopy = {
   confirm: {
+    badge: "Newsletter",
     idle: "Confirm subscription",
     pending: "Confirming...",
     title: "Confirm your newsletter signup",
@@ -32,6 +55,7 @@ const buttonCopy = {
     buttonVariant: "primary" as const,
   },
   unsubscribe: {
+    badge: "Newsletter",
     idle: "Unsubscribe",
     pending: "Unsubscribing...",
     title: "Unsubscribe from the newsletter",
@@ -48,11 +72,13 @@ const buttonCopy = {
   },
 };
 
-export function NewsletterTokenActionCard({
-  action,
+export function TokenActionCard({
   token,
-}: NewsletterTokenActionCardProps) {
-  const copy = buttonCopy[action];
+  copy,
+  onAction,
+  backHref = "/competitions",
+  backLabel = "Back to competitions",
+}: TokenActionCardProps) {
   const normalizedToken = token?.trim() ?? "";
   const hasToken = normalizedToken.length > 0;
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
@@ -65,12 +91,7 @@ export function NewsletterTokenActionCard({
     setStatus("pending");
 
     try {
-      if (action === "confirm") {
-        await confirmNewsletterSubscription(normalizedToken);
-      } else {
-        await unsubscribeFromNewsletter(normalizedToken);
-      }
-
+      await onAction(normalizedToken);
       setStatus("success");
     } catch {
       setStatus("error");
@@ -85,7 +106,7 @@ export function NewsletterTokenActionCard({
             <div className="rounded-[28px] bg-rr-elevated/70 p-1.5 shadow-sm sm:p-2">
               <div className="rounded-[24px] border border-rr-border bg-rr-surface px-5 py-6 sm:px-7 sm:py-7">
                 <p className="text-sm font-medium uppercase tracking-[0.14em] text-rr-green">
-                  Newsletter
+                  {copy.badge}
                 </p>
 
                 {status === "success" ? (
@@ -127,7 +148,7 @@ export function NewsletterTokenActionCard({
                         variant={copy.buttonVariant}
                         className="h-11 px-5"
                         onClick={handleAction}
-                        disabled={status === "pending"}
+                        disabled={status === "pending" || !hasToken}
                       >
                         {status === "pending" ? copy.pending : copy.idle}
                       </Button>
@@ -138,13 +159,13 @@ export function NewsletterTokenActionCard({
                 {status !== "idle" || !hasToken ? (
                   <div className="mt-6">
                     <Link
-                      href="/competitions"
+                      href={backHref}
                       className={cn(
                         "inline-flex h-11 items-center justify-center rounded-md border border-rr-border bg-rr-surface px-4 text-sm font-medium text-rr-secondary no-underline transition-colors",
                         "hover:bg-rr-elevated hover:text-rr-primary",
                       )}
                     >
-                      Back to competitions
+                      {backLabel}
                     </Link>
                   </div>
                 ) : null}
@@ -154,5 +175,24 @@ export function NewsletterTokenActionCard({
         </div>
       </section>
     </main>
+  );
+}
+
+export function NewsletterTokenActionCard({
+  action,
+  token,
+}: NewsletterTokenActionCardProps) {
+  const copy = buttonCopy[action];
+
+  return (
+    <TokenActionCard
+      token={token}
+      copy={copy}
+      onAction={(normalizedToken) =>
+        action === "confirm"
+          ? confirmNewsletterSubscription(normalizedToken)
+          : unsubscribeFromNewsletter(normalizedToken)
+      }
+    />
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AccountGreeting } from "@/components/account/account-greeting";
 import { AccountNav, type AccountSection } from "@/components/account/account-nav";
 import { NewsletterBanner } from "@/components/account/newsletter-banner";
+import { SavedSearchesSection } from "@/components/account/saved-searches-section";
 import { SettingsSection } from "@/components/account/settings-section";
 import { CompetitionGridClient } from "@/components/competitions/competition-grid-client";
 import { RadarLoader } from "@/components/ui/RadarLoader";
@@ -151,33 +152,12 @@ function WishlistSection() {
   );
 }
 
-function AlertsPlaceholder() {
-  return (
-    <div className="rounded-2xl border border-rr-border bg-rr-surface p-6">
-      <h3 className="mb-2 text-base font-medium text-rr-primary">Alerts</h3>
-      <p className="text-sm text-rr-secondary">Alert preferences will appear here.</p>
-    </div>
-  );
-}
-
-function SavedSearchesPlaceholder() {
-  return (
-    <div className="rounded-2xl border border-rr-border bg-rr-surface p-6">
-      <h3 className="mb-2 text-base font-medium text-rr-primary">Saved searches</h3>
-      <p className="text-sm text-rr-secondary">Saved searches will appear here.</p>
-    </div>
-  );
-}
-
-
 function SectionContent({ section }: { section: AccountSection }) {
   switch (section) {
     case "wishlist":
       return <WishlistSection />;
-    case "alerts":
-      return <AlertsPlaceholder />;
     case "searches":
-      return <SavedSearchesPlaceholder />;
+      return <SavedSearchesSection />;
     case "settings":
       return <SettingsSection />;
     default:

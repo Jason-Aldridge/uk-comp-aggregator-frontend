@@ -1,7 +1,8 @@
 "use client";
 
 import type { ComponentProps } from "react";
-import { useState } from "react";
+import { useId, useState } from "react";
+import { IconChevronDown } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { useNewsletter } from "@/contexts/newsletter-context";
 import { subscribeToNewsletter } from "@/lib/api";
@@ -23,9 +24,11 @@ function isValidEmail(value: string) {
 
 export function NewsletterSignupBanner() {
   const { state, isLoading, markSubscribedLocally } = useNewsletter();
+  const contentId = useId();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   if (isLoading || state === null) {
     return null;
@@ -41,6 +44,8 @@ export function NewsletterSignupBanner() {
       setError("");
     }
   }
+
+  const isExpanded = isMobileOpen || status === "success";
 
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
@@ -77,8 +82,35 @@ export function NewsletterSignupBanner() {
 
   return (
     <div className="rounded-2xl border border-rr-border bg-rr-surface px-4 py-4 sm:px-5">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
-        <div className="max-w-[420px]">
+      <button
+        type="button"
+        className="flex w-full items-center justify-between gap-4 text-left sm:hidden"
+        aria-expanded={isExpanded}
+        aria-controls={contentId}
+        onClick={() => setIsMobileOpen((current) => !current)}
+      >
+        <p className="text-sm font-medium text-rr-primary">
+          Get weekly competition picks by email.
+        </p>
+        <IconChevronDown
+          size={18}
+          className={cn(
+            "shrink-0 text-rr-muted transition-transform",
+            isExpanded ? "rotate-180" : "",
+          )}
+          aria-hidden="true"
+        />
+      </button>
+
+      <div
+        id={contentId}
+        className={cn(
+          "mt-0 flex-col gap-4 sm:mt-0 sm:flex lg:flex-row lg:items-center lg:justify-between lg:gap-6",
+          isExpanded ? "mt-4 flex" : "hidden",
+          "sm:mt-0 sm:flex",
+        )}
+      >
+        <div className="hidden max-w-[420px] sm:block">
           <p className="text-sm font-medium text-rr-primary">
             Get weekly competition picks by email.
           </p>

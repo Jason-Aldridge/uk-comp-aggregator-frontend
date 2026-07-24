@@ -2,13 +2,12 @@
 
 import {
   IconHeart,
-  IconBell,
   IconSearch,
   IconSettings,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/cn";
 
-export type AccountSection = "wishlist" | "alerts" | "searches" | "settings";
+export type AccountSection = "wishlist" | "searches" | "settings";
 
 type AccountNavProps = {
   active: AccountSection;
@@ -17,7 +16,6 @@ type AccountNavProps = {
 
 const sections: { id: AccountSection; label: string; icon: typeof IconHeart }[] = [
   { id: "wishlist", label: "Wishlist", icon: IconHeart },
-  { id: "alerts", label: "Alerts", icon: IconBell },
   { id: "searches", label: "Saved searches", icon: IconSearch },
   { id: "settings", label: "Settings", icon: IconSettings },
 ];

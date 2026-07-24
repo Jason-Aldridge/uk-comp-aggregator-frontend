@@ -7,6 +7,7 @@ import {
   resolveCompetitionOperatorLabel,
 } from "@/components/competitions/competition-grid";
 import { NewsletterSignupBanner } from "@/components/competitions/newsletter-signup-banner";
+import { SaveSearchButton } from "@/components/competitions/save-search-button";
 import { FilterBar } from "@/components/layout/filter-bar";
 
 type CompetitionsPageSearchParams = {
@@ -124,6 +125,10 @@ export default async function CompetitionsPage({
     <main>
       <Suspense fallback={null}>
         <FilterBar />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <SaveSearchButton />
       </Suspense>
 
       <CompetitionResultsHeading
