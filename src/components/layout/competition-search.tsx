@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 import { CompetitionImage } from "@/components/ui/CompetitionImage";
@@ -25,13 +25,36 @@ function formatTicketPrice(value: number | string | null | undefined) {
   return priceFormatter.format(amount);
 }
 
+type CompetitionSearchInputProps = {
+  initialQuery: string;
+};
+
 export function CompetitionSearch() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const initialQuery =
+    pathname === "/competitions"
+      ? (searchParams.get("search")?.trim() ?? "")
+      : "";
+
+  return (
+    <CompetitionSearchInput
+      key={`${pathname}::${initialQuery}`}
+      initialQuery={initialQuery}
+    />
+  );
+}
+
+function CompetitionSearchInput({
+  initialQuery,
+}: CompetitionSearchInputProps) {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const requestIdRef = useRef(0);
+  const skipNextFetchRef = useRef(initialQuery.trim().length >= 2);
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<CompetitionSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -64,6 +87,11 @@ export function CompetitionSearch() {
   }, []);
 
   useEffect(() => {
+    if (skipNextFetchRef.current) {
+      skipNextFetchRef.current = false;
+      return;
+    }
+
     if (trimmedQuery.length < 2) return;
 
     requestIdRef.current += 1;
@@ -185,6 +213,7 @@ export function CompetitionSearch() {
             setQuery(nextQuery);
 
             if (nextTrimmedQuery.length < 2) {
+              requestIdRef.current += 1;
               resetSearchState();
               return;
             }
@@ -195,11 +224,6 @@ export function CompetitionSearch() {
             setOpen(true);
             setHasFetched(false);
             setActiveIndex(-1);
-          }}
-          onFocus={() => {
-            if (trimmedQuery.length >= 2 && (loading || hasFetched)) {
-              setOpen(true);
-            }
           }}
           onKeyDown={handleKeyDown}
         />
